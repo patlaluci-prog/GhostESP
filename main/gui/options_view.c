@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/options_view.h"
 #include "managers/display_manager.h"
 #include "managers/settings_manager.h"
@@ -342,7 +343,7 @@ void options_view_destroy(options_view_t *ov) {
 lv_obj_t *options_view_add_item(options_view_t *ov, const char *label, lv_event_cb_t on_click, void *user_data) {
     if (!ov || !ov->list) return NULL;
     if (!ensure_capacity(ov, ov->count + 1)) return NULL;
-    lv_obj_t *btn = lv_list_add_btn(ov->list, NULL, label ? label : "");
+    lv_obj_t *btn = lv_list_add_btn(ov->list, NULL, ghost_cz_ui(label));
     if (!btn) return NULL;
     /* lv_list_add_btn() sets a LOCAL height of LV_SIZE_CONTENT, and local
      * styles outrank the shared row style, so the height must be overridden
@@ -426,7 +427,7 @@ void options_view_update_item_text(options_view_t *ov, int index, const char *ne
     if (!ov || index < 0 || index >= ov->count) return;
     lv_obj_t *btn = ov->items[index];
     lv_obj_t *lbl = btn ? lv_obj_get_child(btn, 0) : NULL;
-    if (lbl) lv_label_set_text(lbl, new_text ? new_text : "");
+    if (lbl) lv_label_set_text(lbl, ghost_cz_ui(new_text));
 }
 
 void options_view_clear(options_view_t *ov) {
