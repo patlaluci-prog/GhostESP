@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/detail_view.h"
 #include "managers/display_manager.h"
 #include "managers/settings_manager.h"
@@ -889,7 +890,7 @@ void detail_view_add_info(detail_view_t *dv, const char *label, const char *valu
     if (!ensure_capacity(dv, dv->count + 1)) return;
 
     int info_idx = dv->info_count;
-    dv->info_items[info_idx].label = detail_strdup(label ? label : "");
+    dv->info_items[info_idx].label = detail_strdup(ghost_cz_ui(label ? label : ""));
     dv->info_items[info_idx].value = detail_strdup(value ? value : "");
     if (!dv->info_items[info_idx].label || !dv->info_items[info_idx].value) {
         free(dv->info_items[info_idx].label);
@@ -953,11 +954,11 @@ lv_obj_t *detail_view_add_action(detail_view_t *dv, const char *label, lv_event_
     
     lv_obj_t *lbl = lv_label_create(btn);
     if (!lbl) {
-        ESP_LOGW(DV_TAG, "add_action: label alloc failed ('%s')", label ? label : "");
+        ESP_LOGW(DV_TAG, "add_action: label alloc failed ('%s')", ghost_cz_ui(label ? label : ""));
         lv_obj_del(btn);
         return NULL;
     }
-    lv_label_set_text(lbl, label ? label : "");
+    lv_label_set_text(lbl, ghost_cz_ui(label ? label : ""));
     lv_obj_set_style_text_font(lbl, get_item_font(dv), 0);
     lv_color_t text;
     get_theme_colors(NULL, NULL, NULL, &text, NULL);
@@ -979,7 +980,7 @@ lv_obj_t *detail_view_add_action(detail_view_t *dv, const char *label, lv_event_
         lv_obj_set_style_text_align(arrow, LV_TEXT_ALIGN_RIGHT, 0);
     } else {
         /* LVGL pool exhausted: keep the row usable without its arrow. */
-        ESP_LOGW(DV_TAG, "add_action: arrow label alloc failed ('%s')", label ? label : "");
+        ESP_LOGW(DV_TAG, "add_action: arrow label alloc failed ('%s')", ghost_cz_ui(label ? label : ""));
     }
 #else
     /* Non-touch (joystick/encoder) builds never show the arrow; it was created
@@ -1030,7 +1031,7 @@ void detail_view_add_header(detail_view_t *dv, const char *text) {
     
     lv_obj_t *lbl = lv_label_create(btn);
     if (lbl) {
-        lv_label_set_text(lbl, text ? text : "");
+        lv_label_set_text(lbl, ghost_cz_ui(text ? text : ""));
         const lv_font_t *font = dv->compact_layout ? accessibility_get_font_small() : ((dv->btn_h <= 40) ? accessibility_get_font_body() : accessibility_get_font_title());
         lv_obj_set_style_text_font(lbl, font, 0);
         lv_color_t txt;

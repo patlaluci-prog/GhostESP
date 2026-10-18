@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "sdkconfig.h"
 
 #if defined(CONFIG_HAS_BADUSB) || defined(CONFIG_HAS_BADUSB_REMOTE)
@@ -273,9 +274,9 @@ void trackpad_view_create(void) {
     s_hint_label = lv_label_create(s_pad);
 #ifdef CONFIG_USE_HW_KB
     lv_label_set_text(s_hint_label,
-                      "Drag=move Tap=L Hold=R  |  Keys: Enter=L F=R");
+                      ghost_cz_ui("Drag=move Tap=L Hold=R  |  Keys: Enter=L F=R"));
 #else
-    lv_label_set_text(s_hint_label, "Drag to move  Tap=L  Hold=R");
+    lv_label_set_text(s_hint_label, ghost_cz_ui("Drag to move  Tap=L  Hold=R"));
 #endif
     lv_obj_set_style_text_color(s_hint_label, muted, 0);
     lv_obj_set_style_text_font(s_hint_label, accessibility_get_font_small(), 0);

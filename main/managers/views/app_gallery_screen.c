@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/app_gallery_screen.h"
 #include "sdkconfig.h"
 #ifdef CONFIG_WITH_SCREEN
@@ -601,18 +602,18 @@ static void plugin_reload_task_fn(void *arg) {
 
 static void start_plugin_reload_async(void) {
     if (apps_plugin_reload_in_progress) {
-        toast_show_duration("Still scanning SD apps...", TOAST_INFO, 900);
+        toast_show_duration(ghost_cz_ui("Still scanning SD apps..."), TOAST_INFO, 900);
         return;
     }
     apps_plugin_reload_in_progress = true;
-    toast_show_duration("Scanning SD apps...", TOAST_INFO, 1200);
+    toast_show_duration(ghost_cz_ui("Scanning SD apps..."), TOAST_INFO, 1200);
     if (!apps_plugin_reload_stack) {
         apps_plugin_reload_stack = spiram_malloc(PLUGIN_RELOAD_STACK_BYTES);
     }
     if (!apps_plugin_reload_stack) {
         apps_plugin_reload_in_progress = false;
         ESP_LOGE(TAG, "Failed to allocate plugin reload task stack");
-        toast_show_duration("App scan failed: no task memory", TOAST_ERROR, 2200);
+        toast_show_duration(ghost_cz_ui("App scan failed: no task memory"), TOAST_ERROR, 2200);
         return;
     }
     if (!apps_plugin_reload_tcb) {
@@ -621,14 +622,14 @@ static void start_plugin_reload_async(void) {
     if (!apps_plugin_reload_tcb) {
         apps_plugin_reload_in_progress = false;
         ESP_LOGE(TAG, "Failed to allocate plugin reload TCB");
-        toast_show_duration("App scan failed: no task memory", TOAST_ERROR, 2200);
+        toast_show_duration(ghost_cz_ui("App scan failed: no task memory"), TOAST_ERROR, 2200);
         return;
     }
     if (xTaskCreateStatic(plugin_reload_task_fn, "plugin_reload", PLUGIN_RELOAD_STACK_BYTES, NULL, 5,
                           apps_plugin_reload_stack, apps_plugin_reload_tcb) == NULL) {
         apps_plugin_reload_in_progress = false;
         ESP_LOGE(TAG, "Failed to create plugin reload task");
-        toast_show_duration("App scan failed: task start", TOAST_ERROR, 2200);
+        toast_show_duration(ghost_cz_ui("App scan failed: task start"), TOAST_ERROR, 2200);
     }
 }
 
@@ -797,7 +798,7 @@ static lv_obj_t *create_app_carousel_card(const main_menu_layout_metrics_t *layo
         lv_obj_t *label = lv_label_create(card);
         const char *label_text = app_items[app_idx].name;
         if (app_items[app_idx].view == NULL && !app_items[app_idx].is_category_folder) label_text = "< Back";
-        lv_label_set_text(label, label_text);
+        lv_label_set_text(label, app_items[app_idx].plugin_id[0] ? label_text : ghost_cz_ui(label_text));
         lv_obj_set_style_text_font(label, accessibility_get_font_body(), 0);
         lv_obj_set_style_text_color(label, apps_text_color, 0);
         if (asset_pack_is_loaded()) {
@@ -889,7 +890,7 @@ static lv_obj_t *create_app_hero_card(const main_menu_layout_metrics_t *layout,
     if (app_items[app_idx].view == NULL && !app_items[app_idx].is_category_folder) {
         label_text = "< Back";
     }
-    lv_label_set_text(label, label_text);
+    lv_label_set_text(label, app_items[app_idx].plugin_id[0] ? label_text : ghost_cz_ui(label_text));
     lv_obj_set_style_text_font(label, accessibility_get_font_title(), 0);
     lv_obj_set_style_text_color(label, apps_text_color, 0);
     lv_obj_align(label, LV_ALIGN_CENTER, 0,
@@ -1189,7 +1190,7 @@ static void create_apps_launcher_menu(void) {
         if (app_items[i].view == NULL && !app_items[i].is_category_folder) {
             label_text = "< Back";
         }
-        lv_label_set_text(label, label_text);
+        lv_label_set_text(label, app_items[i].plugin_id[0] ? label_text : ghost_cz_ui(label_text));
         const lv_font_t *lbl_font = accessibility_get_font_small();
 #if GUI_LARGE_SCREEN
         lbl_font = accessibility_get_font_body();
@@ -1309,7 +1310,7 @@ static void create_apps_list_menu(void) {
         if (app_items[i].view == NULL && !app_items[i].is_category_folder) {
             label_text = "< Back";
         }
-        lv_label_set_text(label, label_text);
+        lv_label_set_text(label, app_items[i].plugin_id[0] ? label_text : ghost_cz_ui(label_text));
         lv_obj_set_style_text_color(label, apps_text_color, 0);
         const lv_font_t *lbl_font = accessibility_get_font_body();
         lv_obj_set_style_text_font(label, lbl_font, 0);
@@ -1381,11 +1382,11 @@ static void apps_plugin_reload_done(void *arg) {
     int plugin_count = plugin_manager_count();
     if (plugins_enabled && plugin_count > 0) {
         char msg[48];
-        snprintf(msg, sizeof(msg), "%d SD app%s ready", plugin_count, plugin_count == 1 ? "" : "s");
+        snprintf(msg, sizeof(msg), ghost_cz_ui("%d SD app%s ready"), plugin_count, plugin_count == 1 ? "" : "s");
         toast_show_duration(msg, TOAST_SUCCESS, 1000);
     } else if (plugin_manager_last_error()[0] != '\0') {
         char msg[64];
-        snprintf(msg, sizeof(msg), "App scan failed: %.45s", plugin_manager_last_error());
+        snprintf(msg, sizeof(msg), ghost_cz_ui("App scan failed: %.45s"), plugin_manager_last_error());
         toast_show_duration(msg, TOAST_WARN, 2200);
     }
 }
@@ -1417,13 +1418,13 @@ static void apps_plugin_reload_done(void *arg) {
     if (!s_native_apps_psram_warning_shown &&
         heap_caps_get_free_size(MALLOC_CAP_SPIRAM) == 0) {
         s_native_apps_psram_warning_shown = true;
-        toast_show_duration("Native SD apps require PSRAM", TOAST_WARN, 1500);
+        toast_show_duration(ghost_cz_ui("Native SD apps require PSRAM"), TOAST_WARN, 1500);
     }
 
     /* lv_label_set_text copies, so this buffer does not need static storage. */
     char title[32];
     if (boot_count > 0) {
-        snprintf(title, sizeof(title), "Apps  %d on card", boot_count);
+        snprintf(title, sizeof(title), ghost_cz_ui("Apps  %d on card"), boot_count);
     } else {
         snprintf(title, sizeof(title), "%s", LV_VER_RES > 320 ? "Apps Menu" : "Apps");
     }

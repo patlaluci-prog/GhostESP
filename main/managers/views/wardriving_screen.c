@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/wardriving_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/display_manager.h"
@@ -311,7 +312,7 @@ static void update_display_cb(lv_timer_t *timer) {
         : gps_manager_get_active_gps_snapshot(&gps_snapshot, &using_peer);
 
     if (!g_gpsManager.isinitilized && !have_active_gps && !peer_preferred) {
-        if (lbl_fix_status) lv_label_set_text(lbl_fix_status, "No GPS");
+        if (lbl_fix_status) lv_label_set_text(lbl_fix_status, ghost_cz_ui("No GPS"));
         if (lbl_fix_icon) lv_label_set_text(lbl_fix_icon, LV_SYMBOL_CLOSE);
         if (lbl_fix_icon) lv_obj_set_style_text_color(lbl_fix_icon, lv_color_hex(error_color), 0);
         if (lbl_sats) lv_label_set_text(lbl_sats, "--/--");
@@ -331,7 +332,7 @@ static void update_display_cb(lv_timer_t *timer) {
         if (lbl_coords) lv_label_set_text(lbl_coords, "---'N  ---'E");
         if (lbl_accuracy) lv_label_set_text(lbl_accuracy, "--");
         if (lbl_altitude) lv_label_set_text(lbl_altitude, "---m");
-        if (lbl_link_mode) lv_label_set_text(lbl_link_mode, "Standalone");
+        if (lbl_link_mode) lv_label_set_text(lbl_link_mode, ghost_cz_ui("Standalone"));
         return;
     }
 
@@ -436,17 +437,17 @@ static void update_display_cb(lv_timer_t *timer) {
             if (sats_visible == 0) {
                 snprintf(fix_display_buf,
                          sizeof(fix_display_buf),
-                         "No Fix (0 sats)");
+                         ghost_cz_ui("No Fix (0 sats)"));
             } else {
                 if (gps->sats_in_view > 0) {
                     snprintf(fix_display_buf,
                              sizeof(fix_display_buf),
-                             "No Fix (%d in view)",
+                             ghost_cz_ui("No Fix (%d in view)"),
                              gps->sats_in_view);
                 } else {
                     snprintf(fix_display_buf,
                              sizeof(fix_display_buf),
-                             "No Fix (%d tracked)",
+                             ghost_cz_ui("No Fix (%d tracked)"),
                              gps->sats_in_use);
                 }
             }
@@ -481,7 +482,7 @@ static void update_display_cb(lv_timer_t *timer) {
     }
     
     if (lbl_fix_status) {
-        lv_label_set_text(lbl_fix_status, fix_status);
+        lv_label_set_text(lbl_fix_status, ghost_cz_ui(fix_status));
     }
 
     if (lbl_link_mode) {
@@ -490,7 +491,7 @@ static void update_display_cb(lv_timer_t *timer) {
         bool ghostlink_enabled = connected && !wardriving_is_helper_mode() &&
                                  ((wardriving_scan_mode && wardriving_has_peer_helper()) ||
                                   peer_gps_mode);
-        lv_label_set_text(lbl_link_mode, ghostlink_enabled ? "GhostLink" : "Standalone");
+        lv_label_set_text(lbl_link_mode, ghostlink_enabled ? "GhostLink" : ghost_cz_ui("Standalone"));
     }
     
     if (lbl_fix_icon) {
@@ -523,7 +524,7 @@ static void update_display_cb(lv_timer_t *timer) {
 #endif
             : csv_get_unique_wifi_ap_count_including_hidden();
         if (aps_label && wardriving_dual_mode) {
-            lv_label_set_text(aps_label, show_ble_devs ? "BLE Devs" : "Unique APs");
+            lv_label_set_text(aps_label, show_ble_devs ? ghost_cz_ui("BLE Devs") : ghost_cz_ui("Unique APs"));
         }
         if (wardriving_dual_mode) {
             dual_ap_page ^= 1;
@@ -931,13 +932,13 @@ void wardriving_view_create(void) {
     lv_obj_set_style_text_color(lbl_fix_icon, lv_color_hex(warn_color), 0);
     
     lbl_fix_status = lv_label_create(status_card);
-    lv_label_set_text(lbl_fix_status, "Initializing");
+    lv_label_set_text(lbl_fix_status, ghost_cz_ui("Initializing"));
     lv_obj_set_style_text_font(lbl_fix_status, title_font, 0);
     lv_obj_set_style_text_color(lbl_fix_status, lv_color_hex(text_color), 0);
     set_label_long_mode(lbl_fix_status);
 
     lbl_sd_status = lv_label_create(status_card);
-    lv_label_set_text(lbl_sd_status, "No SD");
+    lv_label_set_text(lbl_sd_status, ghost_cz_ui("No SD"));
     lv_obj_set_style_text_font(lbl_sd_status, small_font, 0);
     lv_obj_set_style_text_color(lbl_sd_status, lv_color_hex(error_color), 0);
     lv_obj_add_flag(lbl_sd_status, LV_OBJ_FLAG_HIDDEN);
@@ -955,7 +956,7 @@ void wardriving_view_create(void) {
     
     lv_obj_t *sats_card = create_card(stats_row, 48);
     lv_obj_t *sats_label = lv_label_create(sats_card);
-    lv_label_set_text(sats_label, "Sats");
+    lv_label_set_text(sats_label, ghost_cz_ui("Sats"));
     lv_obj_set_style_text_font(sats_label, small_font, 0);
     lv_obj_set_style_text_color(sats_label, lv_color_hex(dim_color), 0);
     lbl_sats = lv_label_create(sats_card);
@@ -965,9 +966,9 @@ void wardriving_view_create(void) {
     
     lv_obj_t *aps_card = create_card(stats_row, 48);
     aps_label = lv_label_create(aps_card);
-    lv_label_set_text(aps_label, wardriving_dual_mode ? "Unique APs"
-                              : wardriving_ble_mode ? "BLE Devs"
-                              : "Unique APs");
+    lv_label_set_text(aps_label, wardriving_dual_mode ? ghost_cz_ui("Unique APs")
+                              : wardriving_ble_mode ? ghost_cz_ui("BLE Devs")
+                              : ghost_cz_ui("Unique APs"));
     lv_obj_set_style_text_font(aps_label, small_font, 0);
     lv_obj_set_style_text_color(aps_label, lv_color_hex(dim_color), 0);
     lbl_aps = lv_label_create(aps_card);
@@ -987,7 +988,7 @@ void wardriving_view_create(void) {
     
     lv_obj_t *speed_card = create_card(speed_row, 48);
     lv_obj_t *speed_title = lv_label_create(speed_card);
-    lv_label_set_text(speed_title, "Speed (km/h)");
+    lv_label_set_text(speed_title, ghost_cz_ui("Speed (km/h)"));
     lv_obj_set_style_text_font(speed_title, small_font, 0);
     lv_obj_set_style_text_color(speed_title, lv_color_hex(dim_color), 0);
     lbl_speed = lv_label_create(speed_card);
@@ -997,17 +998,17 @@ void wardriving_view_create(void) {
     
     lv_obj_t *mode_card = create_card(speed_row, 48);
     lv_obj_t *mode_title = lv_label_create(mode_card);
-    lv_label_set_text(mode_title, "Mode");
+    lv_label_set_text(mode_title, ghost_cz_ui("Mode"));
     lv_obj_set_style_text_font(mode_title, small_font, 0);
     lv_obj_set_style_text_color(mode_title, lv_color_hex(dim_color), 0);
     lbl_link_mode = lv_label_create(mode_card);
-    lv_label_set_text(lbl_link_mode, "Standalone");
+    lv_label_set_text(lbl_link_mode, ghost_cz_ui("Standalone"));
     lv_obj_set_style_text_font(lbl_link_mode, body_font, 0);
     lv_obj_set_style_text_color(lbl_link_mode, lv_color_hex(accent_color), 0);
     
     lv_obj_t *coords_card = create_card(content, 100);
     lv_obj_t *coords_title = lv_label_create(coords_card);
-    lv_label_set_text(coords_title, "Position");
+    lv_label_set_text(coords_title, ghost_cz_ui("Position"));
     lv_obj_set_style_text_font(coords_title, small_font, 0);
     lv_obj_set_style_text_color(coords_title, lv_color_hex(dim_color), 0);
     lbl_coords = lv_label_create(coords_card);
@@ -1029,7 +1030,7 @@ void wardriving_view_create(void) {
     
     lv_obj_t *alt_card = create_card(bottom_row, 48);
     lv_obj_t *alt_title = lv_label_create(alt_card);
-    lv_label_set_text(alt_title, "GPS Debug");
+    lv_label_set_text(alt_title, ghost_cz_ui("GPS Debug"));
     lv_obj_set_style_text_font(alt_title, small_font, 0);
     lv_obj_set_style_text_color(alt_title, lv_color_hex(dim_color), 0);
     lbl_altitude = lv_label_create(alt_card);
@@ -1060,7 +1061,7 @@ void wardriving_view_create(void) {
 #endif
 
     if ((wardriving_scan_mode || wardriving_ble_mode || wardriving_dual_mode) && !csv_ok && lbl_sd_status) {
-        lv_label_set_text(lbl_sd_status, wd_setup_fail_msg);
+        lv_label_set_text(lbl_sd_status, ghost_cz_ui(wd_setup_fail_msg));
         lv_obj_clear_flag(lbl_sd_status, LV_OBJ_FLAG_HIDDEN);
     }
 

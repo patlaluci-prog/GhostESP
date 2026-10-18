@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/nrf24_analyzer_view.h"
 #include "sdkconfig.h"
 #include "gui/design_tokens.h"
@@ -257,24 +258,24 @@ static void nrf24_apply_control_selection(void) {
 
 static void nrf24_update_pause_ui(void) {
     if (s_toggle_label && lv_obj_is_valid(s_toggle_label)) {
-        lv_label_set_text(s_toggle_label, s_paused ? "Resume" : "Pause");
+        lv_label_set_text(s_toggle_label, s_paused ? ghost_cz_ui("Resume") : ghost_cz_ui("Pause"));
     }
 
     if (s_status_label && lv_obj_is_valid(s_status_label)) {
         if (s_remote_mode) {
             if (s_remote_error) {
-                lv_label_set_text(s_status_label, "Peer error");
+                lv_label_set_text(s_status_label, ghost_cz_ui("Peer error"));
             } else if (!esp_comm_manager_is_connected()) {
-                lv_label_set_text(s_status_label, "GhostLink disconnected");
+                lv_label_set_text(s_status_label, ghost_cz_ui("GhostLink disconnected"));
             } else if (!s_remote_stream_online) {
-                lv_label_set_text(s_status_label, "Waiting for peer stream...");
+                lv_label_set_text(s_status_label, ghost_cz_ui("Waiting for peer stream..."));
             } else {
-                lv_label_set_text(s_status_label, s_paused ? "Remote scan paused" : "Remote scan active");
+                lv_label_set_text(s_status_label, s_paused ? ghost_cz_ui("Remote scan paused") : ghost_cz_ui("Remote scan active"));
             }
         } else if (!s_hw_ready) {
-            lv_label_set_text(s_status_label, "NRF24 init failed");
+            lv_label_set_text(s_status_label, ghost_cz_ui("NRF24 init failed"));
         } else {
-            lv_label_set_text(s_status_label, s_paused ? "Analyzer paused" : "Analyzer scanning");
+            lv_label_set_text(s_status_label, s_paused ? ghost_cz_ui("Analyzer paused") : ghost_cz_ui("Analyzer scanning"));
         }
     }
 }
@@ -299,7 +300,7 @@ static void nrf24_toggle_pause(void) {
         lv_label_set_text_fmt(s_status_label, "DBG: %s", s_debug_scene_names[s_debug_scene]);
     }
     if (s_toggle_label && lv_obj_is_valid(s_toggle_label)) {
-        lv_label_set_text(s_toggle_label, "Next");
+        lv_label_set_text(s_toggle_label, ghost_cz_ui("Next"));
     }
     return;
 #endif
@@ -941,10 +942,10 @@ static void nrf24_timer_cb(lv_timer_t *timer) {
                 if (jam_str) {
                     lv_label_set_text_fmt(s_freq_label, "%s CH:%03d %u%%", jam_str, (int)s_jam_peak_ch, s_jam_strength);
                 } else {
-                    lv_label_set_text_fmt(s_freq_label, "Peak CH:%03d  2.%03d GHz  %u%%", best_ch, (2400 + best_ch) - 2000, best_level);
+                    lv_label_set_text_fmt(s_freq_label, ghost_cz_ui("Peak CH:%03d  2.%03d GHz  %u%%"), best_ch, (2400 + best_ch) - 2000, best_level);
                 }
             } else {
-                lv_label_set_text_fmt(s_freq_label, "Peak CH:%03d  2.%03d GHz  %u%%", best_ch, (2400 + best_ch) - 2000, best_level);
+                lv_label_set_text_fmt(s_freq_label, ghost_cz_ui("Peak CH:%03d  2.%03d GHz  %u%%"), best_ch, (2400 + best_ch) - 2000, best_level);
             }
         }
 
@@ -995,10 +996,10 @@ static void nrf24_timer_cb(lv_timer_t *timer) {
                 if (jam_str) {
                     lv_label_set_text_fmt(s_freq_label, "%s CH:%03d %u%%", jam_str, (int)s_jam_peak_ch, s_jam_strength);
                 } else {
-                    lv_label_set_text_fmt(s_freq_label, "Peak CH:%03d  2.%03d GHz  %u%%", best_ch, mhz - 2000, best_level);
+                    lv_label_set_text_fmt(s_freq_label, ghost_cz_ui("Peak CH:%03d  2.%03d GHz  %u%%"), best_ch, mhz - 2000, best_level);
                 }
             } else {
-                lv_label_set_text_fmt(s_freq_label, "Peak CH:%03d  2.%03d GHz  %u%%", best_ch, mhz - 2000, best_level);
+                lv_label_set_text_fmt(s_freq_label, ghost_cz_ui("Peak CH:%03d  2.%03d GHz  %u%%"), best_ch, mhz - 2000, best_level);
             }
         }
 
@@ -1073,10 +1074,10 @@ static void nrf24_timer_cb(lv_timer_t *timer) {
             if (jam_str) {
                 lv_label_set_text_fmt(s_freq_label, "%s CH:%03d %u%%", jam_str, (int)s_jam_peak_ch, s_jam_strength);
             } else {
-                lv_label_set_text_fmt(s_freq_label, "Peak CH:%03d  2.%03d GHz  %u%%", best_ch, mhz - 2000, best_level);
+                lv_label_set_text_fmt(s_freq_label, ghost_cz_ui("Peak CH:%03d  2.%03d GHz  %u%%"), best_ch, mhz - 2000, best_level);
             }
         } else {
-            lv_label_set_text_fmt(s_freq_label, "Peak CH:%03d  2.%03d GHz  %u%%", best_ch, mhz - 2000, best_level);
+            lv_label_set_text_fmt(s_freq_label, ghost_cz_ui("Peak CH:%03d  2.%03d GHz  %u%%"), best_ch, mhz - 2000, best_level);
         }
     }
 
@@ -1362,13 +1363,13 @@ void nrf24_analyzer_create(void) {
     lv_obj_set_style_bg_opa(s_content, LV_OPA_COVER, LV_PART_MAIN);
 
     s_status_label = lv_label_create(s_content);
-    lv_label_set_text(s_status_label, "Initializing analyzer...");
+    lv_label_set_text(s_status_label, ghost_cz_ui("Initializing analyzer..."));
     lv_obj_set_style_text_color(s_status_label, text, 0);
     lv_obj_set_style_text_font(s_status_label, accessibility_get_font_body(), 0);
     lv_obj_align(s_status_label, LV_ALIGN_TOP_LEFT, 8, 6);
 
     s_freq_label = lv_label_create(s_content);
-    lv_label_set_text(s_freq_label, "Peak CH:000  2.400 GHz  0%");
+    lv_label_set_text(s_freq_label, ghost_cz_ui("Peak CH:000  2.400 GHz  0%"));
     lv_obj_set_style_text_color(s_freq_label, text, 0);
     lv_obj_set_style_text_font(s_freq_label, accessibility_get_font_small(), 0);
     lv_obj_align(s_freq_label, LV_ALIGN_TOP_LEFT, 8, 24);
@@ -1404,7 +1405,7 @@ void nrf24_analyzer_create(void) {
     lv_obj_add_event_cb(s_toggle_btn, nrf24_toggle_btn_cb, LV_EVENT_CLICKED, NULL);
 
     s_toggle_label = lv_label_create(s_toggle_btn);
-    lv_label_set_text(s_toggle_label, "Pause");
+    lv_label_set_text(s_toggle_label, ghost_cz_ui("Pause"));
     lv_obj_set_style_text_color(s_toggle_label, text, 0);
     lv_obj_center(s_toggle_label);
 
@@ -1420,7 +1421,7 @@ void nrf24_analyzer_create(void) {
     lv_obj_add_event_cb(s_back_btn, nrf24_back_btn_cb, LV_EVENT_CLICKED, NULL);
 
     lv_obj_t *back_lbl = lv_label_create(s_back_btn);
-    lv_label_set_text(back_lbl, LV_SYMBOL_LEFT " Back");
+    lv_label_set_text(back_lbl, ghost_cz_ui(LV_SYMBOL_LEFT " Back"));
     lv_obj_set_style_text_color(back_lbl, text, 0);
     lv_obj_center(back_lbl);
 
@@ -1439,7 +1440,7 @@ void nrf24_analyzer_create(void) {
 #ifdef NRF24_JAM_DETECT_DEBUG
     } else {
         if (s_status_label && lv_obj_is_valid(s_status_label)) {
-            lv_label_set_text(s_status_label, "DBG: tap Next to cycle");
+            lv_label_set_text(s_status_label, ghost_cz_ui("DBG: tap Next to cycle"));
         }
         s_hw_ready = true;
         s_debug_active = true;

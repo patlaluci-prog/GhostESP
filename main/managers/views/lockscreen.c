@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/lockscreen.h"
 #include "gui/menu_catalog.h"
 #include "managers/settings_manager.h"
@@ -393,7 +394,7 @@ static void lockscreen_delete_last(void) {
 
 static void lockscreen_set_prompt(const char *text) {
     if (s_prompt && lv_obj_is_valid(s_prompt)) {
-        lv_label_set_text(s_prompt, text ? text : "");
+        lv_label_set_text(s_prompt, ghost_cz_ui(text ? text : ""));
         // An empty prompt leaves a stray background pill, so hide it entirely.
         if (text && text[0]) {
             lv_obj_clear_flag(s_prompt, LV_OBJ_FLAG_HIDDEN);
@@ -1056,7 +1057,7 @@ static void lockscreen_show_favorites(void) {
     // Empty state
     if (s_fav_count == 0) {
         lv_obj_t *lbl = lv_label_create(s_fav_list);
-        lv_label_set_text(lbl, "No favorites yet\nSettings > Favorites > Manage\nAdd from Main Menu, IR, NFC,\nSubGHz or Apps");
+        lv_label_set_text(lbl, ghost_cz_ui("No favorites yet\nSettings > Favorites > Manage\nAdd from Main Menu, IR, NFC,\nSubGHz or Apps"));
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_WRAP);
         lv_obj_set_width(lbl, list_w - 16);
         lv_obj_set_style_text_align(lbl, LV_TEXT_ALIGN_CENTER, 0);
@@ -1117,7 +1118,7 @@ static void lockscreen_show_favorites(void) {
         lv_obj_set_style_text_color(type_lbl, lv_color_hex(theme_palette_get_text_muted(theme)), 0);
 
         lv_obj_t *open_lbl = lv_label_create(btn);
-        lv_label_set_text(open_lbl, LV_SYMBOL_PLAY "  Tap to launch");
+        lv_label_set_text(open_lbl, ghost_cz_ui(LV_SYMBOL_PLAY "  Tap to launch"));
         lv_obj_set_width(open_lbl, fav_card_w - 24);
         lv_obj_set_style_text_align(open_lbl, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_set_style_text_font(open_lbl, gui_font_micro(), 0);
@@ -1150,7 +1151,7 @@ static void lockscreen_show_favorites(void) {
         gui_apply_pressed_style(back_btn);
         gui_menu_card_apply(back_btn, true, surface, surface, 0, 0);
         lv_obj_t *back_lbl = lv_label_create(back_btn);
-        lv_label_set_text(back_lbl, LV_SYMBOL_LEFT " Back");
+        lv_label_set_text(back_lbl, ghost_cz_ui(LV_SYMBOL_LEFT " Back"));
         lv_label_set_long_mode(back_lbl, LV_LABEL_LONG_DOT);
         lv_obj_set_width(back_lbl, list_w - 24);
         lv_obj_set_style_text_align(back_lbl, LV_TEXT_ALIGN_CENTER, 0);
@@ -1368,7 +1369,7 @@ static void lockscreen_create_fav_pill(void) {
         int content_w = s_content && lv_obj_is_valid(s_content) ? (int)lv_obj_get_width(s_content) : LV_HOR_RES;
         if (content_w <= 0) content_w = LV_HOR_RES;
         s_fav_hint = lv_label_create(s_content);
-        lv_label_set_text(s_fav_hint, LV_SYMBOL_DOWN "  Favorites");
+        lv_label_set_text(s_fav_hint, ghost_cz_ui(LV_SYMBOL_DOWN "  Favorites"));
         lv_obj_set_style_text_font(s_fav_hint, gui_font_micro(), 0);
         lv_obj_set_style_text_color(s_fav_hint, lv_color_hex(theme_palette_get_text_muted(theme)), 0);
         lv_obj_set_style_bg_color(s_fav_hint, lv_color_hex(0x000000), 0);
@@ -1430,7 +1431,7 @@ static void lockscreen_create_fav_pill(void) {
             lv_color_t surface = lv_color_hex(theme_palette_get_surface(theme));
             gui_menu_card_apply(s_fav_pill, true, surface, lv_color_hex(0x3a3a3a), 1, 0);
             lv_obj_t *lbl = lv_label_create(s_fav_pill);
-            lv_label_set_text(lbl, LV_SYMBOL_DOWN " Favorites");
+            lv_label_set_text(lbl, ghost_cz_ui(LV_SYMBOL_DOWN " Favorites"));
             lv_obj_set_style_text_font(lbl, gui_font_micro(), 0);
             lv_obj_set_style_text_color(lbl, lv_color_hex(theme_palette_get_text(theme)), 0);
             lv_obj_center(lbl);
@@ -1460,7 +1461,7 @@ static void lockscreen_create_fav_pill(void) {
             if (hint_y + 12 > hint_content_h) hint_y = hint_content_h - 12;
             if (hint_y < 2) hint_y = 2;
             s_fav_hint = lv_label_create(s_content);
-            lv_label_set_text(s_fav_hint, LV_SYMBOL_DOWN "  Favorites");
+            lv_label_set_text(s_fav_hint, ghost_cz_ui(LV_SYMBOL_DOWN "  Favorites"));
             lv_obj_set_style_text_font(s_fav_hint, gui_font_micro(), 0);
             lv_obj_set_style_text_color(s_fav_hint, lv_color_hex(theme_palette_get_text_muted(theme)), 0);
             lv_obj_set_style_bg_color(s_fav_hint, lv_color_hex(0x000000), 0);
@@ -1946,7 +1947,7 @@ static void lockscreen_slide_create(void) {
     const lv_font_t *slide_font = (track_h >= 44) ? gui_font_body() : gui_font_caption();
 
     s_slide_label = lv_label_create(s_slide_track);
-    lv_label_set_text(s_slide_label, slide_text);
+    lv_label_set_text(s_slide_label, ghost_cz_ui(slide_text));
     lv_obj_set_style_text_font(s_slide_label, slide_font, 0);
     lv_obj_set_style_text_color(s_slide_label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_opa(s_slide_label, LV_OPA_COVER, 0);
@@ -2020,7 +2021,7 @@ static void lockscreen_slide_create(void) {
     lv_obj_set_size(s_slide_mask, 0, track_h);
     lv_obj_clear_flag(s_slide_mask, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
     s_slide_dark_label = lv_label_create(s_slide_mask);
-    lv_label_set_text(s_slide_dark_label, slide_text);
+    lv_label_set_text(s_slide_dark_label, ghost_cz_ui(slide_text));
     lv_obj_set_style_text_font(s_slide_dark_label, slide_font, 0);
     lv_obj_set_style_text_color(s_slide_dark_label, lv_color_hex(0x000000), 0);
     lv_obj_set_style_text_opa(s_slide_dark_label, LV_OPA_COVER, 0);

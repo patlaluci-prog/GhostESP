@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/accelerometer_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/display_manager.h"
@@ -319,7 +320,7 @@ static void accel_timer_cb(lv_timer_t *timer) {
         static int last_peak_100 = -1;
         int p100 = (int)(peak_g * 100);
         if (p100 != last_peak_100) {
-            lv_label_set_text_fmt(peak_label, "Peak: %d.%02d G", p100 / 100, p100 % 100);
+            lv_label_set_text_fmt(peak_label, ghost_cz_ui("Peak: %d.%02d G"), p100 / 100, p100 % 100);
             last_peak_100 = p100;
         }
     }
@@ -334,7 +335,7 @@ static void accel_timer_cb(lv_timer_t *timer) {
             const char *ps = (ip < 0) ? "-" : "";
             const char *rs = (ir < 0) ? "-" : "";
             int ap = abs(ip), ar = abs(ir);
-            lv_label_set_text_fmt(tilt_label, "P:%s%d.%ddeg  R:%s%d.%ddeg",
+            lv_label_set_text_fmt(tilt_label, ghost_cz_ui("P:%s%d.%ddeg  R:%s%d.%ddeg"),
                 ps, ap / 10, ap % 10, rs, ar / 10, ar % 10);
             lp = ip; lr = ir;
         }
@@ -371,7 +372,7 @@ static void accel_timer_cb(lv_timer_t *timer) {
             } else {
                 lv_obj_set_style_text_color(orient_label, lv_color_hex(0x44DD44), 0);
             }
-            lv_label_set_text_fmt(orient_label, "%s  Shake:%d.%d", orientation, s10 / 10, s10 % 10);
+            lv_label_set_text_fmt(orient_label, ghost_cz_ui("%s  Shake:%d.%d"), orientation, s10 / 10, s10 % 10);
             last_orient = orientation;
             last_shake10 = s10;
         }
@@ -455,7 +456,7 @@ static void accel_event_handler(InputEvent *event) {
         }
         peak_g = 0;
         velocity_ms = 0;
-        if (peak_label) lv_label_set_text(peak_label, "Peak: 0.00 G");
+        if (peak_label) lv_label_set_text(peak_label, ghost_cz_ui("Peak: 0.00 G"));
         if (speed_label) lv_label_set_text(speed_label, "0.0 km/h  |  0.0 mph");
     } else if (event->type == INPUT_TYPE_JOYSTICK || event->type == INPUT_TYPE_EXIT_BUTTON) {
         display_manager_go_back();
@@ -622,25 +623,25 @@ void accelerometer_create(void) {
     );
 
     orient_label = lv_label_create(content);
-    lv_label_set_text(orient_label, "Flat (Face Up)  Shake:0.0");
+    lv_label_set_text(orient_label, ghost_cz_ui("Flat (Face Up)  Shake:0.0"));
     lv_obj_set_style_text_color(orient_label, lv_color_hex(theme_palette_get_success(theme)), 0);
     lv_obj_set_style_text_font(orient_label, accessibility_get_font_small(), 0);
     lv_obj_align(orient_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 55));
 
     peak_label = lv_label_create(content);
-    lv_label_set_text(peak_label, "Peak: 0.00 G");
+    lv_label_set_text(peak_label, ghost_cz_ui("Peak: 0.00 G"));
     lv_obj_set_style_text_color(peak_label, lv_color_hex(theme_palette_get_warning(theme)), 0);
     lv_obj_set_style_text_font(peak_label, accessibility_get_font_small(), 0);
     lv_obj_align(peak_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 42));
 
     speed_label = lv_label_create(content);
-    lv_label_set_text(speed_label, "NO GPS: 0.0 km/h | 0.0 mph");
+    lv_label_set_text(speed_label, ghost_cz_ui("NO GPS: 0.0 km/h | 0.0 mph"));
     lv_obj_set_style_text_color(speed_label, accent, 0);
     lv_obj_set_style_text_font(speed_label, accessibility_get_font_small(), 0);
     lv_obj_align(speed_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 29));
 
     tilt_label = lv_label_create(content);
-    lv_label_set_text(tilt_label, "Pitch:0.0deg  Roll:0.0deg");
+    lv_label_set_text(tilt_label, ghost_cz_ui("Pitch:0.0deg  Roll:0.0deg"));
     lv_obj_set_style_text_color(tilt_label, muted, 0);
     lv_obj_set_style_text_font(tilt_label, accessibility_get_font_small(), 0);
     lv_obj_align(tilt_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 16));

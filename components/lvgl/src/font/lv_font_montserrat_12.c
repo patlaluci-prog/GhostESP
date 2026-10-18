@@ -1,3 +1,4 @@
+#include "sdkconfig.h"
 /*******************************************************************************
  * Size: 12 px
  * Bpp: 4
@@ -1894,6 +1895,10 @@ static lv_font_fmt_txt_dsc_t font_dsc = {
  *  PUBLIC FONT
  *----------------*/
 
+#if CONFIG_CROWPANEL_ADVANCE_43_LCD
+LV_FONT_DECLARE(lv_font_czech_12)
+#endif
+
 /*Initialize a public general font descriptor*/
 #if LV_VERSION_CHECK(8, 0, 0)
 const lv_font_t lv_font_montserrat_12 = {
@@ -1902,7 +1907,11 @@ lv_font_t lv_font_montserrat_12 = {
 #endif
     .get_glyph_dsc = lv_font_get_glyph_dsc_fmt_txt,    /*Function pointer to get glyph's data*/
     .get_glyph_bitmap = lv_font_get_bitmap_fmt_txt,    /*Function pointer to get glyph's bitmap*/
-    .line_height = 15,          /*The maximum line height required by the font*/
+    .line_height = 15
+#if CONFIG_CROWPANEL_ADVANCE_43_LCD
+        + 1
+#endif
+        ,          /*The maximum line height required by the font*/
     .base_line = 3,             /*Baseline measured from the bottom of the line*/
 #if !(LVGL_VERSION_MAJOR == 6 && LVGL_VERSION_MINOR == 0)
     .subpx = LV_FONT_SUBPX_NONE,
@@ -1910,6 +1919,9 @@ lv_font_t lv_font_montserrat_12 = {
 #if LV_VERSION_CHECK(7, 4, 0) || LVGL_VERSION_MAJOR >= 8
     .underline_position = -1,
     .underline_thickness = 1,
+#endif
+    #if CONFIG_CROWPANEL_ADVANCE_43_LCD
+    .fallback = &lv_font_czech_12,
 #endif
     .dsc = &font_dsc           /*The custom font data. Will be accessed by `get_glyph_bitmap/dsc` */
 };

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/splash_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/views/setup_wizard_screen.h"
@@ -179,7 +180,7 @@ void splash_create(void) {
 
   s_status_label = lv_label_create(splash_screen);
   lv_obj_set_style_text_color(s_status_label, lv_color_hex(0xCCCCCC), 0);
-  lv_label_set_text(s_status_label, "Initializing...");
+  lv_label_set_text(s_status_label, ghost_cz_ui("Initializing..."));
   lv_obj_align(s_status_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 28));
 
   s_progress_bar_width = splash_progress_bar_width();
@@ -316,7 +317,7 @@ static void splash_progress_apply(void *arg) {
     splash_progress_msg_t *msg = (splash_progress_msg_t *)arg;
     if (!msg) return;
     if (s_status_label && msg->label[0]) {
-        lv_label_set_text(s_status_label, msg->label);
+        lv_label_set_text(s_status_label, ghost_cz_ui(msg->label));
     }
     if (s_progress_fill && s_progress_bar) {
         if (msg->pct < 0.0f) {
@@ -346,7 +347,7 @@ static void splash_completion_apply(void *arg) {
         lv_obj_set_x(s_progress_fill, 0);
     }
     if (s_status_label) {
-        lv_label_set_text(s_status_label, "Ready");
+        lv_label_set_text(s_status_label, ghost_cz_ui("Ready"));
     }
     schedule_fade_check();
 }

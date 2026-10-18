@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/number_pad_screen.h"
 #include "core/serial_manager.h"
 #include "esp_timer.h"
@@ -268,7 +269,7 @@ static void number_pad_create(void) {
         lv_obj_add_event_cb(btn, numpad_btn_cb, LV_EVENT_CLICKED, (void *)(intptr_t)i);
 
         lv_obj_t *lbl = lv_label_create(btn);
-        lv_label_set_text(lbl, k_labels[i]);
+        lv_label_set_text(lbl, ghost_cz_ui(k_labels[i]));
         lv_obj_set_style_text_font(lbl, btn_font, 0);
         lv_obj_set_style_text_color(lbl, text, 0);
         lv_obj_center(lbl);

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 // lora_view.c - touch-first LoRa dashboard, nodes, messages and composer.
 
 #include "managers/views/lora_view.h"
@@ -508,7 +509,7 @@ static void message_age(const ui_msg_t *message, char *out, size_t cap) {
     }
     uint32_t now = (uint32_t)(esp_timer_get_time() / 1000);
     uint32_t age = (now - message->timestamp_ms) / 1000;
-    if (age < 10) snprintf(out, cap, "now");
+    if (age < 10) snprintf(out, cap, ghost_cz_ui("now"));
     else if (age < 120) snprintf(out, cap, "%us", (unsigned)age);
     else if (age < 7200) snprintf(out, cap, "%um", (unsigned)(age / 60));
     else snprintf(out, cap, "%uh", (unsigned)(age / 3600));
@@ -516,15 +517,15 @@ static void message_age(const ui_msg_t *message, char *out, size_t cap) {
 
 static void seen_text(const lora_mesh_node_t *node, char *out, size_t cap) {
     if (!node->last_seen_ms) {
-        snprintf(out, cap, "Last seen: unknown");
+        snprintf(out, cap, ghost_cz_ui("Last seen: unknown"));
         return;
     }
     uint32_t now = (uint32_t)(esp_timer_get_time() / 1000);
     uint32_t age_s = (now - node->last_seen_ms) / 1000;
-    if (age_s < 10) snprintf(out, cap, "Last seen: now");
-    else if (age_s < 120) snprintf(out, cap, "Last seen: %us ago", (unsigned)age_s);
-    else if (age_s < 7200) snprintf(out, cap, "Last seen: %um ago", (unsigned)(age_s / 60));
-    else snprintf(out, cap, "Last seen: %uh ago", (unsigned)(age_s / 3600));
+    if (age_s < 10) snprintf(out, cap, ghost_cz_ui("Last seen: now"));
+    else if (age_s < 120) snprintf(out, cap, ghost_cz_ui("Last seen: %us ago"), (unsigned)age_s);
+    else if (age_s < 7200) snprintf(out, cap, ghost_cz_ui("Last seen: %um ago"), (unsigned)(age_s / 60));
+    else snprintf(out, cap, ghost_cz_ui("Last seen: %uh ago"), (unsigned)(age_s / 3600));
 }
 
 static lv_obj_t *add_row(const char *label, int action) {
@@ -646,6 +647,7 @@ static void set_page(lora_page_t page) {
 }
 
 static void update_row_text(int index, const char *text) {
+    text = ghost_cz_ui(text);
     lv_obj_t *list = options_view_get_list(s_ov);
     lv_obj_t *row = list ? lv_obj_get_child(list, index) : NULL;
     lv_obj_t *label = row ? lv_obj_get_child(row, 0) : NULL;
@@ -662,24 +664,24 @@ static void main_label(int row, char *out, size_t cap) {
     switch (row) {
     case MAIN_CHAT:
         if (!st.running) {
-            snprintf(out, cap, "Radio OFF - press to start");
+            snprintf(out, cap, ghost_cz_ui("Radio OFF - press to start"));
             break;
         }
         if (s_unread_count)
-            snprintf(out, cap, "Messages: %u new - %.56s",
+            snprintf(out, cap, ghost_cz_ui("Messages: %u new - %.56s"),
                      (unsigned)s_unread_count, s_chat_preview);
-        else if (s_chat_preview[0]) snprintf(out, cap, "Messages: %s", s_chat_preview);
-        else snprintf(out, cap, "Messages: none yet");
+        else if (s_chat_preview[0]) snprintf(out, cap, ghost_cz_ui("Messages: %s"), s_chat_preview);
+        else snprintf(out, cap, ghost_cz_ui("Messages: none yet"));
         break;
     case MAIN_NODES:
-        snprintf(out, cap, "Nodes: %u", (unsigned)ui_nodes_total());
+        snprintf(out, cap, ghost_cz_ui("Nodes: %u"), (unsigned)ui_nodes_total());
         break;
-    case MAIN_SETTINGS: snprintf(out, cap, "Radio settings"); break;
+    case MAIN_SETTINGS: snprintf(out, cap, ghost_cz_ui("Radio settings")); break;
     case MAIN_INFO:
-        snprintf(out, cap, "Device info: RX %u / TX %u",
+        snprintf(out, cap, ghost_cz_ui("Device info: RX %u / TX %u"),
                  (unsigned)st.rx_ok, (unsigned)st.tx_ok);
         break;
-    case MAIN_BACK: snprintf(out, cap, LV_SYMBOL_LEFT " Back"); break;
+    case MAIN_BACK: snprintf(out, cap, ghost_cz_ui(LV_SYMBOL_LEFT " Back")); break;
     default: out[0] = '\0'; break;
     }
 }
@@ -712,27 +714,27 @@ static void build_main(void) {
 static void activity_label(int row, const lora_status_t *st, char *line, size_t cap) {
     switch (row) {
     case 0:
-        snprintf(line, cap, "Radio: %s  %lu.%03lu MHz",
-                 st->running ? "ON" : "OFF", (unsigned long)(st->freq_hz / 1000000),
+        snprintf(line, cap, ghost_cz_ui("Radio: %s  %lu.%03lu MHz"),
+                 st->running ? ghost_cz_ui("ON") : ghost_cz_ui("OFF"), (unsigned long)(st->freq_hz / 1000000),
                  (unsigned long)((st->freq_hz / 1000) % 1000));
         break;
     case 1:
         snprintf(line, cap, "Modem: SF%d BW%d CR4/%d", st->sf, st->bw_khz, st->cr);
         break;
     case 2:
-        snprintf(line, cap, "Received: %u  duplicates: %u",
+        snprintf(line, cap, ghost_cz_ui("Received: %u  duplicates: %u"),
                  (unsigned)st->rx_ok, (unsigned)st->rx_dups);
         break;
     case 3:
-        snprintf(line, cap, "Sent: %u  failed: %u  relayed: %u",
+        snprintf(line, cap, ghost_cz_ui("Sent: %u  failed: %u  relayed: %u"),
                  (unsigned)st->tx_ok, (unsigned)st->tx_fail, (unsigned)st->tx_relay);
         break;
     case 4:
-        snprintf(line, cap, "Last signal: %d dBm / %.1f dB",
+        snprintf(line, cap, ghost_cz_ui("Last signal: %d dBm / %.1f dB"),
                  st->last_rssi, (double)st->last_snr);
         break;
     default:
-        snprintf(line, cap, "Queue drops: %u  duty drops: %u",
+        snprintf(line, cap, ghost_cz_ui("Queue drops: %u  duty drops: %u"),
                  (unsigned)st->q_drops, (unsigned)st->duty_drops);
         break;
     }
@@ -901,16 +903,16 @@ static void build_meshtastic_settings(void) {
     char line[96];
     const char *stop_first = st.running ? " (stop radio first)" : "";
     add_toggle_row("Radio", ACT_MT_RADIO, st.running);
-    snprintf(line, sizeof(line), "Region: %s%s%s - tap to change",
+    snprintf(line, sizeof(line), ghost_cz_ui("Region: %s%s%s - tap to change"),
              lora_region_name((int)st.region),
              lora_manager_region_saved() ? "" : " *", stop_first);
     add_row(line, ACT_REGION);
-    snprintf(line, sizeof(line), "TX power: %d dBm%s - tap to change", st.tx_dbm, stop_first);
+    snprintf(line, sizeof(line), ghost_cz_ui("TX power: %d dBm%s - tap to change"), st.tx_dbm, stop_first);
     add_row(line, ACT_TX);
-    snprintf(line, sizeof(line), "Phone link: %s - tap to change",
-             st.companion == LORA_COMPANION_WIFI ? "WiFi" : "BLE");
+    snprintf(line, sizeof(line), ghost_cz_ui("Phone link: %s - tap to change"),
+             st.companion == LORA_COMPANION_WIFI ? ghost_cz_ui("WiFi") : "BLE");
     add_row(line, ACT_COMPANION);
-    snprintf(line, sizeof(line), "Modem and frequency%s", stop_first);
+    snprintf(line, sizeof(line), ghost_cz_ui("Modem and frequency%s"), stop_first);
     add_row(line, ACT_MODEM);
     add_row("Device behavior", ACT_DEVICE);
     add_row("Channels", ACT_CHANNELS);
@@ -930,15 +932,15 @@ static void build_meshcore_settings(void) {
     if (node_name_mc && node_name_mc[0]) {
         snprintf(mc_name_disp, sizeof(mc_name_disp), "%s", node_name_mc);
         privacy_redact_text(mc_name_disp);
-    } else snprintf(mc_name_disp, sizeof(mc_name_disp), "unnamed");
-    snprintf(line, sizeof(line), "Node name: %.24s - tap to edit", mc_name_disp);
+    } else snprintf(mc_name_disp, sizeof(mc_name_disp), ghost_cz_ui("unnamed"));
+    snprintf(line, sizeof(line), ghost_cz_ui("Node name: %.24s - tap to edit"), mc_name_disp);
     add_row(line, ACT_MC_NAME);
-    snprintf(line, sizeof(line), "Frequency: %.3f MHz", (double)p->freq_mhz);
+    snprintf(line, sizeof(line), ghost_cz_ui("Frequency: %.3f MHz"), (double)p->freq_mhz);
     add_row(line, 0);
     snprintf(line, sizeof(line), "Modem: BW%.1f SF%u CR4/%u", (double)p->bw_khz,
              (unsigned)p->sf, (unsigned)p->cr);
     add_row(line, 0);
-    snprintf(line, sizeof(line), "TX power: %d dBm - tap to cycle", (int)p->tx_dbm);
+    snprintf(line, sizeof(line), ghost_cz_ui("TX power: %d dBm - tap to cycle"), (int)p->tx_dbm);
     add_row(line, ACT_MC_TX);
     add_row("Send zero-hop advert", ACT_MC_ADVERT);
     add_row("Send flood advert", ACT_MC_FLOOD_ADVERT);
@@ -968,26 +970,26 @@ static void build_modem(void) {
     options_view_set_title(s_ov, "Modem & Frequency");
     char line[104];
     const char *stop_first = lora_manager_is_running() ? " (stop radio first)" : "";
-    snprintf(line, sizeof(line), "Mode: %s%s - tap to switch", use_preset ? "preset" : "custom",
+    snprintf(line, sizeof(line), ghost_cz_ui("Mode: %s%s - tap to switch"), use_preset ? ghost_cz_ui("preset") : ghost_cz_ui("custom"),
              stop_first);
     add_row(line, ACT_MODEM_MODE);
-    snprintf(line, sizeof(line), "Preset: %s%s - tap to cycle",
+    snprintf(line, sizeof(line), ghost_cz_ui("Preset: %s%s - tap to cycle"),
              lora_preset_display_name(preset, use_preset), stop_first);
     add_row(line, ACT_MODEM_PRESET);
     if (!use_preset) {
-        snprintf(line, sizeof(line), "Spread factor: SF%d%s - tap to cycle", sf, stop_first);
+        snprintf(line, sizeof(line), ghost_cz_ui("Spread factor: SF%d%s - tap to cycle"), sf, stop_first);
         add_row(line, ACT_MODEM_SF);
-        snprintf(line, sizeof(line), "Bandwidth: %d kHz%s - tap to cycle", bw, stop_first);
+        snprintf(line, sizeof(line), ghost_cz_ui("Bandwidth: %d kHz%s - tap to cycle"), bw, stop_first);
         add_row(line, ACT_MODEM_BW);
-        snprintf(line, sizeof(line), "Coding rate: CR4/%d%s - tap to cycle", cr, stop_first);
+        snprintf(line, sizeof(line), ghost_cz_ui("Coding rate: CR4/%d%s - tap to cycle"), cr, stop_first);
         add_row(line, ACT_MODEM_CR);
     }
-    snprintf(line, sizeof(line), "Frequency offset: %.1f MHz%s - tap to cycle",
+    snprintf(line, sizeof(line), ghost_cz_ui("Frequency offset: %.1f MHz%s - tap to cycle"),
              (double)offset, stop_first);
     add_row(line, ACT_MODEM_OFFSET);
-    snprintf(line, sizeof(line), "Channel slot: %u%s - tap to cycle", (unsigned)channel, stop_first);
+    snprintf(line, sizeof(line), ghost_cz_ui("Channel slot: %u%s - tap to cycle"), (unsigned)channel, stop_first);
     add_row(line, ACT_MODEM_CHANNEL);
-    snprintf(line, sizeof(line), "Frequency override: %.1f MHz%s - tap to cycle",
+    snprintf(line, sizeof(line), ghost_cz_ui("Frequency override: %.1f MHz%s - tap to cycle"),
              (double)override, stop_first);
     add_row(line, ACT_MODEM_OVERRIDE);
     add_row(LV_SYMBOL_LEFT " Back", ACT_BACK);
@@ -1001,14 +1003,14 @@ static void build_device(void) {
     options_view_set_title(s_ov, "Device Behavior");
     char line[104];
     const char *stop_first = st.running ? " (stop radio first)" : "";
-    snprintf(line, sizeof(line), "TX enabled: %s%s - tap to toggle", tx_enabled ? "yes" : "no",
+    snprintf(line, sizeof(line), ghost_cz_ui("TX enabled: %s%s - tap to toggle"), tx_enabled ? ghost_cz_ui("yes") : ghost_cz_ui("no"),
              stop_first);
     add_row(line, ACT_DEVICE_TX);
-    snprintf(line, sizeof(line), "TX power: %d dBm%s - tap to cycle", st.tx_dbm, stop_first);
+    snprintf(line, sizeof(line), ghost_cz_ui("TX power: %d dBm%s - tap to cycle"), st.tx_dbm, stop_first);
     add_row(line, ACT_TX);
-    snprintf(line, sizeof(line), "Hop limit: %d - tap to cycle", st.hop_limit);
+    snprintf(line, sizeof(line), ghost_cz_ui("Hop limit: %d - tap to cycle"), st.hop_limit);
     add_row(line, ACT_DEVICE_HOP);
-    snprintf(line, sizeof(line), "Role: %s (%d) - tap to cycle", device_role_name(st.role), st.role);
+    snprintf(line, sizeof(line), ghost_cz_ui("Role: %s (%d) - tap to cycle"), device_role_name(st.role), st.role);
     add_row(line, ACT_DEVICE_ROLE);
     add_row("Request NodeInfo now", ACT_DISCOVER);
     add_row(LV_SYMBOL_LEFT " Back", ACT_BACK);
@@ -1020,10 +1022,10 @@ static void build_channels(void) {
     for (uint8_t i = 0; i < LORA_CH_MAX; ++i) {
         const lora_channel_t *ch = lora_channel_get(i);
         if (!ch || !ch->used || ch->role == LORA_CH_DISABLED) {
-            snprintf(line, sizeof(line), "Channel %u: disabled  (app adds)", (unsigned)i);
+            snprintf(line, sizeof(line), ghost_cz_ui("Channel %u: disabled  (app adds)"), (unsigned)i);
         } else {
-            snprintf(line, sizeof(line), "Channel %u: %s  %s  hash %02X",
-                     (unsigned)i, ch->name[0] ? ch->name : "Default",
+            snprintf(line, sizeof(line), ghost_cz_ui("Channel %u: %s  %s  hash %02X"),
+                     (unsigned)i, ch->name[0] ? ch->name : ghost_cz_ui("Default"),
                      ch->role == LORA_CH_PRIMARY ? "primary" : "secondary",
                      (unsigned)ch->hash);
         }
@@ -1038,7 +1040,7 @@ static void build_info(void) {
     ui_status(&st);
     options_view_set_title(s_ov, "Device Info");
     char line[104];
-    snprintf(line, sizeof(line), "Protocol: %s", ui_protocol_name());
+    snprintf(line, sizeof(line), ghost_cz_ui("Protocol: %s"), ui_protocol_name());
     add_row(line, ACT_INFO);
     if (ui_meshcore()) {
         const char *name = mc_mesh_node_name();
@@ -1046,27 +1048,27 @@ static void build_info(void) {
         if (name && name[0]) {
             snprintf(node_disp, sizeof(node_disp), "%s", name);
             privacy_redact_text(node_disp);
-        } else snprintf(node_disp, sizeof(node_disp), "unnamed");
-        snprintf(line, sizeof(line), "Node: %s", node_disp);
+        } else snprintf(node_disp, sizeof(node_disp), ghost_cz_ui("unnamed"));
+        snprintf(line, sizeof(line), ghost_cz_ui("Node: %s"), node_disp);
     } else {
         char id[16];
         snprintf(id, sizeof(id), "!%08X", (unsigned)lora_mesh_node_num());
         privacy_redact_text(id);
-        snprintf(line, sizeof(line), "Node ID: %s", id);
+        snprintf(line, sizeof(line), ghost_cz_ui("Node ID: %s"), id);
     }
     add_row(line, ACT_INFO);
-    snprintf(line, sizeof(line), "Radio: %s  %lu.%03lu MHz",
-             st.running ? "ON" : "OFF", (unsigned long)(st.freq_hz / 1000000),
+    snprintf(line, sizeof(line), ghost_cz_ui("Radio: %s  %lu.%03lu MHz"),
+             st.running ? ghost_cz_ui("ON") : ghost_cz_ui("OFF"), (unsigned long)(st.freq_hz / 1000000),
              (unsigned long)((st.freq_hz / 1000) % 1000));
     add_row(line, ACT_INFO);
     snprintf(line, sizeof(line), "Modem: SF%d BW%d CR4/%d", st.sf, st.bw_khz, st.cr);
     add_row(line, ACT_INFO);
     if (!ui_meshcore()) {
-        snprintf(line, sizeof(line), "Region: %s  channel %u",
+        snprintf(line, sizeof(line), ghost_cz_ui("Region: %s  channel %u"),
                  lora_region_name((int)st.region), (unsigned)st.channel_num);
         add_row(line, ACT_INFO);
     }
-    snprintf(line, sizeof(line), "Known %s: %u", ui_meshcore() ? "contacts" : "nodes",
+    snprintf(line, sizeof(line), ghost_cz_ui("Known %s: %u"), ui_meshcore() ? ghost_cz_ui("contacts") : ghost_cz_ui("nodes"),
              (unsigned)ui_nodes_total());
     add_row(line, ACT_INFO);
     add_row("Traffic details", ACT_ACTIVITY);
@@ -1109,7 +1111,7 @@ static void build_nodes(void) {
     s_visible_node_count = remaining < LORA_UI_NODES_MAX ? remaining : LORA_UI_NODES_MAX;
     char line[112];
     if (total) {
-        snprintf(line, sizeof(line), "Refresh - showing %u-%u of %u",
+        snprintf(line, sizeof(line), ghost_cz_ui("Refresh - showing %u-%u of %u"),
                  (unsigned)(s_node_offset + 1),
                  (unsigned)(s_node_offset + s_visible_node_count), (unsigned)total);
         add_row(line, ACT_DISCOVER);
@@ -1176,39 +1178,39 @@ static void build_node(void) {
     char id[16];
     snprintf(id, sizeof(id), "!%08X", (unsigned)node.node_num);
     privacy_redact_text(id);
-    snprintf(line, sizeof(line), "Node ID: %s", id);
+    snprintf(line, sizeof(line), ghost_cz_ui("Node ID: %s"), id);
     add_row(line, ACT_NODE_INFO);
     if (node.has_user && node.short_name[0]) {
         char short_name[16];
         snprintf(short_name, sizeof(short_name), "%s", node.short_name);
         privacy_redact_text(short_name);
-        snprintf(line, sizeof(line), "Short name: %s", short_name);
+        snprintf(line, sizeof(line), ghost_cz_ui("Short name: %s"), short_name);
         add_row(line, ACT_NODE_INFO);
     }
     seen_text(&node, line, sizeof(line));
     add_row(line, ACT_NODE_INFO);
-    snprintf(line, sizeof(line), "Signal: %d dBm / %.1f dB", node.last_rssi,
+    snprintf(line, sizeof(line), ghost_cz_ui("Signal: %d dBm / %.1f dB"), node.last_rssi,
              (double)node.last_snr);
     add_row(line, ACT_NODE_INFO);
     if (node.hops_valid)
-        snprintf(line, sizeof(line), "Route: %u hop%s  channel %u",
+        snprintf(line, sizeof(line), ghost_cz_ui("Route: %u hop%s  channel %u"),
                  (unsigned)node.hops_away, node.hops_away == 1 ? "" : "s",
                  (unsigned)node.channel);
     else
-        snprintf(line, sizeof(line), "Route: unknown  channel %u", (unsigned)node.channel);
+        snprintf(line, sizeof(line), ghost_cz_ui("Route: unknown  channel %u"), (unsigned)node.channel);
     add_row(line, ACT_NODE_INFO);
-    snprintf(line, sizeof(line), "Identity key: %s%s",
+    snprintf(line, sizeof(line), ghost_cz_ui("Identity key: %s%s"),
              node.has_pubkey ? "available" : "unavailable",
              node.key_verified ? " / verified" : "");
     add_row(line, ACT_NODE_INFO);
     add_row(node.has_pubkey ? "Send encrypted DM" : "Get DM key (request NodeInfo)",
             node.has_pubkey ? ACT_NODE_DM : ACT_NODE_INFO);
     add_row("Request fresh NodeInfo", ACT_NODE_INFO);
-    snprintf(line, sizeof(line), "Favorite: %s - tap to toggle", node.favorite ? "yes" : "no");
+    snprintf(line, sizeof(line), ghost_cz_ui("Favorite: %s - tap to toggle"), node.favorite ? ghost_cz_ui("yes") : ghost_cz_ui("no"));
     add_row(line, ACT_NODE_FAVORITE);
-    snprintf(line, sizeof(line), "Muted: %s - tap to toggle", node.muted ? "yes" : "no");
+    snprintf(line, sizeof(line), ghost_cz_ui("Muted: %s - tap to toggle"), node.muted ? ghost_cz_ui("yes") : ghost_cz_ui("no"));
     add_row(line, ACT_NODE_MUTE);
-    snprintf(line, sizeof(line), "Ignored: %s - tap to toggle", node.ignored ? "yes" : "no");
+    snprintf(line, sizeof(line), ghost_cz_ui("Ignored: %s - tap to toggle"), node.ignored ? ghost_cz_ui("yes") : ghost_cz_ui("no"));
     add_row(line, ACT_NODE_IGNORE);
     add_row(LV_SYMBOL_LEFT " Nodes", ACT_NODE_BACK);
 }
@@ -1260,12 +1262,12 @@ static void build_messages(void) {
                        (!s_conversation_direct[c] && !m.direct))) : !m.direct)) unread++;
         }
         if (c && ui_meshcore() && !s_conversation_direct[c])
-            snprintf(line, sizeof(line), "Channel %u",
+            snprintf(line, sizeof(line), ghost_cz_ui("Channel %u"),
                      (unsigned)s_conversation_channels[c]);
         else if (c)
-            snprintf(line, sizeof(line), "Direct message");
+            snprintf(line, sizeof(line), ghost_cz_ui("Direct message"));
         else
-            snprintf(line, sizeof(line), "Public chat");
+            snprintf(line, sizeof(line), ghost_cz_ui("Public chat"));
         for (uint16_t i = count; i > 0; --i) {
             ui_msg_t m;
             if (!ui_msg_at(i - 1, &m)) continue;
@@ -1283,8 +1285,8 @@ static void build_messages(void) {
             privacy_redact_text(name);
             message_age(&m, age, sizeof(age));
             if (unread) {
-                snprintf(line, sizeof(line), "%.20s  %.8s  %u new  %.28s",
-                         c ? name : "Public chat", age, unread, m.text);
+                snprintf(line, sizeof(line), ghost_cz_ui("%.20s  %.8s  %u new  %.28s"),
+                         c ? name : ghost_cz_ui("Public chat"), age, unread, m.text);
             } else {
                 snprintf(line, sizeof(line), "%.20s  %.8s  %.36s",
                          c ? name : "Public chat", age, m.text);
@@ -1306,7 +1308,7 @@ static void build_message(void) {
         privacy_redact_text(title);
 #ifdef CONFIG_HAS_MESHCORE
     } else if (ui_meshcore() && s_conversation_channel != 0) {
-        snprintf(title, sizeof(title), "Channel %u", (unsigned)s_conversation_channel);
+        snprintf(title, sizeof(title), ghost_cz_ui("Channel %u"), (unsigned)s_conversation_channel);
 #endif
     }
     options_view_set_title(s_ov, title);
@@ -1487,7 +1489,7 @@ static void open_composer(bool dm, uint32_t node, lora_page_t return_page) {
     keyboard_view_set_return_view(&lora_view);
     keyboard_view_set_submit_callback(compose_submit);
     keyboard_view_set_immediate_callback(NULL);
-    keyboard_view_set_placeholder(dm ? "Encrypted direct message" : "Public message");
+    keyboard_view_set_placeholder(dm ? ghost_cz_ui("Encrypted direct message") : ghost_cz_ui("Public message"));
     keyboard_view_set_initial_text(s_compose_initial_text);
     s_compose_initial_text[0] = '\0';
     keyboard_view_set_start_caps(true);
@@ -1795,7 +1797,7 @@ static void action_click(lv_event_t *e) {
         keyboard_view_set_return_view(&lora_view);
         keyboard_view_set_submit_callback(mc_name_submit);
         keyboard_view_set_immediate_callback(NULL);
-        keyboard_view_set_placeholder("MeshCore advert name");
+        keyboard_view_set_placeholder(ghost_cz_ui("MeshCore advert name"));
         keyboard_view_set_initial_text((cur && cur[0]) ? cur : "");
         keyboard_view_set_start_caps(true);
         display_manager_switch_view(&keyboard_view);
@@ -1922,11 +1924,11 @@ static bool s_backend_meshcore;
  * mutating the stored message. */
 static void chat_preview(const ui_msg_t *message, char *out, size_t cap) {
     char who[24];
-    if (message->outgoing) snprintf(who, sizeof(who), "you");
+    if (message->outgoing) snprintf(who, sizeof(who), ghost_cz_ui("you"));
     else if (message->who[0]) {
         snprintf(who, sizeof(who), "%.20s", message->who);
         privacy_redact_text(who);
-    } else snprintf(who, sizeof(who), "unknown");
+    } else snprintf(who, sizeof(who), ghost_cz_ui("unknown"));
     snprintf(out, cap, "%.20s: %.32s", who,
              message->text[0] ? message->text : "(empty message)");
 }
@@ -1968,9 +1970,9 @@ static void poll_messages(bool rebuild_messages) {
         char toast[64];
         message_name(&last, who, sizeof(who));
         privacy_redact_text(who);
-        snprintf(toast, sizeof(toast), "New %s from %.16s: %.24s",
+        snprintf(toast, sizeof(toast), ghost_cz_ui("New %s from %.16s: %.24s"),
                  last.direct ? "DM" : "message", who,
-                 last.text[0] ? last.text : "(empty message)");
+                 last.text[0] ? last.text : ghost_cz_ui("(empty message)"));
         notice(toast, TOAST_INFO);
     }
 }

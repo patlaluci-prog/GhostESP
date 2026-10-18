@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/file_browser.h"
  #include "gui/screen_layout.h"
 #include "managers/display_manager.h"
@@ -353,11 +354,11 @@ static void nfc_set_paused_async(void *ptr) {
     nfc_paused = ev->on;
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
         if (ev->on) {
-            lv_label_set_text(nfc_title_label, "Paused - present tag to continue");
+            lv_label_set_text(nfc_title_label, ghost_cz_ui("Paused - present tag to continue"));
         } else {
-            if (nfc_cache_fill_phase) lv_label_set_text(nfc_title_label, "Reading sectors... 0%");
-            else if (!nfc_details_visible) lv_label_set_text(nfc_title_label, "Unlocking card... 0%");
-            else { lv_label_set_text(nfc_title_label, "NFC Tag"); lv_obj_align(nfc_title_label, LV_ALIGN_TOP_MID, 0, 22); }
+            if (nfc_cache_fill_phase) lv_label_set_text(nfc_title_label, ghost_cz_ui("Reading sectors... 0%"));
+            else if (!nfc_details_visible) lv_label_set_text(nfc_title_label, ghost_cz_ui("Unlocking card... 0%"));
+            else { lv_label_set_text(nfc_title_label, ghost_cz_ui("NFC Tag")); lv_obj_align(nfc_title_label, LV_ALIGN_TOP_MID, 0, 22); }
         }
     }
     nfc_bool_pool_free(ev);
@@ -382,8 +383,8 @@ static void nfc_set_cache_mode_async(void *ptr) {
     bool on = ev->on;
     nfc_cache_fill_phase = on;
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-        if (on) lv_label_set_text(nfc_title_label, "Reading sectors... 0%");
-        else { lv_label_set_text(nfc_title_label, "NFC Tag"); lv_obj_align(nfc_title_label, LV_ALIGN_TOP_MID, 0, 22); }
+        if (on) lv_label_set_text(nfc_title_label, ghost_cz_ui("Reading sectors... 0%"));
+        else { lv_label_set_text(nfc_title_label, ghost_cz_ui("NFC Tag")); lv_obj_align(nfc_title_label, LV_ALIGN_TOP_MID, 0, 22); }
     }
     nfc_bool_pool_free(ev);
 }
@@ -626,7 +627,7 @@ static void nfc_update_labels_async(void *ptr) {
         lv_label_set_text(nfc_uid_label, uid_text);
     }
     if (nfc_type_label && lv_obj_is_valid(nfc_type_label)) {
-        lv_label_set_text(nfc_type_label, "Type: ISO14443A");
+        lv_label_set_text(nfc_type_label, ghost_cz_ui("Type: ISO14443A"));
     }
     update_nfc_buttons_layout();
     update_nfc_popup_selection();
@@ -652,13 +653,13 @@ static void nfc_progress_update_async(void *ptr) {
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
         char title[80];
         bool bruteforce_active = (!nfc_paused && !nfc_cache_fill_phase && !nfc_dict_skip_requested && (mfc_phase_total > 0));
-        if (nfc_paused) snprintf(title, sizeof(title), "Paused - present tag to continue");
-        else if (nfc_cache_fill_phase) snprintf(title, sizeof(title), "Reading sectors... %d%%", percent);
-        else if (nfc_dict_skip_requested) snprintf(title, sizeof(title), "Basic read (skipping dict) ...");
-        else if (nfc_hardnested_phase) snprintf(title, sizeof(title), "Collecting nonces... %d%%", percent);
-        else if (bruteforce_active) snprintf(title, sizeof(title), "Unlocking card... %d%%", percent);
+        if (nfc_paused) snprintf(title, sizeof(title), ghost_cz_ui("Paused - present tag to continue"));
+        else if (nfc_cache_fill_phase) snprintf(title, sizeof(title), ghost_cz_ui("Reading sectors... %d%%"), percent);
+        else if (nfc_dict_skip_requested) snprintf(title, sizeof(title), ghost_cz_ui("Basic read (skipping dict) ..."));
+        else if (nfc_hardnested_phase) snprintf(title, sizeof(title), ghost_cz_ui("Collecting nonces... %d%%"), percent);
+        else if (bruteforce_active) snprintf(title, sizeof(title), ghost_cz_ui("Unlocking card... %d%%"), percent);
         else if (nfc_details_ready) snprintf(title, sizeof(title), "%s", nfc_get_detected_title());
-        else snprintf(title, sizeof(title), "Scanning NFC...");
+        else snprintf(title, sizeof(title), ghost_cz_ui("Scanning NFC..."));
         lv_label_set_text(nfc_title_label, title);
         if (nfc_details_ready && !bruteforce_active && !nfc_cache_fill_phase) lv_obj_align(nfc_title_label, LV_ALIGN_TOP_MID, 0, 22);
     }
@@ -667,7 +668,7 @@ static void nfc_progress_update_async(void *ptr) {
             lv_obj_clear_flag(nfc_scan_more_btn, LV_OBJ_FLAG_HIDDEN);
             nfc_more_visible = true;
             lv_obj_t *lbl = lv_obj_get_child(nfc_scan_more_btn, 0);
-            if (lbl) lv_label_set_text(lbl, "Skip");
+            if (lbl) lv_label_set_text(lbl, ghost_cz_ui("Skip"));
             update_nfc_buttons_layout();
             update_nfc_popup_selection();
             nfc_skip_label_applied = true;
@@ -676,19 +677,19 @@ static void nfc_progress_update_async(void *ptr) {
     if (mfc_phase_sector >= 0 && mfc_phase_first_block >= 0) {
         if (nfc_uid_label && lv_obj_is_valid(nfc_uid_label)) {
             char l1[32];
-            snprintf(l1, sizeof(l1), "Sec %d Blk %d", mfc_phase_sector, mfc_phase_first_block);
+            snprintf(l1, sizeof(l1), ghost_cz_ui("Sec %d Blk %d"), mfc_phase_sector, mfc_phase_first_block);
             lv_label_set_text(nfc_uid_label, l1);
         }
         if (nfc_type_label && lv_obj_is_valid(nfc_type_label)) {
             char l2[16];
-            snprintf(l2, sizeof(l2), "Key %c", mfc_phase_key_b ? 'B' : 'A');
+            snprintf(l2, sizeof(l2), ghost_cz_ui("Key %c"), mfc_phase_key_b ? 'B' : 'A');
             lv_label_set_text(nfc_type_label, l2);
         }
     }
     if (nfc_details_label && lv_obj_is_valid(nfc_details_label)) {
         char info[96];
         if (dp->t > 0) snprintf(info, sizeof(info), "MFC progress: %d/%d (%d%%)%s", dp->c, dp->t, percent, phase);
-        else snprintf(info, sizeof(info), "MFC progress: %d (unknown total)%s", dp->c, phase);
+        else snprintf(info, sizeof(info), ghost_cz_ui("MFC progress: %d (unknown total)%s"), dp->c, phase);
         lv_label_set_text(nfc_details_label, info);
         lv_obj_set_style_text_align(nfc_details_label, LV_TEXT_ALIGN_CENTER, 0);
     }
@@ -802,7 +803,7 @@ static void nfc_set_details_async(void *ptr) {
     nfc_details_ready = true;
     nfc_update_title_from_details(nfc_details_text);
     if (nfc_detected_title[0] == '\0') {
-        snprintf(nfc_detected_title, sizeof(nfc_detected_title), "NFC Tag");
+        snprintf(nfc_detected_title, sizeof(nfc_detected_title), ghost_cz_ui("NFC Tag"));
     }
     
     // Show success status when NFC scanning completes
@@ -816,7 +817,7 @@ static void nfc_set_details_async(void *ptr) {
     // Revert label back to More after bruteforce completes
     if (nfc_scan_more_btn && lv_obj_is_valid(nfc_scan_more_btn)) {
         lv_obj_t *lbl = lv_obj_get_child(nfc_scan_more_btn, 0);
-        if (lbl) lv_label_set_text(lbl, "More");
+        if (lbl) lv_label_set_text(lbl, ghost_cz_ui("More"));
         lv_obj_clear_state(nfc_scan_more_btn, LV_STATE_DISABLED);
     }
     // don't stomp the title here; let scan/progress or details phases set it to avoid flicker
@@ -838,7 +839,7 @@ static void nfc_set_details_async(void *ptr) {
         lv_obj_clear_flag(nfc_scan_more_btn, LV_OBJ_FLAG_HIDDEN);
         nfc_more_visible = true;
         lv_obj_t *lbl = lv_obj_get_child(nfc_scan_more_btn, 0);
-        if (lbl) lv_label_set_text(lbl, "More");
+        if (lbl) lv_label_set_text(lbl, ghost_cz_ui("More"));
         update_nfc_buttons_layout();
         update_nfc_popup_selection();
     }
@@ -992,7 +993,7 @@ static void nfc_build_and_set_details(pn532_io_handle_t io, const uint8_t *uid, 
     }
 
         mfc_set_progress_callback(mfc_dict_progress_cb, NULL);
-        if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) lv_label_set_text(nfc_title_label, "Unlocking card... 0%");
+        if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) lv_label_set_text(nfc_title_label, ghost_cz_ui("Unlocking card... 0%"));
         // Reduce I2C contention during PN532 scanning/bruteforce
         display_manager_set_low_i2c_mode(true);
         mfc_user_dict_begin_batch();
@@ -1011,7 +1012,7 @@ static void nfc_build_and_set_details(pn532_io_handle_t io, const uint8_t *uid, 
             mfc_get_hardnested_defaults(&known_block, &known_key_b, known_key, &target_block, &target_key_b)) {
             nfc_hardnested_phase = true;  // progress handler now shows "Collecting nonces..."
             if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-                lv_label_set_text(nfc_title_label, "Collecting nonces... 0%");
+                lv_label_set_text(nfc_title_label, ghost_cz_ui("Collecting nonces... 0%"));
             }
             char path[192] = {0};
             /* No outer mount held: the capture self-mounts per chunk (see
@@ -1230,7 +1231,7 @@ static void nfc_build_and_set_details(pn532_io_handle_t io, const uint8_t *uid, 
         if (!res->text) { nfc_ndef_pool_free(res); return; }
         char *w = res->text; snprintf(w, cap, "UID:"); size_t used = strlen(w); w += used; cap -= used;
         for (uint8_t i = 0; i < uid_len && cap > 3; ++i) { int n = snprintf(w, cap, " %02X", uid[i]); if (n > 0) { w += n; cap -= n; } }
-        snprintf(w, cap, "\nNo NDEF data\n");
+        snprintf(w, cap, ghost_cz_ui("\nNo NDEF data\n"));
         if (display_manager_is_available()) display_manager_lvgl_async_call(nfc_set_details_async, res);
         else { free(res->text); nfc_ndef_pool_free(res); }
         return;
@@ -1366,7 +1367,7 @@ static void nfc_refresh_cu_details_from_cache(void) {
             lv_obj_clear_flag(nfc_scan_more_btn, LV_OBJ_FLAG_HIDDEN);
             nfc_more_visible = true;
             lv_obj_t *lbl = lv_obj_get_child(nfc_scan_more_btn, 0);
-            if (lbl) lv_label_set_text(lbl, "More");
+            if (lbl) lv_label_set_text(lbl, ghost_cz_ui("More"));
             lv_obj_clear_state(nfc_scan_more_btn, LV_STATE_DISABLED);
         }
 
@@ -1415,7 +1416,7 @@ static void nfc_set_cu_scan_async(void *ptr) {
         lv_label_set_text(nfc_uid_label, uid_text);
     }
     if (nfc_type_label && lv_obj_is_valid(nfc_type_label)) {
-        lv_label_set_text(nfc_type_label, "Type: ISO14443A");
+        lv_label_set_text(nfc_type_label, ghost_cz_ui("Type: ISO14443A"));
     }
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
         const char *title = "NFC Tag";
@@ -1877,7 +1878,7 @@ static void nfc_scan_task(void *arg) {
                         lv_label_set_text(nfc_uid_label, csn_text);
                     }
                     if (nfc_type_label && lv_obj_is_valid(nfc_type_label)) {
-                        lv_label_set_text(nfc_type_label, "Type: PicoPass/iCLASS");
+                        lv_label_set_text(nfc_type_label, ghost_cz_ui("Type: PicoPass/iCLASS"));
                     }
 
                     nfc_build_and_set_details_picopass(pp_data);
@@ -2864,7 +2865,7 @@ void cleanup_nfc_scan_popup(void *obj) {
     nfc_cache_fill_phase = false;
     // Synchronously update UI to clear any paused state immediately
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-        lv_label_set_text(nfc_title_label, "Cancelled");
+        lv_label_set_text(nfc_title_label, ghost_cz_ui("Cancelled"));
     }
     mfc_set_progress_callback(NULL, NULL);
 #endif
@@ -2918,12 +2919,12 @@ static void nfc_scan_more_cb(lv_event_t *e) {
         nfc_dict_skip_requested = true;
         status_display_show_status("MFC Dict Skipped");
         if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-            lv_label_set_text(nfc_title_label, "Basic read (skipping dict) ...");
+            lv_label_set_text(nfc_title_label, ghost_cz_ui("Basic read (skipping dict) ..."));
         }
         // Update button to reflect action taken
         if (nfc_scan_more_btn && lv_obj_is_valid(nfc_scan_more_btn)) {
             lv_obj_t *lbl = lv_obj_get_child(nfc_scan_more_btn, 0);
-            if (lbl) lv_label_set_text(lbl, "Skipping...");
+            if (lbl) lv_label_set_text(lbl, ghost_cz_ui("Skipping..."));
             lv_obj_add_state(nfc_scan_more_btn, LV_STATE_DISABLED);
         }
         return;
@@ -2961,7 +2962,7 @@ static void nfc_scan_save_cb(lv_event_t *e) {
     if (nfc_save_in_progress) return;
     nfc_save_in_progress = true;
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-        lv_label_set_text(nfc_title_label, "Saving...");
+        lv_label_set_text(nfc_title_label, ghost_cz_ui("Saving..."));
     }
     if (nfc_scan_save_btn && lv_obj_is_valid(nfc_scan_save_btn)) {
         lv_obj_add_state(nfc_scan_save_btn, LV_STATE_DISABLED);
@@ -2973,7 +2974,7 @@ static void nfc_scan_save_cb(lv_event_t *e) {
         if (rc != pdPASS) rc = xTaskCreate(nfc_save_cu_task, "nfc_save_cu", 3072, NULL, 5, NULL);
         if (rc != pdPASS) {
             nfc_save_in_progress = false;
-            if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) lv_label_set_text(nfc_title_label, "NFC Tag");
+            if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) lv_label_set_text(nfc_title_label, ghost_cz_ui("NFC Tag"));
             if (nfc_scan_save_btn && lv_obj_is_valid(nfc_scan_save_btn)) lv_obj_clear_state(nfc_scan_save_btn, LV_STATE_DISABLED);
             ESP_LOGE(TAG, "nfc_save_cu_task create failed");
         }
@@ -2986,7 +2987,7 @@ static void nfc_scan_save_cb(lv_event_t *e) {
     if (rc != pdPASS) rc = xTaskCreate(nfc_save_task, "nfc_save", 4096, NULL, 5, NULL);
     if (rc != pdPASS) {
         nfc_save_in_progress = false;
-        if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) lv_label_set_text(nfc_title_label, "NFC Tag");
+        if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) lv_label_set_text(nfc_title_label, ghost_cz_ui("NFC Tag"));
         if (nfc_scan_save_btn && lv_obj_is_valid(nfc_scan_save_btn)) lv_obj_clear_state(nfc_scan_save_btn, LV_STATE_DISABLED);
         mfc_set_progress_callback(NULL, NULL);
         ESP_LOGE(TAG, "nfc_save_task create failed");
@@ -3372,7 +3373,7 @@ static void nfc_save_task(void *arg) {
 static void nfc_save_done_async(void *ptr) {
     bool ok = (ptr != NULL) ? *((bool*)ptr) : false;
     if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-        lv_label_set_text(nfc_title_label, ok ? "Saved!" : "Save failed");
+        lv_label_set_text(nfc_title_label, ok ? ghost_cz_ui("Saved!") : ghost_cz_ui("Save failed"));
     }
     if (nfc_scan_save_btn && lv_obj_is_valid(nfc_scan_save_btn)) {
         lv_obj_clear_state(nfc_scan_save_btn, LV_STATE_DISABLED);
@@ -3467,19 +3468,19 @@ static void saved_update_button_labels(void) {
         lv_obj_t *lbl = lv_obj_get_child(saved_close_btn, 0);
         if (lbl) {
             if (!saved_has_extra_details) {
-                lv_label_set_text(lbl, "Cancel");
+                lv_label_set_text(lbl, ghost_cz_ui("Cancel"));
             } else {
-                lv_label_set_text(lbl, saved_details_parsed_view ? "Close" : "More");
+                lv_label_set_text(lbl, saved_details_parsed_view ? ghost_cz_ui("Close") : ghost_cz_ui("More"));
             }
         }
     }
     if (saved_rename_btn && lv_obj_is_valid(saved_rename_btn)) {
         lv_obj_t *lbl = lv_obj_get_child(saved_rename_btn, 0);
-        if (lbl) lv_label_set_text(lbl, saved_details_parsed_view ? "Less" : "Rename");
+        if (lbl) lv_label_set_text(lbl, saved_details_parsed_view ? ghost_cz_ui("Less") : ghost_cz_ui("Rename"));
     }
     if (saved_delete_btn && lv_obj_is_valid(saved_delete_btn)) {
         lv_obj_t *lbl = lv_obj_get_child(saved_delete_btn, 0);
-        if (lbl) lv_label_set_text(lbl, saved_details_parsed_view ? "Scroll" : "Delete");
+        if (lbl) lv_label_set_text(lbl, saved_details_parsed_view ? ghost_cz_ui("Scroll") : ghost_cz_ui("Delete"));
     }
 }
 
@@ -3624,7 +3625,7 @@ static void nfc_show_details_view(bool show) {
         if (nfc_type_label) lv_obj_add_flag(nfc_type_label, LV_OBJ_FLAG_HIDDEN);
         // Title and button label
         if (nfc_title_label && lv_obj_is_valid(nfc_title_label)) {
-            lv_label_set_text(nfc_title_label, "NFC Details");
+            lv_label_set_text(nfc_title_label, ghost_cz_ui("NFC Details"));
             // Details title slightly down from top for spacing
             lv_obj_align(nfc_title_label, LV_ALIGN_TOP_MID, 0, 4);
         }
@@ -3744,7 +3745,7 @@ static void nfc_show_details_view(bool show) {
         }
         if (nfc_scan_more_btn && lv_obj_is_valid(nfc_scan_more_btn)) {
             lv_obj_t *lbl = lv_obj_get_child(nfc_scan_more_btn, 0);
-            if (lbl) lv_label_set_text(lbl, "More");
+            if (lbl) lv_label_set_text(lbl, ghost_cz_ui("More"));
         }
         nfc_details_visible = false;
         nfc_popup_selected = 0; // focus Cancel
@@ -3835,7 +3836,7 @@ static void nfc_generate_done_cb(void *ptr) {
         memcpy(name, base, namelen);
         name[namelen] = '\0';
         char msg[256];
-        snprintf(msg, sizeof(msg), "Tag saved as %s\nUse Write or Emulate to use it.", name);
+        snprintf(msg, sizeof(msg), ghost_cz_ui("Tag saved as %s\nUse Write or Emulate to use it."), name);
         error_popup_create(msg);
     } else {
         error_popup_create("Failed to generate NFC tag");
@@ -3913,7 +3914,7 @@ static void nfc_gen_text_kb_cb(const char *text) {
 static void nfc_generate_text_cb(lv_event_t *e) {
     (void)e;
     keyboard_view_set_submit_callback(nfc_gen_text_kb_cb);
-    keyboard_view_set_placeholder("Note text");
+    keyboard_view_set_placeholder(ghost_cz_ui("Note text"));
     keyboard_view_set_start_caps(true);
     keyboard_view_set_return_view(&nfc_view);
     display_manager_switch_view(&keyboard_view);
@@ -3924,9 +3925,9 @@ static void nfc_generate_text_cb(lv_event_t *e) {
 static void nfc_add_key_kb_cb(const char *text) {
     if (text && *text) {
         if (mfc_add_user_key_hex(text)) {
-            toast_show("Key added to user dict", TOAST_SUCCESS);
+            toast_show(ghost_cz_ui("Key added to user dict"), TOAST_SUCCESS);
         } else {
-            toast_show("Invalid key (need 12 hex)", TOAST_ERROR);
+            toast_show(ghost_cz_ui("Invalid key (need 12 hex)"), TOAST_ERROR);
         }
     }
     display_manager_switch_view(&nfc_view);
@@ -4031,7 +4032,7 @@ static void nfc_gen_wifi_ssid_kb_cb(const char *text) {
     strncpy(g_gen_field1, text, sizeof(g_gen_field1) - 1);
     g_gen_field1[sizeof(g_gen_field1) - 1] = '\0';
     keyboard_view_set_submit_callback(nfc_gen_wifi_pass_kb_cb);
-    keyboard_view_set_placeholder("Password (blank = open)");
+    keyboard_view_set_placeholder(ghost_cz_ui("Password (blank = open)"));
     keyboard_view_set_start_caps(false);
     keyboard_view_set_return_view(&nfc_view);
     display_manager_switch_view(&keyboard_view);
@@ -4059,7 +4060,7 @@ static void nfc_gen_vcard_phone_kb_cb(const char *text) {
     strncpy(g_gen_field2, text ? text : "", sizeof(g_gen_field2) - 1);
     g_gen_field2[sizeof(g_gen_field2) - 1] = '\0';
     keyboard_view_set_submit_callback(nfc_gen_vcard_email_kb_cb);
-    keyboard_view_set_placeholder("Email (optional)");
+    keyboard_view_set_placeholder(ghost_cz_ui("Email (optional)"));
     keyboard_view_set_start_caps(false);
     keyboard_view_set_return_view(&nfc_view);
     display_manager_switch_view(&keyboard_view);
@@ -4069,7 +4070,7 @@ static void nfc_gen_vcard_name_kb_cb(const char *text) {
     strncpy(g_gen_field1, text, sizeof(g_gen_field1) - 1);
     g_gen_field1[sizeof(g_gen_field1) - 1] = '\0';
     keyboard_view_set_submit_callback(nfc_gen_vcard_phone_kb_cb);
-    keyboard_view_set_placeholder("Phone (optional)");
+    keyboard_view_set_placeholder(ghost_cz_ui("Phone (optional)"));
     keyboard_view_set_start_caps(false);
     keyboard_view_set_return_view(&nfc_view);
     display_manager_switch_view(&keyboard_view);
@@ -4080,7 +4081,7 @@ static void nfc_generate_vcard_cb(lv_event_t *e) {
     g_gen_field2[0] = '\0';
     g_gen_field3[0] = '\0';
     keyboard_view_set_submit_callback(nfc_gen_vcard_name_kb_cb);
-    keyboard_view_set_placeholder("Full name");
+    keyboard_view_set_placeholder(ghost_cz_ui("Full name"));
     keyboard_view_set_start_caps(true);
     keyboard_view_set_return_view(&nfc_view);
     display_manager_switch_view(&keyboard_view);
@@ -4367,11 +4368,11 @@ static void create_nfc_emu_popup(const char *path, bool test_ndef) {
 
     char details[220];
     if (test_ndef) {
-        snprintf(details, sizeof(details), "Emulating NTAG213\nNDEF URL test\nHold phone near antenna");
+        snprintf(details, sizeof(details), ghost_cz_ui("Emulating NTAG213\nNDEF URL test\nHold phone near antenna"));
     } else {
         const char *name = path ? strrchr(path, '/') : NULL;
         name = name ? name + 1 : (path ? path : "saved .nfc");
-        snprintf(details, sizeof(details), "Emulating saved tag\n%s\nHold reader near antenna", name);
+        snprintf(details, sizeof(details), ghost_cz_ui("Emulating saved tag\n%s\nHold reader near antenna"), name);
     }
     nfc_emu_details_label = popup_create_body_label(nfc_emu_popup, details, geom.width - 30, true, body_font, 36);
 
@@ -4397,10 +4398,10 @@ static void create_nfc_emu_popup(const char *path, bool test_ndef) {
     }
 #else
     if (nfc_emu_title_label && lv_obj_is_valid(nfc_emu_title_label)) {
-        lv_label_set_text(nfc_emu_title_label, "Unsupported");
+        lv_label_set_text(nfc_emu_title_label, ghost_cz_ui("Unsupported"));
     }
     if (nfc_emu_details_label && lv_obj_is_valid(nfc_emu_details_label)) {
-        lv_label_set_text(nfc_emu_details_label, "NFC emulation requires ST25R3916 support");
+        lv_label_set_text(nfc_emu_details_label, ghost_cz_ui("NFC emulation requires ST25R3916 support"));
     }
 #endif
 }
@@ -4509,20 +4510,20 @@ static void create_keys_popup(void) {
     FILE *f = NULL;
 
     if (!sd_ready) {
-        lv_label_set_text(keys_details_label, "No user keys file found");
+        lv_label_set_text(keys_details_label, ghost_cz_ui("No user keys file found"));
         goto keys_cleanup;
     }
 
     buf = (char*)malloc(cap);
     if (!buf) {
-        lv_label_set_text(keys_details_label, "(Out of memory)");
+        lv_label_set_text(keys_details_label, ghost_cz_ui("(Out of memory)"));
         goto keys_cleanup;
     }
     buf[0] = '\0';
 
     f = fopen("/mnt/ghostesp/nfc/mfc_user_dict.nfc", "r");
     if (!f) {
-        lv_label_set_text(keys_details_label, "No user keys file found");
+        lv_label_set_text(keys_details_label, ghost_cz_ui("No user keys file found"));
         goto keys_cleanup;
     }
 
@@ -4554,7 +4555,7 @@ static void create_keys_popup(void) {
                 if ((size_t)n < (cap - pos)) { pos += (size_t)n; break; }
                 size_t new_cap = cap * 2;
                 char *nbuf = (char*)realloc(buf, new_cap);
-                if (!nbuf) { lv_label_set_text(keys_details_label, "(Out of memory)"); goto keys_cleanup; }
+                if (!nbuf) { lv_label_set_text(keys_details_label, ghost_cz_ui("(Out of memory)")); goto keys_cleanup; }
                 buf = nbuf; cap = new_cap;
             }
             keys_on_line = (keys_on_line == 0) ? 1 : 0;
@@ -4563,7 +4564,7 @@ static void create_keys_popup(void) {
         if (cap - pos < 64) {
             size_t new_cap = cap * 2;
             char *nbuf = (char*)realloc(buf, new_cap);
-            if (!nbuf) { lv_label_set_text(keys_details_label, "(Out of memory)"); goto keys_cleanup; }
+            if (!nbuf) { lv_label_set_text(keys_details_label, ghost_cz_ui("(Out of memory)")); goto keys_cleanup; }
             buf = nbuf; cap = new_cap;
         }
     }
@@ -4576,13 +4577,13 @@ static void create_keys_popup(void) {
             if ((size_t)n < (cap - pos)) { pos += (size_t)n; break; }
             size_t new_cap = cap * 2;
             char *nbuf = (char*)realloc(buf, new_cap);
-            if (!nbuf) { lv_label_set_text(keys_details_label, "(Out of memory)"); goto keys_cleanup; }
+            if (!nbuf) { lv_label_set_text(keys_details_label, ghost_cz_ui("(Out of memory)")); goto keys_cleanup; }
             buf = nbuf; cap = new_cap;
         }
     }
 
     if (pos == 0) {
-        lv_label_set_text(keys_details_label, "(Empty)");
+        lv_label_set_text(keys_details_label, ghost_cz_ui("(Empty)"));
     } else {
         lv_label_set_text(keys_details_label, buf);
     }
@@ -4715,13 +4716,13 @@ static void cu_bool_done_async(void *ptr) {
             uint8_t batt_pct = 0;
             if (chameleon_manager_query_battery(&batt_mv, &batt_pct)) {
                 char status_text[64];
-                snprintf(status_text, sizeof(status_text), "Connected\nBattery: %dmV (%d%%)", batt_mv, batt_pct);
+                snprintf(status_text, sizeof(status_text), ghost_cz_ui("Connected\nBattery: %dmV (%d%%)"), batt_mv, batt_pct);
                 lv_label_set_text(cu_details_label, status_text);
             } else {
-                lv_label_set_text(cu_details_label, "Connected");
+                lv_label_set_text(cu_details_label, ghost_cz_ui("Connected"));
             }
         } else {
-            lv_label_set_text(cu_details_label, "Not connected");
+            lv_label_set_text(cu_details_label, ghost_cz_ui("Not connected"));
         }
     }
     update_cu_buttons_layout();
@@ -4815,7 +4816,7 @@ static void update_cu_popup_selection(void) {
 
 static void cu_connect_cb(lv_event_t *e) {
     (void)e; if (cu_busy) return; cu_busy = true;
-    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, "Connecting...");
+    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, ghost_cz_ui("Connecting..."));
     xTaskCreate(cu_connect_task, "cu_connect", 4096, NULL, 5, NULL);
 }
 
@@ -4827,26 +4828,26 @@ static void cu_disconnect_cb(lv_event_t *e) {
 
 static void cu_reader_cb(lv_event_t *e) {
     (void)e; if (cu_busy) return; cu_busy = true;
-    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, "Setting reader mode...");
+    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, ghost_cz_ui("Setting reader mode..."));
     xTaskCreate(cu_reader_task, "cu_reader", 4096, NULL, 5, NULL);
 }
 
 static void cu_scan_hf_cb(lv_event_t *e) {
     (void)e; if (cu_busy) return; cu_busy = true;
-    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, "Scanning HF...");
+    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, ghost_cz_ui("Scanning HF..."));
     xTaskCreate(cu_scan_hf_task, "cu_scan_hf", 4096, NULL, 5, NULL);
 }
 
 static void cu_save_hf_cb(lv_event_t *e) {
     (void)e; if (cu_busy) return; cu_busy = true;
-    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, "Saving...");
+    if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, ghost_cz_ui("Saving..."));
     BaseType_t rc = xTaskCreate(cu_save_hf_task, "cu_save_hf", 4096, NULL, 5, NULL);
     if (rc != pdPASS) {
         rc = xTaskCreate(cu_save_hf_task, "cu_save_hf", 3072, NULL, 5, NULL);
     }
     if (rc != pdPASS) {
         cu_busy = false;
-        if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, "Save failed");
+        if (cu_title_label && lv_obj_is_valid(cu_title_label)) lv_label_set_text(cu_title_label, ghost_cz_ui("Save failed"));
         ESP_LOGE(TAG, "cu_save_hf_task create failed");
     }
 }
@@ -4872,13 +4873,13 @@ static void create_cu_popup(void) {
             uint8_t batt_pct = 0;
             if (chameleon_manager_query_battery(&batt_mv, &batt_pct)) {
                 char status_text[64];
-                snprintf(status_text, sizeof(status_text), "Connected\nBattery: %dmV (%d%%)", batt_mv, batt_pct);
+                snprintf(status_text, sizeof(status_text), ghost_cz_ui("Connected\nBattery: %dmV (%d%%)"), batt_mv, batt_pct);
                 lv_label_set_text(cu_details_label, status_text);
             } else {
-                lv_label_set_text(cu_details_label, "Connected");
+                lv_label_set_text(cu_details_label, ghost_cz_ui("Connected"));
             }
         } else {
-            lv_label_set_text(cu_details_label, "Not connected");
+            lv_label_set_text(cu_details_label, ghost_cz_ui("Not connected"));
         }
         lv_obj_set_style_text_align(cu_details_label, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_align(cu_details_label, LV_ALIGN_TOP_MID, 0, 26);
@@ -4914,13 +4915,13 @@ static void cu_state_timer_cb(lv_timer_t *t) {
             uint8_t batt_pct = 0;
             if (chameleon_manager_query_battery(&batt_mv, &batt_pct)) {
                 char status_text[64];
-                snprintf(status_text, sizeof(status_text), "Connected\nBattery: %dmV (%d%%)", batt_mv, batt_pct);
+                snprintf(status_text, sizeof(status_text), ghost_cz_ui("Connected\nBattery: %dmV (%d%%)"), batt_mv, batt_pct);
                 lv_label_set_text(cu_details_label, status_text);
             } else {
-                lv_label_set_text(cu_details_label, "Connected");
+                lv_label_set_text(cu_details_label, ghost_cz_ui("Connected"));
             }
         } else {
-            lv_label_set_text(cu_details_label, "Not connected");
+            lv_label_set_text(cu_details_label, ghost_cz_ui("Not connected"));
         }
     }
     update_cu_buttons_layout();
@@ -5463,13 +5464,13 @@ static void create_nfc_write_popup(const char *path) {
             ESP_LOGI(TAG, "write_popup details:\n%s", det);
             free(det);
         } else {
-            lv_label_set_text(nfc_write_details_label, "File parsed");
+            lv_label_set_text(nfc_write_details_label, ghost_cz_ui("File parsed"));
         }
     } else {
-        lv_label_set_text(nfc_write_details_label, "Failed to parse .nfc file");
+        lv_label_set_text(nfc_write_details_label, ghost_cz_ui("Failed to parse .nfc file"));
     }
     #else
-    lv_label_set_text(nfc_write_details_label, "Writing tags requires NFC hardware");
+    lv_label_set_text(nfc_write_details_label, ghost_cz_ui("Writing tags requires NFC hardware"));
     #endif
 
     int btn_w = 90, btn_h = 34;
@@ -5801,7 +5802,7 @@ static void nfc_write_cancel_cb(lv_event_t *e) {
     if (!nfc_write_in_progress) {
         cleanup_nfc_write_popup(NULL);
     } else {
-        if (nfc_write_title_label && lv_obj_is_valid(nfc_write_title_label)) lv_label_set_text(nfc_write_title_label, "Cancelling...");
+        if (nfc_write_title_label && lv_obj_is_valid(nfc_write_title_label)) lv_label_set_text(nfc_write_title_label, ghost_cz_ui("Cancelling..."));
     }
 }
 
@@ -5829,7 +5830,7 @@ static void nfc_write_progress_async(void *ptr) {
             percent = 100;
         }
         char t[48];
-        snprintf(t, sizeof(t), "Writing... %d%%", percent);
+        snprintf(t, sizeof(t), ghost_cz_ui("Writing... %d%%"), percent);
         lv_label_set_text(nfc_write_title_label, t);
     }
     free(p);
@@ -5839,7 +5840,7 @@ static void nfc_write_done_async(void *ptr) {
     bool ok = (ptr != NULL) ? *((bool*)ptr) : false; if (ptr) free(ptr);
     nfc_write_in_progress = false;
     if (g_write_image_valid) { ntag_file_free(&g_write_image); g_write_image_valid = false; }
-    if (nfc_write_title_label && lv_obj_is_valid(nfc_write_title_label)) lv_label_set_text(nfc_write_title_label, ok ? "Write complete" : "Write failed");
+    if (nfc_write_title_label && lv_obj_is_valid(nfc_write_title_label)) lv_label_set_text(nfc_write_title_label, ok ? ghost_cz_ui("Write complete") : ghost_cz_ui("Write failed"));
     ESP_LOGI(TAG, "nfc_write_done: %s", ok ? "success" : "fail");
     
     // Add status display messages for NFC write result
@@ -5891,7 +5892,7 @@ static void nfc_write_go_cb(lv_event_t *e) {
     nfc_write_in_progress = true;
     ESP_LOGI(TAG, "nfc_write_go: %s", g_write_image_path);
     status_display_show_status("NFC Writing...");
-    if (nfc_write_title_label && lv_obj_is_valid(nfc_write_title_label)) lv_label_set_text(nfc_write_title_label, "Present tag to write...");
+    if (nfc_write_title_label && lv_obj_is_valid(nfc_write_title_label)) lv_label_set_text(nfc_write_title_label, ghost_cz_ui("Present tag to write..."));
 #ifdef NFC_HAS_LOCAL_READER
     xTaskCreate(nfc_write_task, "nfc_write", 6144, NULL, 5, NULL);
 #endif

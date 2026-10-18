@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/compass_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/display_manager.h"
@@ -359,7 +360,7 @@ static void compass_timer_cb(lv_timer_t *timer) {
         }
     }
     if (!cal_valid) {
-        if (heading_label) lv_label_set_text(heading_label, "Rotate Device...");
+        if (heading_label) lv_label_set_text(heading_label, ghost_cz_ui("Rotate Device..."));
         return;
     }
     float cur_x_cal = (float)(raw_x - x_offset) * x_scale;
@@ -507,7 +508,7 @@ static void compass_timer_cb(lv_timer_t *timer) {
         }
 
         if (!cal_valid) {
-            if (heading_label) lv_label_set_text(heading_label, "Rotate Device...");
+            if (heading_label) lv_label_set_text(heading_label, ghost_cz_ui("Rotate Device..."));
             return;
         }
 
@@ -578,7 +579,7 @@ static void compass_event_handler(InputEvent *event) {
             return;
         }
         reset_calibration();
-        if (heading_label) lv_label_set_text(heading_label, "Resetting...");
+        if (heading_label) lv_label_set_text(heading_label, ghost_cz_ui("Resetting..."));
     } else if (event->type == INPUT_TYPE_JOYSTICK || event->type == INPUT_TYPE_EXIT_BUTTON) {
         display_manager_go_back();
     }
@@ -683,7 +684,7 @@ void compass_create(void) {
     update_cardinal_positions(0);  // Start with N at top
     
     heading_label = lv_label_create(content);
-    lv_label_set_text(heading_label, "Initialize...");
+    lv_label_set_text(heading_label, ghost_cz_ui("Initialize..."));
     lv_obj_set_style_text_color(heading_label, text, 0);
     lv_obj_set_style_text_font(heading_label,
 #ifdef CONFIG_IS_ATOMS3R

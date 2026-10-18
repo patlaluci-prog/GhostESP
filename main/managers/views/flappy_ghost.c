@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 // flappy_bird_game.c
 
 #include "core/serial_manager.h"
@@ -329,7 +330,7 @@ void flappy_bird_view_create(void) {
 
   // Create score label
   score_label = lv_label_create(flappy_bird_view.root);
-  lv_label_set_text_fmt(score_label, "Score: %d", score);
+  lv_label_set_text_fmt(score_label, ghost_cz_ui("Score: %d"), score);
   lv_obj_align(score_label, LV_ALIGN_TOP_LEFT, 10, 10);
   lv_obj_set_style_text_color(score_label, lv_color_white(), 0);
   lv_obj_set_style_text_font(score_label, settings.score_font, 0);
@@ -494,7 +495,7 @@ void flappy_bird_game_loop(lv_timer_t *timer) {
 
       // Update score
       score++;
-      lv_label_set_text_fmt(score_label, "Score: %d", score);
+      lv_label_set_text_fmt(score_label, ghost_cz_ui("Score: %d"), score);
     } else {
       // Update pipe position
       lv_obj_set_x(pipes[i].pipe, pipe_x);
@@ -552,7 +553,7 @@ void flappy_bird_game_over() {
 
   // Create "Game Over" label with scaled font
   lv_obj_t *game_over_label = lv_label_create(game_over_container);
-  lv_label_set_text(game_over_label, "Game Over!");
+  lv_label_set_text(game_over_label, ghost_cz_ui("Game Over!"));
   lv_obj_set_style_text_color(game_over_label, lv_color_hex(0xFFFF00), 0);
   lv_obj_set_style_text_font(game_over_label, settings.score_font,
                              0); // Reuse score_font for simplicity
@@ -562,7 +563,7 @@ void flappy_bird_game_over() {
   if (settings.pipe_speed > 3) {
     // Create "Retry" label
     lv_obj_t *retry_label = lv_label_create(game_over_container);
-    lv_label_set_text(retry_label, "Tap to Retry");
+    lv_label_set_text(retry_label, ghost_cz_ui("Tap to Retry"));
     lv_obj_set_style_text_color(retry_label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(retry_label, settings.score_font, 0);
     lv_obj_align(retry_label, LV_ALIGN_CENTER, 0, 20);
@@ -582,7 +583,7 @@ void flappy_bird_restart() {
   bird_y_position = (LV_VER_RES <= 128) ? 3 : (LV_VER_RES / 2);
   bird_velocity = 0;
   score = 0;
-  lv_label_set_text_fmt(score_label, "Score: %d", score);
+  lv_label_set_text_fmt(score_label, ghost_cz_ui("Score: %d"), score);
 
   // Reset bird position
   lv_obj_set_pos(bird, LV_HOR_RES / 4, bird_y_position);

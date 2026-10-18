@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/enviii_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/display_manager.h"
@@ -675,7 +676,7 @@ static void enviii_timer_cb(lv_timer_t *timer) {
         }
     }
     if (comfort_label) {
-        lv_label_set_text(comfort_label, sht_data_valid ? get_comfort_text(last_temp, last_hum) : "--");
+        lv_label_set_text(comfort_label, ghost_cz_ui(sht_data_valid ? get_comfort_text(last_temp, last_hum) : "--"));
     }
     if (feels_like_label) {
         if (sht_data_valid) {
@@ -844,7 +845,7 @@ static lv_obj_t *make_metric_card(lv_obj_t *parent, int width_pct, const char *t
     lv_obj_t *card = make_card(parent, width_pct);
 
     lv_obj_t *title_label = lv_label_create(card);
-    lv_label_set_text(title_label, title);
+    lv_label_set_text(title_label, ghost_cz_ui(title));
     lv_obj_set_style_text_color(title_label, lv_color_hex(dim_color), 0);
     lv_obj_set_style_text_font(title_label, accessibility_get_font_small(), 0);
 

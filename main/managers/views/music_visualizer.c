@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/music_visualizer.h"
 
 #include "gui/lvgl_safe.h"
@@ -96,8 +97,8 @@ static void update_status_text(void) {
         lv_label_set_text(view.status_label, current_track);
         lv_label_set_text(view.endpoint_label, current_artist);
     } else {
-        lv_label_set_text(view.status_label, "VISUALIZER");
-        lv_label_set_text(view.endpoint_label, "USB serial / UDP ready");
+        lv_label_set_text(view.status_label, ghost_cz_ui("VISUALIZER"));
+        lv_label_set_text(view.endpoint_label, ghost_cz_ui("USB serial / UDP ready"));
     }
 
     lv_obj_set_style_text_color(view.status_label, theme_text, 0);
@@ -106,7 +107,7 @@ static void update_status_text(void) {
     if (debug_label) {
         if (last_debug_label_tick == 0 || (now - last_debug_label_tick) >= 100) {
             char debug[96];
-            snprintf(debug, sizeof(debug), "frames %lu  %s",
+            snprintf(debug, sizeof(debug), ghost_cz_ui("frames %lu  %s"),
                      (unsigned long)frame_counter,
                      age < STREAM_STALE_MS ? "streaming" : "idle");
             lv_label_set_text(debug_label, debug);
@@ -383,7 +384,7 @@ void music_visualizer_view_create(void) {
     lv_obj_set_style_text_font(debug_label, accessibility_get_font_small(), 0);
     lv_obj_set_style_text_color(debug_label, theme_muted, 0);
     lv_obj_align(debug_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 4));
-    lv_label_set_text(debug_label, "frames 0  idle");
+    lv_label_set_text(debug_label, ghost_cz_ui("frames 0  idle"));
 
     if (!amplitude_queue) {
         amplitude_queue = xQueueCreate(1, sizeof(AmplitudeFrame));

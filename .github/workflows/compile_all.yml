@@ -365,6 +365,9 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Check Czech UI, protected sources, glyphs and terminal layout
+        run: python scripts/test_czech_ui.py -v
+
       - name: Check partition table and build matrix agree
         run: python scripts/test_partition_table.py -v
 

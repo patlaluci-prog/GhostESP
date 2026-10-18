@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/packet_monitor_screen.h"
 #include "core/callbacks.h"
 #include "gui/accessibility_fonts.h"
@@ -213,7 +214,7 @@ static void packet_mode_activate(int selected) {
     } else if (selected == 1) {
         keyboard_view_set_return_view(&packet_monitor_view);
         keyboard_view_set_submit_callback(packet_channels_submit);
-        keyboard_view_set_placeholder("Channels, e.g. 1 or 1,6,11");
+        keyboard_view_set_placeholder(ghost_cz_ui("Channels, e.g. 1 or 1,6,11"));
         keyboard_view_set_initial_text("");
         display_manager_switch_view(&keyboard_view);
     } else {
@@ -496,17 +497,17 @@ static void packet_monitor_create_visualizer(void) {
             return;
         }
         if (s_custom_channel_count == 1) {
-            snprintf(s_mode_label, sizeof(s_mode_label), "Locked");
+            snprintf(s_mode_label, sizeof(s_mode_label), ghost_cz_ui("Locked"));
             s_current_channel = s_custom_channels[0];
         } else {
-            snprintf(s_mode_label, sizeof(s_mode_label), "Custom hop");
+            snprintf(s_mode_label, sizeof(s_mode_label), ghost_cz_ui("Custom hop"));
         }
     } else {
-        snprintf(s_mode_label, sizeof(s_mode_label), "Hopping");
+        snprintf(s_mode_label, sizeof(s_mode_label), ghost_cz_ui("Hopping"));
         wifi_manager_start_wireshark_channel_hop();
     }
 
-    lv_label_set_text(s_summary, s_mode_label);
+    lv_label_set_text(s_summary, ghost_cz_ui(s_mode_label));
     s_update_timer = lv_timer_create(packet_update_cb, PACKET_UPDATE_MS, NULL);
     status_display_show_status("Packet Visualizer");
 }

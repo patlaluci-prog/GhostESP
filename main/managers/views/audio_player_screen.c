@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/audio_player_screen.h"
 #include "managers/audio_stream_manager.h"
 #include "managers/audio_i2s_output.h"
@@ -147,19 +148,19 @@ static void update_list_hint(void)
 
     int total = audio_stream_manager_get_file_count();
     if (total <= 0) {
-        lv_label_set_text(s_list_hint_label, "0 tracks");
+        lv_label_set_text(s_list_hint_label, ghost_cz_ui("0 tracks"));
         return;
     }
 
     char text[32];
     snprintf(text, sizeof(text), "%d/%d", s_selected_index + 1, total);
-    lv_label_set_text(s_list_hint_label, text);
+    lv_label_set_text(s_list_hint_label, ghost_cz_ui(text));
 }
 
 static lv_obj_t *create_label(lv_obj_t *parent, const char *text, const lv_font_t *font, lv_color_t color)
 {
     lv_obj_t *label = lv_label_create(parent);
-    lv_label_set_text(label, text);
+    lv_label_set_text(label, ghost_cz_ui(text));
     lv_obj_set_style_text_font(label, font, 0);
     lv_obj_set_style_text_color(label, color, 0);
     return label;
@@ -233,7 +234,7 @@ static void update_volume_ui(void)
     }
     if (s_volume_label) {
         char vbuf[16];
-        snprintf(vbuf, sizeof(vbuf), "Vol %u%%", (unsigned)s_volume_percent);
+        snprintf(vbuf, sizeof(vbuf), ghost_cz_ui("Vol %u%%"), (unsigned)s_volume_percent);
         lv_label_set_text(s_volume_label, vbuf);
     }
 }
@@ -294,7 +295,7 @@ static void create_file_list(void)
 
     if (file_count == 0) {
         lv_obj_t *lbl = lv_label_create(s_file_list);
-        lv_label_set_text(lbl, "No MP3 files found");
+        lv_label_set_text(lbl, ghost_cz_ui("No MP3 files found"));
         lv_obj_set_style_text_color(lbl, s_dim_color, 0);
         lv_obj_set_style_text_font(lbl, accessibility_get_font_body(), 0);
         lv_obj_align(lbl, LV_ALIGN_CENTER, 0, 0);
@@ -360,7 +361,7 @@ static void create_file_list(void)
                      0);
 
         lv_obj_t *badge = lv_label_create(btn);
-        lv_label_set_text(badge, playing ? (state == AUDIO_STREAM_STATE_PAUSED ? "PAUSE" : "PLAY") : (selected ? "SEL" : ""));
+        lv_label_set_text(badge, playing ? (state == AUDIO_STREAM_STATE_PAUSED ? ghost_cz_ui("PAUSE") : ghost_cz_ui("PLAY")) : (selected ? ghost_cz_ui("SEL") : ""));
         lv_obj_set_style_text_color(badge, playing ? s_accent_color : s_dim_color, 0);
         lv_obj_set_style_text_font(badge, accessibility_get_font_small(), 0);
         lv_obj_align(badge, LV_ALIGN_RIGHT_MID, -8, 0);
@@ -405,7 +406,7 @@ static void update_file_list_selection(void)
 
         lv_obj_t *badge = lv_obj_get_child(btn, 2);
         if (badge) {
-            lv_label_set_text(badge, playing ? (state == AUDIO_STREAM_STATE_PAUSED ? "PAUSE" : "PLAY") : (selected ? "SEL" : ""));
+            lv_label_set_text(badge, playing ? (state == AUDIO_STREAM_STATE_PAUSED ? ghost_cz_ui("PAUSE") : ghost_cz_ui("PLAY")) : (selected ? ghost_cz_ui("SEL") : ""));
             lv_obj_set_style_text_color(badge, playing ? s_accent_color : s_dim_color, 0);
         }
     }
@@ -429,7 +430,7 @@ static void audio_player_update_status(void)
      * high for the GhostLink link) surfaces asynchronously here. */
     esp_err_t play_err = audio_stream_manager_consume_last_error();
     if (play_err == ESP_ERR_NOT_SUPPORTED) {
-        toast_show_duration("MP3 too high for GhostLink (max 264kbps)", TOAST_WARN, 2400);
+        toast_show_duration(ghost_cz_ui("MP3 too high for GhostLink (max 264kbps)"), TOAST_WARN, 2400);
     }
 
     if (current != s_last_rendered_playing_index || state != s_last_rendered_state) {
@@ -461,7 +462,7 @@ static void audio_player_update_status(void)
     if (s_np_title) {
         const char *fname = (show_index >= 0 && show_index < total)
                                 ? audio_stream_manager_get_filename(show_index) : NULL;
-        lv_label_set_text(s_np_title, fname ? fname : (total > 0 ? "Select a track" : "No MP3 files"));
+        lv_label_set_text(s_np_title, fname ? fname : (total > 0 ? ghost_cz_ui("Select a track") : ghost_cz_ui("No MP3 files")));
     }
 
     /* Progress + time */
@@ -519,9 +520,9 @@ static bool play_track_with_toast(int index)
     }
 
     if (ret == ESP_ERR_NOT_SUPPORTED) {
-        toast_show_duration("MP3 too high for GhostLink (max 264kbps)", TOAST_WARN, 2400);
+        toast_show_duration(ghost_cz_ui("MP3 too high for GhostLink (max 264kbps)"), TOAST_WARN, 2400);
     } else {
-        toast_show_duration("Could not play MP3", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Could not play MP3"), TOAST_WARN, 1600);
     }
     ESP_LOGW(TAG, "Audio play failed for index %d: %s", index, esp_err_to_name(ret));
     return false;
@@ -535,9 +536,9 @@ static bool change_track_with_toast(bool next)
     }
 
     if (ret == ESP_ERR_NOT_SUPPORTED) {
-        toast_show_duration("MP3 too high for GhostLink (max 264kbps)", TOAST_WARN, 2400);
+        toast_show_duration(ghost_cz_ui("MP3 too high for GhostLink (max 264kbps)"), TOAST_WARN, 2400);
     } else {
-        toast_show_duration("Could not play MP3", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Could not play MP3"), TOAST_WARN, 1600);
     }
     ESP_LOGW(TAG, "Audio %s failed: %s", next ? "next" : "previous", esp_err_to_name(ret));
     return false;
@@ -660,10 +661,10 @@ static void build_library(int status_bar_h)
     lv_obj_set_style_text_color(s_list_hint_label, s_dim_color, 0);
     lv_obj_set_style_text_font(s_list_hint_label, accessibility_get_font_small(), 0);
     lv_obj_align(s_list_hint_label, LV_ALIGN_TOP_RIGHT, -8, 8);
-    lv_label_set_text(s_list_hint_label, "0 tracks");
+    lv_label_set_text(s_list_hint_label, ghost_cz_ui("0 tracks"));
 
     lv_obj_t *title = lv_label_create(s_library_cont);
-    lv_label_set_text(title, "Library");
+    lv_label_set_text(title, ghost_cz_ui("Library"));
     lv_obj_set_style_text_color(title, s_text_color, 0);
     lv_obj_set_style_text_font(title,
 #ifdef CONFIG_CROWPANEL_ADVANCED_P4
@@ -774,7 +775,7 @@ static void build_nowplaying_standard(int status_bar_h)
     lv_obj_set_style_text_align(s_np_title, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_long_mode(s_np_title, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_obj_align(s_np_title, LV_ALIGN_TOP_MID, 0, 4);
-    lv_label_set_text(s_np_title, "Ready");
+    lv_label_set_text(s_np_title, ghost_cz_ui("Ready"));
 
     /* Meta line */
     s_meta_label = lv_label_create(s_np_cont);
@@ -790,7 +791,7 @@ static void build_nowplaying_standard(int status_bar_h)
     lv_obj_set_style_text_align(s_meta_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_long_mode(s_meta_label, LV_LABEL_LONG_DOT);
     lv_obj_align(s_meta_label, LV_ALIGN_TOP_MID, 0, 34);
-    lv_label_set_text(s_meta_label, "Stopped");
+    lv_label_set_text(s_meta_label, ghost_cz_ui("Stopped"));
 
     /* Progress bar */
     s_progress_track = lv_obj_create(s_np_cont);
@@ -883,7 +884,7 @@ static void build_nowplaying_standard(int status_bar_h)
     lv_obj_set_style_text_color(s_volume_label, s_dim_color, 0);
     lv_obj_set_style_text_font(s_volume_label, accessibility_get_font_small(), 0);
     lv_obj_align(s_volume_label, LV_ALIGN_BOTTOM_MID, 0, -(AUDIO_BOTTOM_SAFE_H + 40));
-    lv_label_set_text(s_volume_label, "Vol 85%");
+    lv_label_set_text(s_volume_label, ghost_cz_ui("Vol 85%"));
 
     int volume_btn_w =
 #ifdef CONFIG_CROWPANEL_ADVANCED_P4
@@ -983,7 +984,7 @@ static void build_nowplaying_p4(int status_bar_h)
     lv_obj_set_pos(eyebrow, pad, 18);
 
     char queue_text[24];
-    snprintf(queue_text, sizeof(queue_text), "%d tracks", audio_stream_manager_get_file_count());
+    snprintf(queue_text, sizeof(queue_text), ghost_cz_ui("%d tracks"), audio_stream_manager_get_file_count());
     lv_obj_t *queue = create_label(s_np_cont, queue_text, accessibility_get_font_small(), s_dim_color);
     lv_obj_align(queue, LV_ALIGN_TOP_RIGHT, -pad, 18);
 
@@ -1030,7 +1031,7 @@ static void build_nowplaying_p4(int status_bar_h)
     lv_obj_set_style_text_align(s_np_title, LV_TEXT_ALIGN_LEFT, 0);
     lv_label_set_long_mode(s_np_title, LV_LABEL_LONG_DOT);
     lv_obj_set_pos(s_np_title, info_x, 62);
-    lv_label_set_text(s_np_title, "Ready");
+    lv_label_set_text(s_np_title, ghost_cz_ui("Ready"));
 
     s_meta_label = lv_label_create(s_np_cont);
     lv_obj_set_style_text_color(s_meta_label, s_dim_color, 0);
@@ -1039,7 +1040,7 @@ static void build_nowplaying_p4(int status_bar_h)
     lv_obj_set_style_text_align(s_meta_label, LV_TEXT_ALIGN_LEFT, 0);
     lv_label_set_long_mode(s_meta_label, LV_LABEL_LONG_DOT);
     lv_obj_set_pos(s_meta_label, info_x, 98);
-    lv_label_set_text(s_meta_label, "Stopped");
+    lv_label_set_text(s_meta_label, ghost_cz_ui("Stopped"));
 
     lv_obj_t *state_line = lv_obj_create(s_np_cont);
     lv_obj_set_size(state_line, info_w, 2);
@@ -1104,7 +1105,7 @@ static void build_nowplaying_p4(int status_bar_h)
     lv_obj_set_style_text_color(s_volume_label, s_dim_color, 0);
     lv_obj_set_style_text_font(s_volume_label, accessibility_get_font_small(), 0);
     lv_obj_set_pos(s_volume_label, pad, footer_y);
-    lv_label_set_text(s_volume_label, "Vol 85%");
+    lv_label_set_text(s_volume_label, ghost_cz_ui("Vol 85%"));
 
     const lv_coord_t volume_btn_w = 50;
     const lv_coord_t volume_btn_h = 44;

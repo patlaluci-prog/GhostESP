@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/error_popup.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -122,7 +123,7 @@ void error_popup_create(const char *message) {
             const lv_font_t *font = (LV_HOR_RES <= 128) ? &lv_font_montserrat_8 : accessibility_get_font_small();
 
 			lv_obj_set_style_opa(error_popup_root, LV_OPA_COVER, 0);
-			lv_label_set_text(error_popup_label, message);
+			lv_label_set_text(error_popup_label, ghost_cz_ui(message));
 			lv_point_t txt_size;
 			lv_txt_get_size(&txt_size, message, font,
 							lv_obj_get_style_text_letter_space(error_popup_label, 0),
@@ -170,7 +171,7 @@ void error_popup_create(const char *message) {
     lv_obj_set_style_text_color(error_popup_label, lv_color_hex(theme_palette_get_text(theme)), 0);
     lv_obj_set_style_text_font(error_popup_label, font, 0);
     lv_obj_set_style_text_align(error_popup_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_text(error_popup_label, message);
+    lv_label_set_text(error_popup_label, ghost_cz_ui(message));
     lv_point_t txt_size;
     lv_txt_get_size(&txt_size, message, font,
                     lv_obj_get_style_text_letter_space(error_popup_label, 0),
@@ -248,7 +249,7 @@ void error_popup_create_persistent(const char *message) {
     lv_obj_set_style_text_color(error_popup_label, theme_palette_is_bright(theme) ? lv_color_hex(0x000000) : lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(error_popup_label, font, 0);
     lv_obj_set_style_text_align(error_popup_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_text(error_popup_label, message);
+    lv_label_set_text(error_popup_label, ghost_cz_ui(message));
     lv_point_t txt_size;
     lv_txt_get_size(&txt_size, message, font,
                     lv_obj_get_style_text_letter_space(error_popup_label, 0),
