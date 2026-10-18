@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/toast.h"
 #include "gui/theme_palette_api.h"
 #include "gui/design_tokens.h"
@@ -342,8 +343,7 @@ static void toast_post(const char *text, uint8_t type, uint16_t duration_ms) {
 
     toast_async_arg_t *a = malloc(sizeof(toast_async_arg_t));
     if (!a) return;
-    strncpy(a->text, text, TOAST_MAX_TEXT_LEN);
-    a->text[TOAST_MAX_TEXT_LEN] = '\0';
+    ghost_cz_copy(a->text, sizeof(a->text), ghost_cz_ui(text));
     a->type = type;
     a->duration_ms = duration_ms > 0 ? duration_ms : TOAST_DEFAULT_DURATION_MS;
 

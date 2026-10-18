@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/channel_congestion_screen.h"
 #include "gui/accessibility_fonts.h"
 #include "gui/live_chart.h"
@@ -33,7 +34,7 @@ static void congestion_set_summary(const char *message, bool error) {
     uint8_t theme = settings_get_menu_theme(&G_Settings);
     if (s_chart) live_chart_clear_alert(s_chart);
     if (s_summary_label && lv_obj_is_valid(s_summary_label)) {
-        lv_label_set_text(s_summary_label, message ? message : "");
+        lv_label_set_text(s_summary_label, ghost_cz_ui(message ? message : ""));
         lv_obj_set_style_text_color(
             s_summary_label,
             lv_color_hex(error ? theme_palette_get_text_muted(theme) : theme_palette_get_accent(theme)), 0);
@@ -134,7 +135,7 @@ static void congestion_show_results(void) {
 
     char summary[80];
     if (ap_count == 0 || peak_index < 0) {
-        snprintf(summary, sizeof(summary), "No access points found");
+        snprintf(summary, sizeof(summary), ghost_cz_ui("No access points found"));
     } else {
         snprintf(summary, sizeof(summary), ap_scan_results_truncated() ?
                      "%u+ APs detected  Busiest: CH %u (%d)" :
@@ -166,7 +167,7 @@ static void congestion_poll_cb(lv_timer_t *timer) {
     if (remaining < 1) remaining = 1;
     if (s_scan_status) {
         char progress[48];
-        snprintf(progress, sizeof(progress), "Checking all channels | %ds", remaining);
+        snprintf(progress, sizeof(progress), ghost_cz_ui("Checking all channels | %ds"), remaining);
         scan_status_set_subtext(s_scan_status, progress);
     }
 

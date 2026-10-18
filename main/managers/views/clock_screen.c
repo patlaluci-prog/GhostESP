@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/clock_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/display_manager.h"
@@ -616,7 +617,7 @@ static void clock_rebuild_body(void) {
     if (clock_toggle_btn && lv_obj_is_valid(clock_toggle_btn)) {
         static const char *const names[] = {"Digital", "Analog", "Segment"};
         uint8_t idx = clock_style < 3 ? clock_style : 0;
-        lv_label_set_text(clock_toggle_btn, names[idx]);
+        lv_label_set_text(clock_toggle_btn, ghost_cz_ui(names[idx]));
         lv_obj_move_foreground(clock_toggle_btn);
     }
 

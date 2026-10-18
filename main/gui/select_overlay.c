@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/select_overlay.h"
 #include "gui/lvgl_safe.h"
 #include "managers/display_manager.h"
@@ -184,7 +185,7 @@ gui_select_overlay_t *gui_select_overlay_create(const gui_select_overlay_config_
         lv_obj_add_event_cb(btn, gui_select_overlay_button_cb, LV_EVENT_CLICKED, overlay);
 
         lv_obj_t *label = lv_label_create(btn);
-        lv_label_set_text(label, cfg->options[i] ? cfg->options[i] : "");
+        lv_label_set_text(label, ghost_cz_ui(cfg->options[i] ? cfg->options[i] : ""));
         lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
         lv_obj_set_width(label, popup_w - 28);
         if (cfg->font) lv_obj_set_style_text_font(label, cfg->font, 0);

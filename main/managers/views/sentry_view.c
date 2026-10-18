@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 // sentry_view.c
 //
 // Sentry: one live view that fuses the surveillance-device detectors GhostESP
@@ -437,10 +438,10 @@ static void sentry_merge(void) {
 static void format_ago(uint32_t last_seen, char *out, size_t os) {
     uint32_t now = now_ms();
     uint32_t s = (now > last_seen) ? (now - last_seen) / 1000 : 0;
-    if (s < 2) snprintf(out, os, "seen now");
-    else if (s < 60) snprintf(out, os, "seen %us ago", (unsigned)s);
-    else if (s < 3600) snprintf(out, os, "seen %um ago", (unsigned)(s / 60));
-    else snprintf(out, os, "seen %uh ago", (unsigned)(s / 3600));
+    if (s < 2) snprintf(out, os, ghost_cz_ui("seen now"));
+    else if (s < 60) snprintf(out, os, ghost_cz_ui("seen %us ago"), (unsigned)s);
+    else if (s < 3600) snprintf(out, os, ghost_cz_ui("seen %um ago"), (unsigned)(s / 60));
+    else snprintf(out, os, ghost_cz_ui("seen %uh ago"), (unsigned)(s / 3600));
 }
 
 static void format_rec(const sentry_rec_t *r, char *head, size_t hs, char *det, size_t ds) {
@@ -587,7 +588,7 @@ static void show_alert(const sentry_rec_t *r) {
     lv_label_set_long_mode(sub, LV_LABEL_LONG_DOT);
 
     lv_obj_t *hint = lv_label_create(alert_overlay);
-    lv_label_set_text(hint, "Tap to dismiss");
+    lv_label_set_text(hint, ghost_cz_ui("Tap to dismiss"));
     lv_obj_set_style_text_font(hint, accessibility_get_font_small(), 0);
     lv_obj_set_style_text_color(hint, lv_color_hex(c_dim), 0);
 
@@ -658,8 +659,8 @@ static void render_rows(void) {
                 lv_obj_set_style_bg_color(s_rows[0].card, lv_color_hex(c_card), 0);
                 lv_obj_set_style_text_color(s_rows[0].head, lv_color_hex(c_good), 0);
                 lv_obj_set_style_text_color(s_rows[0].detail, lv_color_hex(c_dim), 0);
-                lv_label_set_text(s_rows[0].head, "Clear");
-                lv_label_set_text(s_rows[0].detail, "Listening for cameras, trackers, gear");
+                lv_label_set_text(s_rows[0].head, ghost_cz_ui("Clear"));
+                lv_label_set_text(s_rows[0].detail, ghost_cz_ui("Listening for cameras, trackers, gear"));
             } else {
                 lv_obj_add_flag(s_rows[i].card, LV_OBJ_FLAG_HIDDEN);
             }
@@ -794,7 +795,7 @@ static void sentry_track_cb(lv_event_t *event) {
     if (is_ble) {
         int idx = ble_index_for_mac(s_detail->mac);
         if (idx < 0 || !ble_device_detect_start_tracking(idx)) {
-            toast_show("Track failed", TOAST_ERROR);
+            toast_show(ghost_cz_ui("Track failed"), TOAST_ERROR);
             return;
         }
         s_track_src = 1;
@@ -802,7 +803,7 @@ static void sentry_track_cb(lv_event_t *event) {
         s_meter = rssi_meter_create(lv_scr_act(), "Track", label, sentry_track_sample, NULL);
     } else {
         if (!have_mac) {
-            toast_show("Track failed", TOAST_ERROR);
+            toast_show(ghost_cz_ui("Track failed"), TOAST_ERROR);
             return;
         }
         // The WiFi tracker owns the promiscuous callback and a fixed channel,
@@ -817,7 +818,7 @@ static void sentry_track_cb(lv_event_t *event) {
 
     if (!s_meter) {
         stop_meter();
-        toast_show("Track failed", TOAST_ERROR);
+        toast_show(ghost_cz_ui("Track failed"), TOAST_ERROR);
         return;
     }
     rssi_meter_set_bottom_reserved(s_meter, gui_touch_bar_height());
@@ -1165,7 +1166,7 @@ static void update_display_cb(lv_timer_t *timer) {
         if (s_dual_phase && running) {
             int remain = (SENTRY_PHASE_MS - (int)(now_ms() - s_phase_since)) / 1000;
             if (remain < 0) remain = 0;
-            snprintf(state, sizeof(state), "Scanning %s (%ds)", s_phase_ble ? "BLE" : "WiFi", remain);
+            snprintf(state, sizeof(state), ghost_cz_ui("Scanning %s (%ds)"), s_phase_ble ? "BLE" : ghost_cz_ui("WiFi"), remain);
         } else {
             snprintf(state, sizeof(state), "%s", running ? "Scanning" : "Idle");
         }
@@ -1174,7 +1175,7 @@ static void update_display_cb(lv_timer_t *timer) {
     }
     if (lbl_summary) {
         lv_label_set_text_fmt(lbl_summary,
-                              "Cam %d  Tracker %d  Skimmer %d  Gear %d  BLE %d",
+                              ghost_cz_ui("Cam %d  Tracker %d  Skimmer %d  Gear %d  BLE %d"),
                               counts[0], counts[2], counts[3], counts[4], counts[5]);
     }
 
@@ -1289,7 +1290,7 @@ void sentry_view_create(void) {
     lv_obj_set_flex_flow(status, LV_FLEX_FLOW_COLUMN);
 
     lbl_state = lv_label_create(status);
-    lv_label_set_text(lbl_state, "Starting");
+    lv_label_set_text(lbl_state, ghost_cz_ui("Starting"));
     lv_obj_set_style_text_font(lbl_state, accessibility_get_font_title(), 0);
 
     lbl_summary = lv_label_create(status);

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/file_browser.h"
  #include "gui/screen_layout.h"
 #include "managers/views/infrared_view.h"
@@ -671,7 +672,7 @@ static void create_transmit_popup_now(void) {
     lv_obj_clear_flag(transmitting_popup, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t *label = lv_label_create(transmitting_popup);
-    lv_label_set_text(label, "Transmitting...");
+    lv_label_set_text(label, ghost_cz_ui("Transmitting..."));
     lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
     lv_obj_center(label);
 }
@@ -2574,7 +2575,7 @@ void rename_remote_cb(lv_event_t *e) {
     if (strlen(current_remote_name) > 0) {
         keyboard_view_set_placeholder(current_remote_name);
     } else {
-        keyboard_view_set_placeholder("Enter remote name");
+        keyboard_view_set_placeholder(ghost_cz_ui("Enter remote name"));
     }
     display_manager_switch_view(&keyboard_view);
 }
@@ -2811,7 +2812,7 @@ void signal_preview_save_cb(lv_event_t *e)
     // Transition to keyboard view for naming
     status_display_show_status("IR Saving...");
     display_manager_lvgl_async_call(cleanup_signal_preview_popup, NULL);
-    keyboard_view_set_placeholder("Enter signal name");
+    keyboard_view_set_placeholder(ghost_cz_ui("Enter signal name"));
     
     // Use different callbacks based on whether we're adding to existing remote, easy learn mode, or creating new
     if (is_easy_mode) {
@@ -3095,7 +3096,7 @@ void update_easy_learn_instruction_text(void)
         button_name = common_button_names[existing_remote_button_index];
     }
     
-    lv_label_set_text_fmt(easy_learn_instruction_label, "Press '%s' button...", button_name);
+    lv_label_set_text_fmt(easy_learn_instruction_label, ghost_cz_ui("Press '%s' button..."), button_name);
 }
 
 // --- Check if a button name is already used in a remote file ---
@@ -3371,11 +3372,11 @@ void create_signal_preview_popup(void)
     if (!learned_signal.is_raw) {
         // Signal was successfully decoded
         lv_label_set_text_fmt(protocol_label, "%s", learned_signal.payload.message.protocol);
-        lv_label_set_text_fmt(address_label, "Addr: 0x%lX", (unsigned long)learned_signal.payload.message.address);
-        lv_label_set_text_fmt(command_label, "Cmd: 0x%lX", (unsigned long)learned_signal.payload.message.command);
+        lv_label_set_text_fmt(address_label, ghost_cz_ui("Addr: 0x%lX"), (unsigned long)learned_signal.payload.message.address);
+        lv_label_set_text_fmt(command_label, ghost_cz_ui("Cmd: 0x%lX"), (unsigned long)learned_signal.payload.message.command);
     } else {
-        lv_label_set_text(protocol_label, "Raw Signal");
-        lv_label_set_text(address_label, "Unknown Protocol");
+        lv_label_set_text(protocol_label, ghost_cz_ui("Raw Signal"));
+        lv_label_set_text(address_label, ghost_cz_ui("Unknown Protocol"));
         lv_label_set_text(command_label, "");
     }
 
@@ -3393,7 +3394,7 @@ void create_signal_preview_popup(void)
     lv_coord_t raw_y = !learned_signal.is_raw ? 80 : 64; // if decoded, place below cmd (80), else at cmd position (64)
     lv_obj_t *raw_info = popup_create_body_label(signal_preview_popup, "", popup_w2 - 20, false, accessibility_get_font_small(), raw_y);
     if (learned_signal.is_raw) {
-        lv_label_set_text_fmt(raw_info, "%d timings", learned_signal.payload.raw.timings_size);
+        lv_label_set_text_fmt(raw_info, ghost_cz_ui("%d timings"), learned_signal.payload.raw.timings_size);
     } else {
         lv_label_set_text(raw_info, "");  // Don't show timing info for decoded signals
     }

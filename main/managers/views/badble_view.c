@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 // badble_view.c
 // Dedicated LVGL view for the BLE HID keyboard ("BadBLE") feature.
 // Mirrors the BadUSB view flow: script picker + running popup, live keyboard
@@ -213,11 +214,11 @@ static void badble_popup_poll_cb(lv_timer_t *timer) {
     if (connected && !badble_popup_was_running) {
         badble_popup_was_running = true;
         if (badble_popup_title_lbl && lv_obj_is_valid(badble_popup_title_lbl)) {
-            lv_label_set_text(badble_popup_title_lbl, "BadBLE Running");
+            lv_label_set_text(badble_popup_title_lbl, ghost_cz_ui("BadBLE Running"));
         }
         if (badble_popup_body_lbl && lv_obj_is_valid(badble_popup_body_lbl)) {
             char body[96];
-            snprintf(body, sizeof(body), "Script: %s", badble_current_script);
+            snprintf(body, sizeof(body), ghost_cz_ui("Script: %s"), badble_current_script);
             lv_label_set_text(badble_popup_body_lbl, body);
         }
         return;
@@ -338,7 +339,7 @@ static void handle_option(const char *option) {
             keyboard_view_set_return_view(&badble_view);
             keyboard_view_set_submit_callback(badble_type_kb_cb);
             keyboard_view_set_immediate_callback(badble_key_immediate_cb);
-            keyboard_view_set_placeholder("Type text to send...");
+            keyboard_view_set_placeholder(ghost_cz_ui("Type text to send..."));
             keyboard_view_set_initial_text("");
             keyboard_view_set_start_caps(false);
             display_manager_switch_view(&keyboard_view);
@@ -346,17 +347,17 @@ static void handle_option(const char *option) {
             keyboard_view_set_return_view(&badble_view);
             keyboard_view_set_submit_callback(badble_set_name_kb_cb);
             keyboard_view_set_immediate_callback(NULL);
-            keyboard_view_set_placeholder("BadBLE name (max 31 chars)");
+            keyboard_view_set_placeholder(ghost_cz_ui("BadBLE name (max 31 chars)"));
             keyboard_view_set_initial_text(badble_manager_get_name());
             keyboard_view_set_start_caps(false);
             display_manager_switch_view(&keyboard_view);
         } else if (strcmp(option, "Status") == 0) {
             char status[128];
             snprintf(status, sizeof(status),
-                     "State: %s\nName: %s\nHost: %s",
+                     ghost_cz_ui("State: %s\nName: %s\nHost: %s"),
                      badble_manager_is_running() ? "active" : "idle",
                      badble_manager_get_name(),
-                     badble_manager_is_connected() ? "connected" : "not connected");
+                     badble_manager_is_connected() ? "connected" : ghost_cz_ui("not connected"));
             error_popup_create(status);
         } else if (strcmp(option, "Stop BadBLE") == 0) {
             (void)badble_manager_stop();

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/keyboard_screen.h"
 #include "core/serial_manager.h"
 #include "managers/views/options_screen.h"
@@ -788,7 +789,7 @@ static void remove_char_from_buffer() {
 static void update_input_label() {
     if (!input_label) return;
     if (input_len == 0) {
-        lv_label_set_text(input_label, placeholder);
+        lv_label_set_text(input_label, ghost_cz_ui(placeholder));
     } else {
         lv_label_set_text(input_label, input_buffer);
     }

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/cloud_store_screen.h"
 
 #include "gui/asset_pack.h"
@@ -368,7 +369,7 @@ static void render_categories(int *rendered, cloud_store_item_type_t type) {
     load_categories(type);
 
     char all_line[48];
-    snprintf(all_line, sizeof(all_line), LV_SYMBOL_LIST "  All (%d)", cloud_store_get_count(type));
+    snprintf(all_line, sizeof(all_line), ghost_cz_ui(LV_SYMBOL_LIST "  All (%d)"), cloud_store_get_count(type));
     s_rows[*rendered] = options_view_add_item(s_options, all_line, row_event_cb, (void *)(intptr_t)*rendered);
     s_row_meta[*rendered].kind = ROW_KIND_CATEGORY;
     s_row_meta[*rendered].item_type = type;
@@ -493,7 +494,7 @@ static void render_store(void) {
 static void start_refresh(bool user_initiated) {
     cloud_store_status_t status = cloud_store_get_status();
     if (status.state == CLOUD_STORE_STATE_FETCHING) {
-        toast_show_duration("Already refreshing", TOAST_INFO, 900);
+        toast_show_duration(ghost_cz_ui("Already refreshing"), TOAST_INFO, 900);
         render_store();
         return;
     }
@@ -508,7 +509,7 @@ static void start_refresh(bool user_initiated) {
 
     uint32_t now = lv_tick_get();
     if (user_initiated && s_last_refresh_ms != 0 && (uint32_t)(now - s_last_refresh_ms) < 5000) {
-        toast_show_duration("Refresh already tried", TOAST_INFO, 900);
+        toast_show_duration(ghost_cz_ui("Refresh already tried"), TOAST_INFO, 900);
         render_store();
         return;
     }
@@ -516,13 +517,13 @@ static void start_refresh(bool user_initiated) {
 
     esp_err_t err = cloud_store_refresh_async();
     if (err == ESP_ERR_NOT_FOUND) {
-        toast_show_duration("SD card required for Cloud Store", TOAST_WARN, 1800);
+        toast_show_duration(ghost_cz_ui("SD card required for Cloud Store"), TOAST_WARN, 1800);
     } else if (err == ESP_ERR_INVALID_STATE) {
-        toast_show_duration("Cloud download already running", TOAST_INFO, 1200);
+        toast_show_duration(ghost_cz_ui("Cloud download already running"), TOAST_INFO, 1200);
     } else if (err != ESP_OK) {
-        toast_show_duration("Cloud refresh failed to start", TOAST_ERROR, 1800);
+        toast_show_duration(ghost_cz_ui("Cloud refresh failed to start"), TOAST_ERROR, 1800);
     } else {
-        toast_show_duration("Refreshing cloud list...", TOAST_INFO, 1000);
+        toast_show_duration(ghost_cz_ui("Refreshing cloud list..."), TOAST_INFO, 1000);
     }
     render_store();
 }
@@ -537,11 +538,11 @@ static void confirm_install_cb(void *user_data) {
     }
     esp_err_t err = cloud_store_install_async(s_pending_type, s_pending_id);
     if (err == ESP_ERR_NOT_FOUND) {
-        toast_show_duration("SD card required for Cloud Store", TOAST_WARN, 1800);
+        toast_show_duration(ghost_cz_ui("SD card required for Cloud Store"), TOAST_WARN, 1800);
         return;
     }
     if (err != ESP_OK) {
-        toast_show_duration("Install task failed to start", TOAST_ERROR, 1800);
+        toast_show_duration(ghost_cz_ui("Install task failed to start"), TOAST_ERROR, 1800);
         return;
     }
     if (!s_progress) s_progress = progress_bar_view_create_with_cancel("Downloading", progress_cancel_cb, NULL);
@@ -698,7 +699,7 @@ static void progress_cancel_cb(void *user_data) {
     (void)user_data;
     cloud_store_cancel_install();
     close_progress();
-    toast_show_duration("Download cancelled", TOAST_INFO, 1400);
+    toast_show_duration(ghost_cz_ui("Download cancelled"), TOAST_INFO, 1400);
 }
 
 static void status_timer_cb(lv_timer_t *timer) {
@@ -726,13 +727,13 @@ static void status_timer_cb(lv_timer_t *timer) {
     if (status.state != s_last_status_state) {
         if (status.state == CLOUD_STORE_STATE_DONE) {
             close_progress();
-            toast_show_duration(status.active_type == CLOUD_STORE_TYPE_APP ? "App installed"
-                             : status.active_type == CLOUD_STORE_TYPE_SCRIPT ? "Script installed"
-                             : "Asset pack downloaded", TOAST_SUCCESS, 2200);
+            toast_show_duration(status.active_type == CLOUD_STORE_TYPE_APP ? ghost_cz_ui("App installed")
+                             : status.active_type == CLOUD_STORE_TYPE_SCRIPT ? ghost_cz_ui("Script installed")
+                             : ghost_cz_ui("Asset pack downloaded"), TOAST_SUCCESS, 2200);
             render_store();
         } else if (status.state == CLOUD_STORE_STATE_FAILED) {
             close_progress();
-            toast_show_duration(status.error[0] ? status.error : "Cloud install failed", TOAST_ERROR, 2500);
+            toast_show_duration(status.error[0] ? status.error : ghost_cz_ui("Cloud install failed"), TOAST_ERROR, 2500);
             render_store();
         } else if (status.state == CLOUD_STORE_STATE_READY) {
             // READY here can also mean a cancelled install returned to the
@@ -825,7 +826,7 @@ static bool try_cancel_download(void) {
         cloud_store_cancel_install();
     }
     close_progress();
-    toast_show_duration("Download cancelled", TOAST_INFO, 1400);
+    toast_show_duration(ghost_cz_ui("Download cancelled"), TOAST_INFO, 1400);
     return true;
 }
 

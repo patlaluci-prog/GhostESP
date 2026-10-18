@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/menu_catalog.h"
 #include "managers/settings_manager.h"
 #include "core/esp_comm_manager.h"
@@ -311,7 +312,7 @@ void menu_catalog_launch(const char *id, View *return_view) {
         if (menu_catalog_get(i, &item) && strcmp(item.id, id) == 0) { found = true; break; }
     }
     if (!found || !menu_catalog_available(&item, esp_comm_manager_is_connected())) {
-        toast_show("Item unavailable", TOAST_WARN);
+        toast_show(ghost_cz_ui("Item unavailable"), TOAST_WARN);
         return;
     }
     if (strncmp(item.id, "plugin:", 7) == 0) {
@@ -319,7 +320,7 @@ void menu_catalog_launch(const char *id, View *return_view) {
         char missing[24] = {0};
         if (!app || !plugin_manager_required_features_supported(app, missing, sizeof(missing))) {
             char message[80];
-            snprintf(message, sizeof(message), "Requires %s", missing[0] ? missing : "unsupported hardware");
+            snprintf(message, sizeof(message), ghost_cz_ui("Requires %s"), missing[0] ? missing : ghost_cz_ui("unsupported hardware"));
             toast_show(message, TOAST_WARN);
             return;
         }

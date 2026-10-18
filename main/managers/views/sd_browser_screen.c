@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/sd_browser_screen.h"
 #include "gui/design_tokens.h"
 
@@ -174,7 +175,7 @@ static const char *sd_browser_basename(const char *path) {
 }
 
 static void sd_browser_title(char *out, size_t out_size) {
-    if (sd_browser_is_root()) snprintf(out, out_size, "SD Card");
+    if (sd_browser_is_root()) snprintf(out, out_size, ghost_cz_ui("SD Card"));
     else snprintf(out, out_size, "SD: %.80s", sd_browser_basename(current_dir));
 }
 
@@ -306,7 +307,7 @@ static void sd_browser_set_pending_op(sd_browser_op_t op) {
     pending_op = op;
     sd_browser_copy(pending_path, SD_BROWSER_PATH_MAX, selected_path);
     sd_browser_copy(pending_name, SD_BROWSER_NAME_MAX, selected_entry->name);
-    toast_show_duration(op == SD_BROWSER_OP_MOVE ? "Move ready: Paste Here" : "Copy ready: Paste Here", TOAST_SUCCESS, 1400);
+    toast_show_duration(op == SD_BROWSER_OP_MOVE ? ghost_cz_ui("Move ready: Paste Here") : ghost_cz_ui("Copy ready: Paste Here"), TOAST_SUCCESS, 1400);
     sd_browser_show_list();
 }
 
@@ -347,31 +348,31 @@ static bool sd_browser_copy_file_data(const char *src, const char *dst) {
 
 static bool sd_browser_paste_pending(void) {
     if (!sd_browser_has_pending_op()) {
-        toast_show_duration("Nothing to paste", TOAST_WARN, 1200);
+        toast_show_duration(ghost_cz_ui("Nothing to paste"), TOAST_WARN, 1200);
         return false;
     }
 
     char dst_path[SD_BROWSER_PATH_MAX];
     if (!sd_browser_join_path(dst_path, sizeof(dst_path), current_dir, pending_name)) {
-        toast_show_duration("Path too long", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Path too long"), TOAST_WARN, 1600);
         return false;
     }
     if (strcmp(pending_path, dst_path) == 0) {
-        toast_show_duration("Choose another folder", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Choose another folder"), TOAST_WARN, 1600);
         return false;
     }
 
     bool mounted_here = false;
     bool display_was_suspended = false;
     if (sd_browser_sd_begin(&mounted_here, &display_was_suspended) != ESP_OK) {
-        toast_show_duration("SD mount failed", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("SD mount failed"), TOAST_WARN, 1600);
         return false;
     }
 
     struct stat st;
     if (stat(dst_path, &st) == 0) {
         sd_browser_sd_end(mounted_here, display_was_suspended);
-        toast_show_duration("File already exists", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("File already exists"), TOAST_WARN, 1600);
         return false;
     }
 
@@ -384,31 +385,31 @@ static bool sd_browser_paste_pending(void) {
     sd_browser_sd_end(mounted_here, display_was_suspended);
 
     if (!ok) {
-        toast_show_duration(pending_op == SD_BROWSER_OP_MOVE ? "Move failed" : "Copy failed", TOAST_WARN, 1600);
+        toast_show_duration(pending_op == SD_BROWSER_OP_MOVE ? ghost_cz_ui("Move failed") : ghost_cz_ui("Copy failed"), TOAST_WARN, 1600);
         return false;
     }
 
-    toast_show_duration(pending_op == SD_BROWSER_OP_MOVE ? "File moved" : "File copied", TOAST_SUCCESS, 1200);
+    toast_show_duration(pending_op == SD_BROWSER_OP_MOVE ? ghost_cz_ui("File moved") : ghost_cz_ui("File copied"), TOAST_SUCCESS, 1200);
     sd_browser_clear_pending_op();
     return true;
 }
 
 static bool sd_browser_rename_selected(const char *new_name) {
     if (!sd_browser_valid_new_name(new_name)) {
-        toast_show_duration("Invalid file name", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Invalid file name"), TOAST_WARN, 1600);
         return false;
     }
 
     char new_path[SD_BROWSER_PATH_MAX];
     if (!sd_browser_join_path(new_path, sizeof(new_path), current_dir, new_name)) {
-        toast_show_duration("Name too long", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Name too long"), TOAST_WARN, 1600);
         return false;
     }
 
     bool mounted_here = false;
     bool display_was_suspended = false;
     if (sd_browser_sd_begin(&mounted_here, &display_was_suspended) != ESP_OK) {
-        toast_show_duration("SD mount failed", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("SD mount failed"), TOAST_WARN, 1600);
         return false;
     }
 
@@ -416,11 +417,11 @@ static bool sd_browser_rename_selected(const char *new_name) {
     sd_browser_sd_end(mounted_here, display_was_suspended);
 
     if (rc != 0) {
-        toast_show_duration("Rename failed", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Rename failed"), TOAST_WARN, 1600);
         return false;
     }
 
-    toast_show_duration("File renamed", TOAST_SUCCESS, 1200);
+    toast_show_duration(ghost_cz_ui("File renamed"), TOAST_SUCCESS, 1200);
     return true;
 }
 
@@ -437,7 +438,7 @@ static void sd_browser_rename_submit_cb(const char *text) {
 static void sd_browser_rename_cb(lv_event_t *e) {
     (void)e;
     keyboard_view_set_return_view(&sd_browser_view);
-    keyboard_view_set_placeholder("New file name");
+    keyboard_view_set_placeholder(ghost_cz_ui("New file name"));
     keyboard_view_set_initial_text(selected_entry->name);
     keyboard_view_set_start_caps(false);
     keyboard_view_set_submit_callback(sd_browser_rename_submit_cb);
@@ -450,7 +451,7 @@ static void sd_browser_confirm_delete_cb(lv_event_t *e) {
     bool mounted_here = false;
     bool display_was_suspended = false;
     if (sd_browser_sd_begin(&mounted_here, &display_was_suspended) != ESP_OK) {
-        toast_show_duration("SD mount failed", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("SD mount failed"), TOAST_WARN, 1600);
         return;
     }
 
@@ -458,11 +459,11 @@ static void sd_browser_confirm_delete_cb(lv_event_t *e) {
     sd_browser_sd_end(mounted_here, display_was_suspended);
 
     if (rc != 0) {
-        toast_show_duration("Delete failed", TOAST_WARN, 1600);
+        toast_show_duration(ghost_cz_ui("Delete failed"), TOAST_WARN, 1600);
         return;
     }
 
-    toast_show_duration("File deleted", TOAST_SUCCESS, 1200);
+    toast_show_duration(ghost_cz_ui("File deleted"), TOAST_SUCCESS, 1200);
     sd_browser_show_list();
 }
 
@@ -596,7 +597,7 @@ static void sd_browser_view_contents_cb(lv_event_t *e) {
 
     browser_mode = SD_BROWSER_MODE_CONTENT;
     char title[96];
-    snprintf(title, sizeof(title), "View: %.80s", selected_entry->name);
+    snprintf(title, sizeof(title), ghost_cz_ui("View: %.80s"), selected_entry->name);
     browser_detail = detail_view_create(browser_root, title);
     if (!browser_detail) return;
 
@@ -641,7 +642,7 @@ static void sd_browser_show_selected_file_detail(void) {
 
     browser_mode = SD_BROWSER_MODE_DETAIL;
     char title[96];
-    snprintf(title, sizeof(title), "File: %.80s", selected_entry->name);
+    snprintf(title, sizeof(title), ghost_cz_ui("File: %.80s"), selected_entry->name);
     browser_detail = detail_view_create(browser_root, title);
     if (!browser_detail) return;
 
@@ -653,7 +654,7 @@ static void sd_browser_show_selected_file_detail(void) {
     snprintf(folder, sizeof(folder), "%.80s", sd_browser_basename(current_dir));
     detail_view_add_info(browser_detail, "Name", selected_entry->name);
     detail_view_add_info(browser_detail, "Folder", folder);
-    detail_view_add_infof(browser_detail, "Size", "%ld bytes", selected_entry->size);
+    detail_view_add_infof(browser_detail, "Size", ghost_cz_ui("%ld bytes"), selected_entry->size);
     detail_view_add_action(browser_detail, LV_SYMBOL_EYE_OPEN " View Contents", sd_browser_view_contents_cb, NULL);
     detail_view_add_action(browser_detail, LV_SYMBOL_COPY " Copy", sd_browser_copy_cb, NULL);
     detail_view_add_action(browser_detail, LV_SYMBOL_CUT " Move", sd_browser_move_cb, NULL);
@@ -716,7 +717,7 @@ static void sd_browser_handle_row(int row_index) {
             break;
         case SD_ROW_CANCEL_OP:
             sd_browser_clear_pending_op();
-            toast_show_duration("File operation cancelled", TOAST_SUCCESS, 1200);
+            toast_show_duration(ghost_cz_ui("File operation cancelled"), TOAST_SUCCESS, 1200);
             sd_browser_show_list();
             break;
         case SD_ROW_BACK:
@@ -788,8 +789,8 @@ static void sd_browser_show_list(void) {
     if (page_offset > 0) sd_browser_add_row(LV_SYMBOL_LEFT " Prev", SD_ROW_PREV, -1);
     if (sd_browser_has_pending_op()) {
         char paste_label[SD_BROWSER_NAME_MAX + 28];
-        snprintf(paste_label, sizeof(paste_label), LV_SYMBOL_PASTE " Paste %s: %.127s",
-                 pending_op == SD_BROWSER_OP_MOVE ? "Move" : "Copy", pending_name);
+        snprintf(paste_label, sizeof(paste_label), ghost_cz_ui(LV_SYMBOL_PASTE " Paste %s: %.127s"),
+                 pending_op == SD_BROWSER_OP_MOVE ? ghost_cz_ui("Move") : ghost_cz_ui("Copy"), pending_name);
         sd_browser_add_row(paste_label, SD_ROW_PASTE, -1);
         sd_browser_add_row(LV_SYMBOL_CLOSE " Cancel File Op", SD_ROW_CANCEL_OP, -1);
     }

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "sdkconfig.h"
 
 #if defined(CONFIG_CROWPANEL_1P28_ROTARY) && defined(CONFIG_HAS_BADUSB)
@@ -120,7 +121,7 @@ static void audio_send_consumer(uint8_t control) {
 
 static void audio_set_idle_ui(void) {
     if (!s_arc || !s_value_label) return;
-    lv_label_set_text(s_value_label, "VOLUME");
+    lv_label_set_text(s_value_label, ghost_cz_ui("VOLUME"));
     lv_obj_set_style_text_color(s_value_label, s_text, 0);
     s_feedback_until = 0;
     s_last_volume_direction = 0;
@@ -137,15 +138,15 @@ static void audio_update_state_ui(void) {
     if (!s_state_label) return;
 
     if (!badusb_manager_is_active()) {
-        lv_label_set_text(s_state_label, s_started_usb ? "CONNECT USB" : "USB OFFLINE");
+        lv_label_set_text(s_state_label, s_started_usb ? ghost_cz_ui("CONNECT USB") : ghost_cz_ui("USB OFFLINE"));
         return;
     }
     if (!badusb_manager_is_consumer_mode()) {
-        lv_label_set_text(s_state_label, "USB BUSY");
+        lv_label_set_text(s_state_label, ghost_cz_ui("USB BUSY"));
     } else if (!badusb_manager_is_usb_mounted()) {
-        lv_label_set_text(s_state_label, "CONNECT USB");
+        lv_label_set_text(s_state_label, ghost_cz_ui("CONNECT USB"));
     } else {
-        lv_label_set_text(s_state_label, s_muted ? "UNMUTE" : "MUTE");
+        lv_label_set_text(s_state_label, s_muted ? ghost_cz_ui("UNMUTE") : ghost_cz_ui("MUTE"));
     }
 }
 
@@ -279,7 +280,7 @@ static void crowpanel_audio_create(void) {
     lv_obj_clear_flag(center_disc, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
     s_value_label = lv_label_create(s_root);
-    lv_label_set_text(s_value_label, "VOLUME");
+    lv_label_set_text(s_value_label, ghost_cz_ui("VOLUME"));
     lv_obj_set_style_text_font(s_value_label, accessibility_get_font_title(), 0);
     lv_obj_set_style_text_color(s_value_label, s_text, 0);
     lv_obj_align(s_value_label, LV_ALIGN_CENTER, 0, -10);
@@ -322,7 +323,7 @@ static void crowpanel_audio_create(void) {
         esp_err_t usb_result = badusb_manager_consumer_start();
         s_started_usb = (usb_result == ESP_OK);
         if (usb_result != ESP_OK) {
-            lv_label_set_text(s_state_label, "USB ERROR");
+            lv_label_set_text(s_state_label, ghost_cz_ui("USB ERROR"));
         }
     }
     audio_set_idle_ui();

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/terminal_screen.h"
 #include "core/serial_manager.h"
 #include "core/commandline.h"
@@ -40,12 +41,12 @@ static void keyboard_input_callback(const char *text);
 static const lv_font_t *terminal_font(void) {
     uint8_t size = settings_get_terminal_font_size(&G_Settings);
 #if defined(CONFIG_CROWPANEL_ADVANCE_43_LCD)
-    // CrowPanel Advance 4.3" (800x480): stock "Large" was only 14 px.
+    // CrowPanel Advance 4.3" (800x480): "Large" uses 28 px.
     // The existing terminal virtual canvas measures/wraps using this font.
     switch (size) {
         case 0: return &lv_font_montserrat_14;
         case 1: return &lv_font_montserrat_18;
-        case 2: return &lv_font_montserrat_24;
+        case 2: return &lv_font_montserrat_28;
         default: return &lv_font_montserrat_18;
     }
 #elif defined(CONFIG_CROWPANEL_ADVANCED_P4)
@@ -299,7 +300,7 @@ static void update_input_label() {
         if (input_len > 0) {
             lv_label_set_text(input_label, input_buffer);
         } else {
-            lv_label_set_text(input_label, "Zadej prikaz...");
+            lv_label_set_text(input_label, ghost_cz_ui("Zadej prikaz..."));
         }
     }
 }
@@ -799,7 +800,7 @@ static void stop_all_operations(void) {
 void text_box_click_cb(lv_event_t *e){
   keyboard_view_set_return_view(&terminal_view);
   keyboard_view_set_submit_callback(keyboard_input_callback);
-  keyboard_view_set_placeholder("Enter command...");
+  keyboard_view_set_placeholder(ghost_cz_ui("Enter command..."));
   keyboard_view_set_initial_text(input_buffer);
   keyboard_view_set_start_caps(false);
   display_manager_switch_view(&keyboard_view);
@@ -978,7 +979,7 @@ void terminal_view_create(void) {
         lv_obj_add_event_cb(input_label, text_box_click_cb, LV_EVENT_CLICKED, NULL);
         lv_obj_add_flag(input_label, LV_OBJ_FLAG_CLICKABLE);
         lv_label_set_long_mode(input_label, LV_LABEL_LONG_CLIP);
-        lv_label_set_text(input_label, "Zadej prikaz...");
+        lv_label_set_text(input_label, ghost_cz_ui("Zadej prikaz..."));
         // Center vertically by adjusting vertical padding
         const lv_font_t *current_font = lv_obj_get_style_text_font(input_label, 0);
         int font_height = lv_font_get_line_height(current_font);
@@ -1228,7 +1229,7 @@ void terminal_view_hardwareinput_callback(InputEvent *event) {
       } else if (input_label) {
         keyboard_view_set_return_view(&terminal_view);
         keyboard_view_set_submit_callback(keyboard_input_callback);
-        keyboard_view_set_placeholder("Enter command...");
+        keyboard_view_set_placeholder(ghost_cz_ui("Enter command..."));
         keyboard_view_set_start_caps(false);
         display_manager_switch_view(&keyboard_view);
       }
@@ -1253,7 +1254,7 @@ void terminal_view_hardwareinput_callback(InputEvent *event) {
       } else if (input_label) {
         keyboard_view_set_return_view(&terminal_view);
         keyboard_view_set_submit_callback(keyboard_input_callback);
-        keyboard_view_set_placeholder("Enter command...");
+        keyboard_view_set_placeholder(ghost_cz_ui("Enter command..."));
         keyboard_view_set_start_caps(false);
         display_manager_switch_view(&keyboard_view);
       }
@@ -1286,7 +1287,7 @@ void terminal_view_hardwareinput_callback(InputEvent *event) {
       } else if (input_label) {
         keyboard_view_set_return_view(&terminal_view);
         keyboard_view_set_submit_callback(keyboard_input_callback);
-        keyboard_view_set_placeholder("Enter command...");
+        keyboard_view_set_placeholder(ghost_cz_ui("Enter command..."));
         keyboard_view_set_start_caps(false);
         display_manager_switch_view(&keyboard_view);
 #else

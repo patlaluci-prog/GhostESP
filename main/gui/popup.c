@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/popup.h"
 #include "lvgl.h"
 #include "esp_log.h"
@@ -235,7 +236,7 @@ lv_obj_t *popup_add_styled_button(lv_obj_t *container, const char *label_text, i
     lv_obj_align(btn, align, x_ofs, y_ofs);
     if (cb) lv_obj_add_event_cb(btn, cb, LV_EVENT_CLICKED, user_data);
     lv_obj_t *lbl = lv_label_create(btn);
-    lv_label_set_text(lbl, label_text ? label_text : "");
+    lv_label_set_text(lbl, ghost_cz_ui(label_text ? label_text : ""));
     if (font) lv_obj_set_style_text_font(lbl, font, 0);
     lv_obj_set_style_text_color(lbl, popup_get_accent_color(), 0);
     lv_obj_center(lbl);
@@ -247,7 +248,7 @@ lv_obj_t *popup_create_title_label(lv_obj_t *container, const char *title, const
     lv_obj_t *lbl = lv_label_create(container);
     lv_obj_set_style_text_font(lbl, font ? font : gui_font_title(), 0);
     lv_obj_set_style_text_color(lbl, popup_get_text_color(), 0);
-    lv_label_set_text(lbl, title ? title : "");
+    lv_label_set_text(lbl, ghost_cz_ui(title ? title : ""));
     lv_obj_align(lbl, LV_ALIGN_TOP_MID, 0, y_ofs);
     return lbl;
 }
@@ -259,19 +260,19 @@ lv_obj_t *popup_create_body_label(lv_obj_t *container, const char *text, lv_coor
     if (wrap) lv_label_set_long_mode(lbl, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_font(lbl, font ? font : gui_font_body(), 0);
     lv_obj_set_style_text_color(lbl, popup_get_text_muted_color(), 0);
-    lv_label_set_text(lbl, text ? text : "");
+    lv_label_set_text(lbl, ghost_cz_ui(text ? text : ""));
     lv_obj_align(lbl, LV_ALIGN_TOP_MID, 0, y_ofs);
     return lbl;
 }
 
 void popup_set_title(popup_t *p, const char *title) {
 	if (!p || !p->title_label) return;
-	lv_label_set_text(p->title_label, title ? title : "");
+	lv_label_set_text(p->title_label, ghost_cz_ui(title ? title : ""));
 }
 
 void popup_set_body(popup_t *p, const char *body) {
 	if (!p || !p->body_label) return;
-	lv_label_set_text(p->body_label, body ? body : "");
+	lv_label_set_text(p->body_label, ghost_cz_ui(body ? body : ""));
 }
 
 lv_obj_t *popup_add_button(popup_t *p, const char *label, lv_event_cb_t event_cb, void *user_data) {
@@ -293,7 +294,7 @@ lv_obj_t *popup_add_button(popup_t *p, const char *label, lv_event_cb_t event_cb
 	lv_obj_add_event_cb(btn, event_cb, LV_EVENT_CLICKED, user_data);
 
 	lv_obj_t *lbl = lv_label_create(btn);
-	lv_label_set_text(lbl, label ? label : "");
+	lv_label_set_text(lbl, ghost_cz_ui(label ? label : ""));
 	lv_obj_set_style_text_color(lbl, popup_get_accent_color(), 0);
 	lv_obj_center(lbl);
 

@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/menu_editor_screen.h"
 #include "managers/settings_manager.h"
 #include "gui/menu_catalog.h"
@@ -54,15 +55,15 @@ static void editor_back(void) {
 
 static bool commit_placement(uint8_t placement) {
     if (strcmp(s_item.id, "apps") == 0 && placement != MENU_PLACE_MAIN) {
-        toast_show("Apps stays on the main menu", TOAST_INFO);
+        toast_show(ghost_cz_ui("Apps stays on the main menu"), TOAST_INFO);
         return false;
     }
     if (strcmp(s_item.id, "settings") == 0 && placement == MENU_PLACE_APPS) {
-        toast_show("Settings must stay on the main menu", TOAST_INFO);
+        toast_show(ghost_cz_ui("Settings must stay on the main menu"), TOAST_INFO);
         return false;
     }
     if (!menu_config_set(&G_Settings.menu_config, s_item.id, placement)) {
-        toast_show("Menu customization storage is full", TOAST_WARN);
+        toast_show(ghost_cz_ui("Menu customization storage is full"), TOAST_WARN);
         return false;
     }
     settings_persist_setting(SETTING_MENU_CONFIG);
@@ -72,12 +73,12 @@ static bool commit_placement(uint8_t placement) {
 static void move_item(int delta) {
     int count = 0;
     menu_catalog_item_t *items = collect_menu_items(&count);
-    if (!items) { toast_show("Not enough memory", TOAST_ERROR); return; }
+    if (!items) { toast_show(ghost_cz_ui("Not enough memory"), TOAST_ERROR); return; }
     int index = -1;
     for (int i = 0; i < count; ++i) if (strcmp(items[i].id, s_item.id) == 0) index = i;
     if (index < 0 || index + delta < 0 || index + delta >= count) {
         free(items);
-        toast_show(delta < 0 ? "Already first" : "Already last", TOAST_INFO);
+        toast_show(delta < 0 ? ghost_cz_ui("Already first") : ghost_cz_ui("Already last"), TOAST_INFO);
         return;
     }
     menu_catalog_item_t swap = items[index];
@@ -85,7 +86,7 @@ static void move_item(int delta) {
     items[index + delta] = swap;
     /* Stage the whole reorder so a full preference table cannot half-apply it. */
     menu_config_t *draft = malloc(sizeof(*draft));
-    if (!draft) { free(items); toast_show("Not enough memory", TOAST_ERROR); return; }
+    if (!draft) { free(items); toast_show(ghost_cz_ui("Not enough memory"), TOAST_ERROR); return; }
     *draft = G_Settings.menu_config;
     bool ok = count <= MENU_CONFIG_MAX;
     for (int i = 0; ok && i < count; ++i) {
@@ -98,7 +99,7 @@ static void move_item(int delta) {
     free(draft);
     free(items);
     if (ok) build_page(EDIT_LIST, index + delta);
-    else toast_show("Menu customization storage is full", TOAST_WARN);
+    else toast_show(ghost_cz_ui("Menu customization storage is full"), TOAST_WARN);
 }
 
 static void activate(int row) {
@@ -157,8 +158,8 @@ static void build_page(editor_page_t page, int selected) {
             snprintf(label, sizeof(label), "%s%s", s_items[i].name, placement == MENU_PLACE_BOTH ? " (both)" : "");
             add_row(label);
         }
-        if (!s_items) toast_show("Not enough memory to list items", TOAST_ERROR);
-        else if (page == EDIT_ADD && !s_count) toast_show("All items are already in this menu", TOAST_INFO);
+        if (!s_items) toast_show(ghost_cz_ui("Not enough memory to list items"), TOAST_ERROR);
+        else if (page == EDIT_ADD && !s_count) toast_show(ghost_cz_ui("All items are already in this menu"), TOAST_INFO);
         if (page == EDIT_LIST) {
             add_row("+ Add item");
             add_row("Reset both menus...");
@@ -238,7 +239,7 @@ static void editor_create(void) {
     uint8_t theme = settings_get_menu_theme(&G_Settings);
     menu_editor_view.root = gui_screen_create_root(NULL, NULL, lv_color_hex(theme_palette_get_background(theme)), LV_OPA_TRANSP);
     s_options = options_view_create(menu_editor_view.root, "Menu Items");
-    if (!s_options) { toast_show("Not enough memory", TOAST_ERROR); return; }
+    if (!s_options) { toast_show(ghost_cz_ui("Not enough memory"), TOAST_ERROR); return; }
     build_page(EDIT_LIST, 0);
 }
 

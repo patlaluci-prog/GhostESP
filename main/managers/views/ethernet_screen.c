@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 // ethernet_screen.c - Multi-state Ethernet dashboard view for GhostESP2
 // Supports both local mode (CONFIG_WITH_ETHERNET) and remote GhostLink peer mode.
 
@@ -570,7 +571,7 @@ static lv_obj_t *add_stat_row(lv_obj_t *parent, const char *key) {
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
     lv_obj_t *lbl_key = lv_label_create(row);
-    lv_label_set_text(lbl_key, key);
+    lv_label_set_text(lbl_key, ghost_cz_ui(key));
     lv_obj_set_style_text_color(lbl_key, lv_color_hex(muted_color), 0);
 
     lv_obj_t *lbl_val = lv_label_create(row);
@@ -614,7 +615,7 @@ static void refresh_dashboard_labels(void) {
     }
 #endif
     // Render from s_iface (populated locally above, or from stream 'I' records in remote mode)
-    lv_label_set_text(s_lbl_status, s_iface.connected ? "Connected" : "Disconnected");
+    lv_label_set_text(s_lbl_status, s_iface.connected ? ghost_cz_ui("Connected") : ghost_cz_ui("Disconnected"));
     lv_obj_set_style_text_color(s_lbl_status,
         s_iface.connected ? lv_color_hex(0x00CC66) : lv_color_hex(0xFF4444), 0);
     lv_label_set_text(s_lbl_ip,   s_iface.ip[0]   ? s_iface.ip   : "--");
@@ -829,7 +830,7 @@ static void scan_poll_cb(lv_timer_t *t) {
                     scan_status_set_progress(s_scan_status, s_scan.progress_current, s_scan.progress_total);
                 char sub[48];
                 if (s_scan.type == 1)
-                    snprintf(sub, sizeof(sub), "Found %d hosts...", s_scan.arp_count);
+                    snprintf(sub, sizeof(sub), ghost_cz_ui("Found %d hosts..."), s_scan.arp_count);
                 else if (s_scan.type == 2 || s_scan.type == 3)
                     snprintf(sub, sizeof(sub), "Port %d/%d, %d open",
                              s_scan.progress_current, s_scan.progress_total, s_scan.port_count);
@@ -882,14 +883,14 @@ static void scan_poll_cb(lv_timer_t *t) {
             scan_status_set_progress(s_scan_status, s_scan.progress_current, s_scan.progress_total);
             char sub[48];
             if (s_scan.type == 1)
-                snprintf(sub, sizeof(sub), "Found %d hosts...", s_scan.arp_count);
+                snprintf(sub, sizeof(sub), ghost_cz_ui("Found %d hosts..."), s_scan.arp_count);
             else if (s_scan.type == 2 || s_scan.type == 3)
                 snprintf(sub, sizeof(sub), "Port %d/%d, %d open",
                          s_scan.progress_current, s_scan.progress_total, s_scan.port_count);
             else if (s_scan.type == 0)
-                snprintf(sub, sizeof(sub), "Discovering services...");
+                snprintf(sub, sizeof(sub), ghost_cz_ui("Discovering services..."));
             else
-                snprintf(sub, sizeof(sub), "Sweeping...");
+                snprintf(sub, sizeof(sub), ghost_cz_ui("Sweeping..."));
             scan_status_set_subtext(s_scan_status, sub);
         }
         return;
@@ -951,7 +952,7 @@ static void poison_monitor_cb(lv_timer_t *t) {
     // Update live stats header
     if (s_poison_stats_lbl && lv_obj_is_valid(s_poison_stats_lbl)) {
         char stats[96];
-        snprintf(stats, sizeof(stats), "%d hosts  |  %d domains  |  %d cookies  |  %d creds",
+        snprintf(stats, sizeof(stats), ghost_cz_ui("%d hosts  |  %d domains  |  %d cookies  |  %d creds"),
                  s_poison.host_count, s_poison.domain_count, s_poison.cookie_count, s_poison.cred_count);
         lv_label_set_text(s_poison_stats_lbl, stats);
     }
@@ -1040,7 +1041,7 @@ static void build_scanning(void) {
 
 static void build_fp_list(void) {
     char title[40];
-    snprintf(title, sizeof(title), "Fingerprint (%d host%s)",
+    snprintf(title, sizeof(title), ghost_cz_ui("Fingerprint (%d host%s)"),
              s_fp.count, s_fp.count != 1 ? "s" : "");
     // options_view_create(s_root, title) positions the list at y=STATUS_BAR below s_root
     s_action_ov = options_view_create(s_root, title);
@@ -1072,7 +1073,7 @@ static void build_fp_list(void) {
 
 static void build_arp_list(void) {
     char title[40];
-    snprintf(title, sizeof(title), "ARP Scan (%d host%s)",
+    snprintf(title, sizeof(title), ghost_cz_ui("ARP Scan (%d host%s)"),
              s_scan.arp_count, s_scan.arp_count != 1 ? "s" : "");
     s_action_ov = options_view_create(s_root, title);
 
@@ -1219,12 +1220,12 @@ static void build_poison_monitor(void) {
     lv_obj_t *hdr = create_card(s_content, 100);
 
     lv_obj_t *hdr_lbl = lv_label_create(hdr);
-    lv_label_set_text(hdr_lbl, "ARP POISON ACTIVE");
+    lv_label_set_text(hdr_lbl, ghost_cz_ui("ARP POISON ACTIVE"));
     lv_obj_set_style_text_color(hdr_lbl, lv_color_hex(accent_color), 0);
 
     s_poison_stats_lbl = lv_label_create(hdr);
     char stats[96];
-    snprintf(stats, sizeof(stats), "%d hosts  |  %d domains  |  %d cookies  |  %d creds",
+    snprintf(stats, sizeof(stats), ghost_cz_ui("%d hosts  |  %d domains  |  %d cookies  |  %d creds"),
              s_poison.host_count, s_poison.domain_count, s_poison.cookie_count, s_poison.cred_count);
     lv_label_set_text(s_poison_stats_lbl, stats);
     lv_obj_set_style_text_color(s_poison_stats_lbl, lv_color_hex(muted_color), 0);
@@ -1245,7 +1246,7 @@ static void build_poison_monitor(void) {
 
     for (int i = 0; i < 4; i++) {
         lv_obj_t *lbl = lv_label_create(tab_bar);
-        lv_label_set_text(lbl, tab_names[i]);
+        lv_label_set_text(lbl, ghost_cz_ui(tab_names[i]));
         lv_obj_set_style_text_font(lbl, accessibility_get_font_small(), 0);
         // i==0 active, i==3 Stop (dimmed red inactive)
         uint32_t col = (i == 0) ? accent_color

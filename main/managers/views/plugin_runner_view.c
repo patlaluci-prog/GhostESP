@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/plugin_runner_view.h"
 
 #include "gui/lvgl_safe.h"
@@ -69,7 +70,7 @@ typedef struct {
 
 static void runner_set_title_now(const char *title) {
     if (s_title && lv_obj_is_valid(s_title)) {
-        lv_label_set_text(s_title, title ? title : "SD App");
+        lv_label_set_text(s_title, title ? title : ghost_cz_ui("SD App"));
     }
 }
 
@@ -627,7 +628,7 @@ static void plugin_runner_launch_pending(void) {
     if (s_pending_app_id[0] == '\0') {
         runner_set_title_now("No app selected");
         runner_print_now("Return to Apps and select an SD app.\n");
-        toast_show_duration("No SD app selected", TOAST_WARN, 1800);
+        toast_show_duration(ghost_cz_ui("No SD app selected"), TOAST_WARN, 1800);
         return;
     }
 
@@ -704,7 +705,7 @@ void plugin_runner_view_create(void) {
     lv_obj_set_flex_align(content, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
     s_title = lv_label_create(content);
-    lv_label_set_text(s_title, "Loading SD app...");
+    lv_label_set_text(s_title, ghost_cz_ui("Loading SD app..."));
     lv_obj_set_style_text_color(s_title, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(s_title, &lv_font_montserrat_16, 0);
 
@@ -721,11 +722,11 @@ void plugin_runner_view_create(void) {
     if (s_pending_app_id[0] == '\0') {
         runner_set_title_now("No app selected");
         runner_print_now("Return to Apps and select an SD app.\n");
-        toast_show_duration("No SD app selected", TOAST_WARN, 1800);
+        toast_show_duration(ghost_cz_ui("No SD app selected"), TOAST_WARN, 1800);
         return;
     }
 
-    toast_show_duration("Loading SD app...", TOAST_INFO, 1200);
+    toast_show_duration(ghost_cz_ui("Loading SD app..."), TOAST_INFO, 1200);
     s_launch_timer = lv_timer_create(plugin_runner_launch_cb, 50, NULL);
     if (s_launch_timer) {
         lv_timer_set_repeat_count(s_launch_timer, 1);

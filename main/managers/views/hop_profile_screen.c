@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 // hop_profile_screen.c
 // Simple screen to pick the channel hopping profile used by all WiFi
 // hopping features: Auto (feature default), All (country list), 1,6,11,
@@ -85,7 +86,7 @@ static void hop_profile_select_row(int row) {
         case HOP_ROW_CUSTOM: {
             keyboard_view_set_return_view(&hop_profile_view);
             keyboard_view_set_submit_callback(hop_profile_custom_submit);
-            keyboard_view_set_placeholder("Channels, e.g. 1,6,11");
+            keyboard_view_set_placeholder(ghost_cz_ui("Channels, e.g. 1,6,11"));
             keyboard_view_set_initial_text(hop_profile_get_custom_str());
             keyboard_view_set_start_caps(false);
             display_manager_switch_view(&keyboard_view);
@@ -270,9 +271,9 @@ static void hop_profile_create(void) {
     char custom_label[64];
     const char *custom = hop_profile_get_custom_str();
     if (custom && *custom) {
-        snprintf(custom_label, sizeof(custom_label), "Custom: %s", custom);
+        snprintf(custom_label, sizeof(custom_label), ghost_cz_ui("Custom: %s"), custom);
     } else {
-        snprintf(custom_label, sizeof(custom_label), "Custom...");
+        snprintf(custom_label, sizeof(custom_label), ghost_cz_ui("Custom..."));
     }
     s_custom_row = options_view_add_item(s_ov, custom_label,
                                          hop_profile_row_click,

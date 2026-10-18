@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/setup_wizard_screen.h"
 #include "managers/views/main_menu_screen.h"
 #include "managers/views/keyboard_screen.h"
@@ -369,7 +370,7 @@ static void start_btn_event_cb(lv_event_t *e) {
     } else {
         temp_ap_ssid[0] = '\0';
     }
-    keyboard_view_set_placeholder("Device AP SSID");
+    keyboard_view_set_placeholder(ghost_cz_ui("Device AP SSID"));
     keyboard_view_set_initial_text(temp_ap_ssid);
     keyboard_view_set_submit_callback(ap_ssid_callback);
     keyboard_view_set_return_view(&setup_wizard_view);
@@ -430,18 +431,18 @@ static void show_welcome_screen(void) {
     int btn_y = LV_VER_RES - (USABLE_H * 18 / 100);
     
     lv_obj_t *title = lv_label_create(root);
-    lv_label_set_text(title, "Welcome to GhostESP!");
+    lv_label_set_text(title, ghost_cz_ui("Welcome to GhostESP!"));
     lv_obj_set_style_text_color(title, wizard_color(theme_palette_get_text(wizard_theme())), 0);
     lv_obj_set_style_text_font(title, title_font, 0);
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, title_y);
 
     lv_obj_t *desc = lv_label_create(root);
     lv_label_set_text(desc, 
-        "In this setup you can:\n"
+        ghost_cz_ui("In this setup you can:\n"
         "Configure device AP credentials\n"
         "Save your home WiFi\n"
         "Set your region\n"
-        "Customize device appearance");
+        "Customize device appearance"));
     lv_obj_set_style_text_color(desc, wizard_color(theme_palette_get_text_muted(wizard_theme())), 0);
     lv_obj_set_style_text_font(desc, body_font, 0);
     lv_obj_set_style_text_align(desc, LV_TEXT_ALIGN_CENTER, 0);
@@ -465,7 +466,7 @@ static void show_welcome_screen(void) {
     lv_obj_align(welcome_start_btn, LV_ALIGN_TOP_MID, -btn_offset, btn_y);
     style_wizard_btn(welcome_start_btn, wizard_color(theme_palette_get_surface_alt(wizard_theme())), 5);
     lv_obj_t *start_label = lv_label_create(welcome_start_btn);
-    lv_label_set_text(start_label, "Start");
+    lv_label_set_text(start_label, ghost_cz_ui("Start"));
     lv_obj_center(start_label);
     lv_obj_add_event_cb(welcome_start_btn, start_btn_event_cb, LV_EVENT_CLICKED, NULL);
 
@@ -475,7 +476,7 @@ static void show_welcome_screen(void) {
     lv_obj_align(welcome_skip_btn, LV_ALIGN_TOP_MID, btn_offset, btn_y);
     style_wizard_btn(welcome_skip_btn, wizard_color(theme_palette_get_surface_alt(wizard_theme())), 5);
     lv_obj_t *skip_label = lv_label_create(welcome_skip_btn);
-    lv_label_set_text(skip_label, "Skip");
+    lv_label_set_text(skip_label, ghost_cz_ui("Skip"));
     lv_obj_center(skip_label);
     lv_obj_add_event_cb(welcome_skip_btn, skip_btn_event_cb, LV_EVENT_CLICKED, NULL);
     
@@ -590,7 +591,7 @@ static void wizard_row_styles_init(int w, int h, const lv_font_t *font) {
 
 static lv_obj_t *wizard_create_row(lv_obj_t *parent, const char *text) {
     lv_obj_t *row = lv_label_create(parent);
-    lv_label_set_text(row, text);
+    lv_label_set_text(row, ghost_cz_ui(text));
     lv_obj_add_style(row, &s_row_style, LV_PART_MAIN);
     lv_obj_add_style(row, &s_row_pressed_style, LV_PART_MAIN | LV_STATE_PRESSED);
     lv_obj_add_flag(row, LV_OBJ_FLAG_CLICKABLE);
@@ -723,7 +724,7 @@ static void show_option_screen(const char *title_text, const char * const *optio
     wizard_row_metrics(&rows, body_font);
 
     lv_obj_t *title = lv_label_create(root);
-    lv_label_set_text(title, title_text);
+    lv_label_set_text(title, ghost_cz_ui(title_text));
     s_option_title_label = title;
     lv_obj_set_style_text_color(title, wizard_color(theme_palette_get_text(wizard_theme())), 0);
     lv_obj_set_style_text_font(title, title_font, 0);
@@ -767,7 +768,7 @@ static void show_option_screen(const char *title_text, const char * const *optio
     lv_obj_t *hint = lv_label_create(root);
     s_option_hint_label = hint;
 #ifdef CONFIG_USE_TOUCHSCREEN
-    lv_label_set_text(hint, "Tap to select");
+    lv_label_set_text(hint, ghost_cz_ui("Tap to select"));
 #else
     lv_label_set_text(hint, LV_SYMBOL_UP LV_SYMBOL_DOWN " OK");
 #endif
@@ -802,7 +803,7 @@ static void show_country_screen(void) {
     wizard_row_metrics(&rows, body_font);
 
     lv_obj_t *title = lv_label_create(root);
-    lv_label_set_text(title, "Select Region");
+    lv_label_set_text(title, ghost_cz_ui("Select Region"));
     lv_obj_set_style_text_color(title, wizard_color(theme_palette_get_text(wizard_theme())), 0);
     lv_obj_set_style_text_font(title, title_font, 0);
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, rows.title_y);
@@ -836,7 +837,7 @@ static void show_country_screen(void) {
 
     lv_obj_t *hint = lv_label_create(root);
 #ifdef CONFIG_USE_TOUCHSCREEN
-    lv_label_set_text(hint, "Tap to select");
+    lv_label_set_text(hint, ghost_cz_ui("Tap to select"));
 #else
     lv_label_set_text(hint, LV_SYMBOL_UP LV_SYMBOL_DOWN " OK");
 #endif
@@ -859,7 +860,7 @@ static void show_complete_screen(void) {
     int btn_bottom = USABLE_H * 5 / 100;
     
     lv_obj_t *title = lv_label_create(root);
-    lv_label_set_text(title, LV_SYMBOL_OK " Done!");
+    lv_label_set_text(title, ghost_cz_ui(LV_SYMBOL_OK " Done!"));
     lv_obj_set_style_text_color(title, wizard_color(theme_palette_get_text(wizard_theme())), 0);
     lv_obj_set_style_text_font(title, title_font, 0);
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, title_y);
@@ -867,34 +868,34 @@ static void show_complete_screen(void) {
     char summary[320];
 #ifdef CONFIG_WITH_STATUS_DISPLAY
     snprintf(summary, sizeof(summary),
-             "Device AP: %s\n"
+             ghost_cz_ui("Device AP: %s\n"
              "Home WiFi: %s | Region: %s\n"
              "Theme: %s | Menu: %s\n"
              "Terminal: %s\n"
              "Animation: %s\n"
-             "Epilepsy Warn: %s",
-             temp_ap_ssid[0] ? temp_ap_ssid : "(default)",
-             temp_sta_ssid[0] ? temp_sta_ssid : "Skipped",
-             wifi_countries[selected_country_index].name,
-             theme_options[temp_theme],
-             menu_layout_options[temp_menu_layout],
-             terminal_color_options[temp_terminal_color],
-             idle_animation_options[temp_idle_animation],
-             temp_epilepsy_warning ? "On" : "Off");
+             "Epilepsy Warn: %s"),
+             temp_ap_ssid[0] ? temp_ap_ssid : ghost_cz_ui("(default)"),
+             temp_sta_ssid[0] ? temp_sta_ssid : ghost_cz_ui("Skipped"),
+             ghost_cz_ui(wifi_countries[selected_country_index].name),
+             ghost_cz_ui(theme_options[temp_theme]),
+             ghost_cz_ui(menu_layout_options[temp_menu_layout]),
+             ghost_cz_ui(terminal_color_options[temp_terminal_color]),
+             ghost_cz_ui(idle_animation_options[temp_idle_animation]),
+             temp_epilepsy_warning ? ghost_cz_ui("On") : ghost_cz_ui("Off"));
 #else
     snprintf(summary, sizeof(summary),
-             "Device AP: %s\n"
+             ghost_cz_ui("Device AP: %s\n"
              "Home WiFi: %s | Region: %s\n"
              "Theme: %s | Menu: %s\n"
              "Terminal: %s\n"
-             "Epilepsy Warn: %s",
-             temp_ap_ssid[0] ? temp_ap_ssid : "(default)",
-             temp_sta_ssid[0] ? temp_sta_ssid : "Skipped",
-             wifi_countries[selected_country_index].name,
-             theme_options[temp_theme],
-             menu_layout_options[temp_menu_layout],
-             terminal_color_options[temp_terminal_color],
-             temp_epilepsy_warning ? "On" : "Off");
+             "Epilepsy Warn: %s"),
+             temp_ap_ssid[0] ? temp_ap_ssid : ghost_cz_ui("(default)"),
+             temp_sta_ssid[0] ? temp_sta_ssid : ghost_cz_ui("Skipped"),
+             ghost_cz_ui(wifi_countries[selected_country_index].name),
+             ghost_cz_ui(theme_options[temp_theme]),
+             ghost_cz_ui(menu_layout_options[temp_menu_layout]),
+             ghost_cz_ui(terminal_color_options[temp_terminal_color]),
+             temp_epilepsy_warning ? ghost_cz_ui("On") : ghost_cz_ui("Off"));
 #endif
 
     lv_obj_t *info = lv_label_create(root);
@@ -919,7 +920,7 @@ static void show_complete_screen(void) {
     lv_obj_align(finish_btn, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + btn_bottom));
     style_wizard_btn(finish_btn, wizard_color(theme_palette_get_accent(wizard_theme())), 5);
     lv_obj_t *finish_label = lv_label_create(finish_btn);
-    lv_label_set_text(finish_label, "Finish");
+    lv_label_set_text(finish_label, ghost_cz_ui("Finish"));
     lv_obj_set_style_text_color(finish_label, wizard_color(theme_palette_get_on_accent(wizard_theme())), 0);
     lv_obj_center(finish_label);
     lv_obj_add_event_cb(finish_btn, finish_btn_event_cb, LV_EVENT_CLICKED, NULL);
@@ -1011,7 +1012,7 @@ static void setup_wizard_create(void) {
                     temp_ap_ssid[sizeof(temp_ap_ssid) - 1] = '\0';
                 }
             }
-            keyboard_view_set_placeholder("Device AP SSID");
+            keyboard_view_set_placeholder(ghost_cz_ui("Device AP SSID"));
             keyboard_view_set_initial_text(temp_ap_ssid);
             keyboard_view_set_submit_callback(ap_ssid_callback);
             keyboard_view_set_return_view(&setup_wizard_view);
@@ -1027,7 +1028,7 @@ static void setup_wizard_create(void) {
                 }
             }
             keyboard_view_set_start_caps(false);
-            keyboard_view_set_placeholder("Device AP Password");
+            keyboard_view_set_placeholder(ghost_cz_ui("Device AP Password"));
             keyboard_view_set_initial_text(temp_ap_password);
             keyboard_view_set_submit_callback(ap_password_callback);
             keyboard_view_set_return_view(&setup_wizard_view);
@@ -1042,7 +1043,7 @@ static void setup_wizard_create(void) {
                     temp_sta_ssid[sizeof(temp_sta_ssid) - 1] = '\0';
                 }
             }
-            keyboard_view_set_placeholder("Home WiFi SSID (blank skips)");
+            keyboard_view_set_placeholder(ghost_cz_ui("Home WiFi SSID (blank skips)"));
             keyboard_view_set_initial_text(temp_sta_ssid);
             keyboard_view_set_submit_callback(sta_ssid_callback);
             keyboard_view_set_return_view(&setup_wizard_view);
@@ -1058,7 +1059,7 @@ static void setup_wizard_create(void) {
                 }
             }
             keyboard_view_set_start_caps(false);
-            keyboard_view_set_placeholder("Home WiFi Password");
+            keyboard_view_set_placeholder(ghost_cz_ui("Home WiFi Password"));
             keyboard_view_set_initial_text(temp_sta_password);
             keyboard_view_set_submit_callback(sta_password_callback);
             keyboard_view_set_return_view(&setup_wizard_view);

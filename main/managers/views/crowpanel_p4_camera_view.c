@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "sdkconfig.h"
 
 #if defined(CONFIG_CROWPANEL_P4_CAMERA)
@@ -386,7 +387,7 @@ static void camera_refresh_timer(lv_timer_t *timer)
         s_snapshot_busy = false;
         lv_obj_clear_state(s_shutter, LV_STATE_DISABLED);
         bool saved = s_snapshot_result == ESP_OK;
-        toast_show(saved ? "PNG saved" : "Photo save failed", saved ? TOAST_SUCCESS : TOAST_ERROR);
+        toast_show(saved ? ghost_cz_ui("PNG saved") : ghost_cz_ui("Photo save failed"), saved ? TOAST_SUCCESS : TOAST_ERROR);
         camera_set_status(saved ? "PNG saved to ghostesp/captures" : "Photo save failed - check SD card",
                           lv_color_hex(saved ? 0x80D080 : 0xFF8080));
     }
@@ -645,7 +646,7 @@ static bool camera_setting_write(camera_setting_t *setting, int64_t value)
 static void camera_setting_update_label(camera_setting_t *setting)
 {
     if (setting->available) lv_label_set_text_fmt(setting->label, "%ld", (long)setting->value);
-    else lv_label_set_text(setting->label, "Unavailable");
+    else lv_label_set_text(setting->label, ghost_cz_ui("Unavailable"));
     lv_obj_clear_state(setting->minus, LV_STATE_DISABLED);
     lv_obj_clear_state(setting->plus, LV_STATE_DISABLED);
     if (!setting->available || setting->value <= setting->range.minimum)
@@ -683,7 +684,7 @@ static void camera_setting_change_event(lv_event_t *event)
     int64_t delta = (steps > 0 ? steps : 1) * setting->range.step;
     if (lv_event_get_target(event) == setting->minus) delta = -delta;
     if (!camera_setting_write(setting, (int64_t)setting->value + delta))
-        toast_show("Camera setting failed", TOAST_ERROR);
+        toast_show(ghost_cz_ui("Camera setting failed"), TOAST_ERROR);
     camera_setting_update_label(setting);
 }
 
@@ -696,7 +697,7 @@ static void camera_settings_reset_event(lv_event_t *event)
         if (setting->available && !camera_setting_write(setting, setting->range.default_value)) ok = false;
         camera_setting_update_label(setting);
     }
-    toast_show(ok ? "Camera defaults restored" : "Some settings could not be reset",
+    toast_show(ok ? ghost_cz_ui("Camera defaults restored") : ghost_cz_ui("Some settings could not be reset"),
                ok ? TOAST_SUCCESS : TOAST_ERROR);
 }
 
@@ -720,12 +721,12 @@ static void camera_settings_event(lv_event_t *event)
     (void)event;
     if (s_settings_panel) return;
     if (!s_stream_running) {
-        toast_show("Start the camera before changing settings", TOAST_INFO);
+        toast_show(ghost_cz_ui("Start the camera before changing settings"), TOAST_INFO);
         return;
     }
     s_settings_fd = open(ESP_VIDEO_ISP1_DEVICE_NAME, O_RDWR);
     if (s_settings_fd < 0) {
-        toast_show("Camera settings unavailable", TOAST_ERROR);
+        toast_show(ghost_cz_ui("Camera settings unavailable"), TOAST_ERROR);
         return;
     }
     s_touch_button = NULL;
@@ -737,10 +738,10 @@ static void camera_settings_event(lv_event_t *event)
     lv_obj_set_style_bg_opa(s_settings_panel, LV_OPA_COVER, 0);
     lv_obj_set_style_text_color(s_settings_panel, lv_color_white(), 0);
     lv_obj_t *title = lv_label_create(s_settings_panel);
-    lv_label_set_text(title, "Camera settings");
+    lv_label_set_text(title, ghost_cz_ui("Camera settings"));
     lv_obj_set_pos(title, 40, 26);
     lv_obj_t *hint = lv_label_create(s_settings_panel);
-    lv_label_set_text(hint, "Applies to preview and photos. Settings last for this camera session.");
+    lv_label_set_text(hint, ghost_cz_ui("Applies to preview and photos. Settings last for this camera session."));
     lv_obj_set_pos(hint, 40, 66);
     lv_obj_set_style_text_font(hint, accessibility_get_font_small(), 0);
     bool any_available = false;
@@ -784,7 +785,7 @@ static void camera_back_event(lv_event_t *event)
         return;
     }
     if (s_snapshot_busy) {
-        toast_show("Finishing photo save", TOAST_INFO);
+        toast_show(ghost_cz_ui("Finishing photo save"), TOAST_INFO);
         return;
     }
     display_manager_go_back();
@@ -794,7 +795,7 @@ static void camera_gallery_event(lv_event_t *event)
 {
     (void)event;
     if (s_snapshot_busy) {
-        toast_show("Finishing photo save", TOAST_INFO);
+        toast_show(ghost_cz_ui("Finishing photo save"), TOAST_INFO);
         return;
     }
     display_manager_switch_view(&sd_browser_view);
@@ -866,7 +867,7 @@ static void camera_create(void)
     lv_obj_add_event_cb(back, camera_back_event, LV_EVENT_CLICKED, NULL);
 
     s_status = lv_label_create(s_root);
-    lv_label_set_text(s_status, "Starting camera");
+    lv_label_set_text(s_status, ghost_cz_ui("Starting camera"));
     lv_obj_set_style_text_font(s_status, accessibility_get_font_small(), 0);
     lv_obj_set_style_text_color(s_status, lv_color_white(), 0);
     lv_obj_align(s_status, LV_ALIGN_TOP_MID, 0, 21);

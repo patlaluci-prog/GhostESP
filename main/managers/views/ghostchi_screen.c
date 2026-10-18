@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/ghostchi_screen.h"
 #include "core/ghostchi_identity.h"
 #include "core/utils.h"
@@ -733,7 +734,7 @@ static void ghostchi_draw_event(lv_event_t *e) {
 
 static void set_stat(int row, const char *key, const char *value) {
     if (row < 0 || row >= 6) return;
-    lv_label_set_text(s_stats[row][0], key ? key : "");
+    lv_label_set_text(s_stats[row][0], ghost_cz_ui(key ? key : ""));
     lv_label_set_text(s_stats[row][1], value ? value : "");
 }
 
@@ -885,7 +886,7 @@ static void update_ui(lv_timer_t *timer) {
     if (show_bubble) {
         lv_obj_clear_flag(s_bubble_box, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(s_bubble_label, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text(s_bubble_label, bubble_text(&snap, &act));
+        lv_label_set_text(s_bubble_label, ghost_cz_ui(bubble_text(&snap, &act)));
         lv_obj_set_width(s_bubble_label, bubble_w - (bubble_pad_x * 2) - layout->text_width_trim);
         lv_obj_set_style_text_align(s_bubble_label, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_update_layout(s_bubble_label);
@@ -929,7 +930,7 @@ static void update_ui(lv_timer_t *timer) {
         lv_obj_add_flag(s_bubble_label, LV_OBJ_FLAG_HIDDEN);
     }
 
-    lv_label_set_text(s_state_label, state_label_text(snap.state));
+    lv_label_set_text(s_state_label, ghost_cz_ui(state_label_text(snap.state)));
     lv_obj_set_style_text_color(s_state_label,
                                 lv_color_hex(snap.state == GHOSTCHI_STATE_BLOCKED ? 0xDD6655 : color_text),
                                 0);
@@ -967,25 +968,25 @@ static void update_ui(lv_timer_t *timer) {
     if (snap.running) {
         if (has_touch_controls()) {
             lv_label_set_text(s_hint_label,
-                              "Tap ghost or press Select to stop");
+                              ghost_cz_ui("Tap ghost or press Select to stop"));
         } else {
             lv_label_set_text(s_hint_label,
-                              "Select: Stop  Left/Right: Page\n"
-                              "Back: Stop");
+                              ghost_cz_ui("Select: Stop  Left/Right: Page\n"
+                              "Back: Stop"));
         }
     } else if (snap.sd_ready) {
         if (has_touch_controls()) {
             lv_label_set_text(s_hint_label,
-                              "Tap ghost or press Select to start");
+                              ghost_cz_ui("Tap ghost or press Select to start"));
         } else {
             lv_label_set_text(s_hint_label,
-                              "Select: Start  Left/Right: Page\n"
-                              "Back: Exit");
+                              ghost_cz_ui("Select: Start  Left/Right: Page\n"
+                              "Back: Exit"));
         }
     } else {
         if (has_touch_controls()) {
             lv_label_set_text(s_hint_label,
-                              "Mount SD to arm Ghostchi");
+                              ghost_cz_ui("Mount SD to arm Ghostchi"));
         } else {
             lv_label_set_text(s_hint_label,
                               "Mount SD to arm Ghostchi\n"
@@ -1019,14 +1020,14 @@ static void update_ui(lv_timer_t *timer) {
         lv_obj_set_size(s_touch_btn_left, btn_w, btn_h);
         lv_obj_set_size(s_touch_btn_mid, btn_w, btn_h);
         lv_obj_set_size(s_touch_btn_right, btn_w, btn_h);
-        lv_label_set_text(s_touch_btn_left_label, snap.running ? "STOP" : "EXIT");
+        lv_label_set_text(s_touch_btn_left_label, snap.running ? ghost_cz_ui("STOP") : ghost_cz_ui("EXIT"));
         if (s_page == 0) {
-            lv_label_set_text(s_touch_btn_mid_label, snap.running ? "STOP" : "START");
+            lv_label_set_text(s_touch_btn_mid_label, snap.running ? ghost_cz_ui("STOP") : ghost_cz_ui("START"));
         } else {
             lv_label_set_text(s_touch_btn_mid_label,
-                              ghostchi_manager_is_aggressive() ? "AGGRESSIVE" : "PASSIVE");
+                              ghostchi_manager_is_aggressive() ? ghost_cz_ui("AGGRESSIVE") : ghost_cz_ui("PASSIVE"));
         }
-        lv_label_set_text(s_touch_btn_right_label, "PAGE");
+        lv_label_set_text(s_touch_btn_right_label, ghost_cz_ui("PAGE"));
         lv_obj_center(s_touch_btn_left_label);
         lv_obj_center(s_touch_btn_mid_label);
         lv_obj_center(s_touch_btn_right_label);
@@ -1043,14 +1044,14 @@ static void update_ui(lv_timer_t *timer) {
             lv_obj_set_pos(s_encoder_btns[i], enc_btn_x + i * (enc_btn_w + enc_btn_gap), enc_btn_y);
             lv_obj_set_size(s_encoder_btns[i], enc_btn_w, enc_btn_h);
         }
-        lv_label_set_text(s_encoder_btn_labels[0], snap.running ? "STOP" : "EXIT");
+        lv_label_set_text(s_encoder_btn_labels[0], snap.running ? ghost_cz_ui("STOP") : ghost_cz_ui("EXIT"));
         if (s_page == 0) {
-            lv_label_set_text(s_encoder_btn_labels[1], snap.running ? "STOP" : "START");
+            lv_label_set_text(s_encoder_btn_labels[1], snap.running ? ghost_cz_ui("STOP") : ghost_cz_ui("START"));
         } else {
             lv_label_set_text(s_encoder_btn_labels[1],
-                              ghostchi_manager_is_aggressive() ? "AGGRESSIVE" : "PASSIVE");
+                              ghostchi_manager_is_aggressive() ? ghost_cz_ui("AGGRESSIVE") : ghost_cz_ui("PASSIVE"));
         }
-        lv_label_set_text(s_encoder_btn_labels[2], "PAGE");
+        lv_label_set_text(s_encoder_btn_labels[2], ghost_cz_ui("PAGE"));
         lv_obj_center(s_encoder_btn_labels[0]);
         lv_obj_center(s_encoder_btn_labels[1]);
         lv_obj_center(s_encoder_btn_labels[2]);
@@ -1074,11 +1075,11 @@ static void update_ui(lv_timer_t *timer) {
         const char *mode_str = ghostchi_manager_is_aggressive() ? "Aggr" : "Passive";
         char mode_buf[24];
         if (snap.running) {
-            snprintf(mode_buf, sizeof(mode_buf), "Active %s", mode_str);
+            snprintf(mode_buf, sizeof(mode_buf), ghost_cz_ui("Active %s"), mode_str);
         } else if (!snap.sd_ready) {
-            snprintf(mode_buf, sizeof(mode_buf), "Blocked");
+            snprintf(mode_buf, sizeof(mode_buf), ghost_cz_ui("Blocked"));
         } else {
-            snprintf(mode_buf, sizeof(mode_buf), "Standby %s", mode_str);
+            snprintf(mode_buf, sizeof(mode_buf), ghost_cz_ui("Standby %s"), mode_str);
         }
         set_stat(0, "MODE", mode_buf);
         snprintf(buf, sizeof(buf), "%u", (unsigned)snap.current_channel);

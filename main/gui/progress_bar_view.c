@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/progress_bar_view.h"
 
 #include "gui/accessibility_fonts.h"
@@ -108,7 +109,7 @@ progress_bar_view_t *progress_bar_view_create_with_cancel(const char *title, voi
     lv_obj_set_style_text_color(view->title, text, 0);
     lv_obj_set_style_text_align(view->title, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_long_mode(view->title, LV_LABEL_LONG_WRAP);
-    lv_label_set_text(view->title, title ? title : "Working");
+    lv_label_set_text(view->title, title ? title : ghost_cz_ui("Working"));
 
     view->track = lv_obj_create(view->card);
     // Sized to 100% of the card's own content width (after its left/right
@@ -177,7 +178,7 @@ progress_bar_view_t *progress_bar_view_create_with_cancel(const char *title, voi
 
 void progress_bar_view_update(progress_bar_view_t *view, const char *title) {
     if (!view || !view->active || !view->title || !title) return;
-    lv_label_set_text(view->title, title);
+    lv_label_set_text(view->title, ghost_cz_ui(title));
 }
 
 void progress_bar_view_set_subtext(progress_bar_view_t *view, const char *subtext) {
@@ -187,7 +188,7 @@ void progress_bar_view_set_subtext(progress_bar_view_t *view, const char *subtex
         lv_obj_add_flag(view->subtext, LV_OBJ_FLAG_HIDDEN);
         return;
     }
-    lv_label_set_text(view->subtext, subtext);
+    lv_label_set_text(view->subtext, ghost_cz_ui(subtext));
     lv_obj_clear_flag(view->subtext, LV_OBJ_FLAG_HIDDEN);
 }
 
@@ -257,7 +258,7 @@ void progress_bar_view_set_progress(progress_bar_view_t *view, size_t current, s
         progress_bar_start_indeterminate(view);
         if (view->percent) {
             char buf[32];
-            snprintf(buf, sizeof(buf), "%u KB downloaded", (unsigned)(current / 1024));
+            snprintf(buf, sizeof(buf), ghost_cz_ui("%u KB downloaded"), (unsigned)(current / 1024));
             lv_obj_clear_flag(view->percent, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text(view->percent, buf);
         }

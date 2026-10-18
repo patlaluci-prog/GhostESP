@@ -782,13 +782,13 @@ static void toggle_favorite_for_selected(void) {
     else ok = settings_add_favorite(&G_Settings, name);
     if (ok) {
         settings_persist_setting(SETTING_FAVORITES);
-        toast_show(was_fav ? "Removed from Favorites" : "Added to Favorites", TOAST_SUCCESS);
+        toast_show(was_fav ? ghost_cz_ui("Removed from Favorites") : ghost_cz_ui("Added to Favorites"), TOAST_SUCCESS);
         // Haptic feedback if available
         #ifdef CONFIG_HAS_HAPTIC
         // haptic_manager_trigger(HAPTIC_TAP);
         #endif
     } else {
-        toast_show(settings_get_favorites_count(&G_Settings) >= FAVORITES_MAX ? "Favorites full" : "Failed", TOAST_WARN);
+        toast_show(settings_get_favorites_count(&G_Settings) >= FAVORITES_MAX ? ghost_cz_ui("Favorites full") : ghost_cz_ui("Failed"), TOAST_WARN);
     }
 }
 
@@ -1513,7 +1513,7 @@ void main_menu_create(void) {
     free(menu_items);
     menu_items = menu_catalog_collect(MENU_PLACE_MAIN, false, &total_menu_items);
     if (!menu_items) {
-        toast_show("Not enough memory for menu", TOAST_ERROR);
+        toast_show(ghost_cz_ui("Not enough memory for menu"), TOAST_ERROR);
         return;
     }
     refresh_menu_surface_colors();

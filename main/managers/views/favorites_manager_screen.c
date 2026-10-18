@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/file_browser.h"
 #include "managers/sd_card_manager.h"
 #include "managers/views/favorites_manager_screen.h"
@@ -367,7 +368,7 @@ static void build_item_picker(int category) {
     s_row_count = 0;
 
     char title[40];
-    snprintf(title, sizeof(title), "Add %s", k_fav_categories[category]);
+    snprintf(title, sizeof(title), ghost_cz_ui("Add %s"), k_fav_categories[category]);
     options_view_set_title(s_ov, title);
 
     int avail = 0;
@@ -425,7 +426,7 @@ static void remove_favorite(int slot) {
     settings_remove_favorite(&G_Settings, copy);
     settings_persist_setting(SETTING_FAVORITES);
     char msg[64];
-    snprintf(msg, sizeof(msg), "Removed %s", fav_display_name(copy));
+    snprintf(msg, sizeof(msg), ghost_cz_ui("Removed %s"), fav_display_name(copy));
     toast_show(msg, TOAST_INFO);
     build_main_list(slot); // keep the cursor near where the user was
 }
@@ -434,7 +435,7 @@ static void clear_all_favorites(void) {
     G_Settings.favorites_count = 0;
     memset(G_Settings.favorites, 0, sizeof(G_Settings.favorites));
     settings_persist_setting(SETTING_FAVORITES);
-    toast_show("Favorites cleared", TOAST_INFO);
+    toast_show(ghost_cz_ui("Favorites cleared"), TOAST_INFO);
     build_main_list(0);
 }
 
@@ -442,11 +443,11 @@ static void add_favorite(const char *fav) {
     if (settings_add_favorite(&G_Settings, fav)) {
         settings_persist_setting(SETTING_FAVORITES);
         char msg[64];
-        snprintf(msg, sizeof(msg), "Added %s", fav_display_name(fav));
+        snprintf(msg, sizeof(msg), ghost_cz_ui("Added %s"), fav_display_name(fav));
         toast_show(msg, TOAST_SUCCESS);
     } else {
         char msg[48];
-        snprintf(msg, sizeof(msg), "Favorites full (%d max)", FAVORITES_MAX);
+        snprintf(msg, sizeof(msg), ghost_cz_ui("Favorites full (%d max)"), FAVORITES_MAX);
         toast_show(msg, TOAST_WARN);
     }
     build_main_list(settings_get_favorites_count(&G_Settings));
@@ -477,7 +478,7 @@ static void pick_item(int row_index) {
         }
         char encoded[FAVORITE_NAME_LEN];
         if (!favorite_browser_encode(path, encoded, sizeof(encoded))) {
-            toast_show("Path too long for a favorite", TOAST_WARN);
+            toast_show(ghost_cz_ui("Path too long for a favorite"), TOAST_WARN);
             return;
         }
         add_favorite(encoded);

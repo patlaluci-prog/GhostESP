@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/file_browser.h"
 #include "sdkconfig.h"
 
@@ -77,12 +78,12 @@ static const char *kb_layout_names[] = {"US", "DE", "FR", "UK", "ES"};
 static void populate_settings_labels(void) {
     snprintf(settings_labels[0], 80, "VID: 0x%04X", settings_get_badusb_vid(&G_Settings));
     snprintf(settings_labels[1], 80, "PID: 0x%04X", settings_get_badusb_pid(&G_Settings));
-    snprintf(settings_labels[2], 80, "Manufacturer: %s", settings_get_badusb_manufacturer(&G_Settings));
-    snprintf(settings_labels[3], 80, "Product: %s", settings_get_badusb_product(&G_Settings));
+    snprintf(settings_labels[2], 80, ghost_cz_ui("Manufacturer: %s"), settings_get_badusb_manufacturer(&G_Settings));
+    snprintf(settings_labels[3], 80, ghost_cz_ui("Product: %s"), settings_get_badusb_product(&G_Settings));
     uint8_t layout = settings_get_badusb_kb_layout(&G_Settings);
     if (layout >= KB_LAYOUT_COUNT) layout = KB_LAYOUT_US;
-    snprintf(settings_labels[4], 80, "Layout: %s", kb_layout_names[layout]);
-    snprintf(settings_labels[5], 80, "Randomize: %s", settings_get_badusb_randomize(&G_Settings) ? "On" : "Off");
+    snprintf(settings_labels[4], 80, ghost_cz_ui("Layout: %s"), kb_layout_names[layout]);
+    snprintf(settings_labels[5], 80, ghost_cz_ui("Randomize: %s"), settings_get_badusb_randomize(&G_Settings) ? ghost_cz_ui("On") : ghost_cz_ui("Off"));
     strcpy(settings_labels[6], "Reset To Defaults");
     strcpy(settings_labels[7], "< Back");
     for (int i = 0; i < BADUSB_SETTINGS_COUNT; i++) {
@@ -400,7 +401,7 @@ static void show_running_popup_ex(const char *script_name, bool waiting_for_usb)
     if (waiting_for_usb) {
         snprintf(body, sizeof(body), "Plug in to execute\n%s", script_name);
     } else {
-        snprintf(body, sizeof(body), "Script: %s", script_name);
+        snprintf(body, sizeof(body), ghost_cz_ui("Script: %s"), script_name);
     }
     
     // smaller screens need tighter spacing to avoid overlap with cancel button
@@ -432,11 +433,11 @@ static void show_running_popup(const char *script_name) {
 static void badusb_popup_set_running(void) {
     if (!badusb_running_popup || !lv_obj_is_valid(badusb_running_popup)) return;
     if (badusb_popup_title_lbl && lv_obj_is_valid(badusb_popup_title_lbl)) {
-        lv_label_set_text(badusb_popup_title_lbl, "BadUSB Running");
+        lv_label_set_text(badusb_popup_title_lbl, ghost_cz_ui("BadUSB Running"));
     }
     if (badusb_popup_body_lbl && lv_obj_is_valid(badusb_popup_body_lbl)) {
         char body[80];
-        snprintf(body, sizeof(body), "Script: %s", vsense_pending_script);
+        snprintf(body, sizeof(body), ghost_cz_ui("Script: %s"), vsense_pending_script);
         lv_label_set_text(badusb_popup_body_lbl, body);
     }
 }
@@ -485,10 +486,10 @@ void badusb_view_update_status(const char *status) {
             show_running_popup_ex("Mouse Jiggler", false);
         }
         if (badusb_popup_title_lbl && lv_obj_is_valid(badusb_popup_title_lbl)) {
-            lv_label_set_text(badusb_popup_title_lbl, "Mouse Jiggler");
+            lv_label_set_text(badusb_popup_title_lbl, ghost_cz_ui("Mouse Jiggler"));
         }
         if (badusb_popup_body_lbl && lv_obj_is_valid(badusb_popup_body_lbl)) {
-            lv_label_set_text(badusb_popup_body_lbl, "Jiggling mouse...");
+            lv_label_set_text(badusb_popup_body_lbl, ghost_cz_ui("Jiggling mouse..."));
         }
     } else if (strcmp(status, "keyboard") == 0) {
         // Keyboard mode uses keyboard_view directly; do not cover it with a popup.
@@ -680,7 +681,7 @@ static void handle_option(const char *option) {
                 keyboard_view_set_return_view(&badusb_view);
                 keyboard_view_set_submit_callback(badusb_type_kb_cb);
                 keyboard_view_set_immediate_callback(badusb_key_immediate_cb);
-                keyboard_view_set_placeholder("Type text to send...");
+                keyboard_view_set_placeholder(ghost_cz_ui("Type text to send..."));
                 keyboard_view_set_initial_text("");
                 keyboard_view_set_start_caps(false);
                 display_manager_switch_view(&keyboard_view);
@@ -695,7 +696,7 @@ static void handle_option(const char *option) {
                 keyboard_view_set_return_view(&badusb_view);
                 keyboard_view_set_submit_callback(badusb_type_kb_cb);
                 keyboard_view_set_immediate_callback(badusb_key_immediate_cb);
-                keyboard_view_set_placeholder("Type text to send...");
+                keyboard_view_set_placeholder(ghost_cz_ui("Type text to send..."));
                 keyboard_view_set_initial_text("");
                 keyboard_view_set_start_caps(false);
                 display_manager_switch_view(&keyboard_view);
@@ -772,13 +773,13 @@ static void handle_option(const char *option) {
             layout = (layout + 1) % KB_LAYOUT_COUNT;
             settings_set_badusb_kb_layout(&G_Settings, layout);
             settings_persist_setting(SETTING_BADUSB_KB_LAYOUT);
-            snprintf(settings_labels[4], 80, "Layout: %s", kb_layout_names[layout]);
+            snprintf(settings_labels[4], 80, ghost_cz_ui("Layout: %s"), kb_layout_names[layout]);
             options_view_update_item_text(g_ov, 4, settings_labels[4]);
         } else if (strncmp(option, "Randomize:", 10) == 0) {
             bool enabled = !settings_get_badusb_randomize(&G_Settings);
             settings_set_badusb_randomize(&G_Settings, enabled);
             settings_persist_setting(SETTING_BADUSB_RANDOMIZE);
-            snprintf(settings_labels[5], 80, "Randomize: %s", enabled ? "On" : "Off");
+            snprintf(settings_labels[5], 80, ghost_cz_ui("Randomize: %s"), enabled ? ghost_cz_ui("On") : ghost_cz_ui("Off"));
             options_view_update_item_text(g_ov, 5, settings_labels[5]);
         } else if (strcmp(option, "Reset To Defaults") == 0) {
             popup_confirm_show(&badusb_confirm_popup, lv_layer_top(), "Reset Defaults?",

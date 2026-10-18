@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/book_reader_view.h"
 
 #ifdef CONFIG_CROWPANEL_EPAPER_42
@@ -1515,7 +1516,7 @@ static void reader_set_message(const char *message) {
     s_page_text = NULL;
     s_page_message = lv_label_create(s_page_area);
     if (!s_page_message) return;
-    lv_label_set_text(s_page_message, message ? message : "");
+    lv_label_set_text(s_page_message, ghost_cz_ui(message ? message : ""));
     lv_label_set_long_mode(s_page_message, LV_LABEL_LONG_WRAP);
     lv_obj_set_width(s_page_message, LV_PCT(90));
     lv_obj_set_style_text_font(s_page_message, accessibility_get_font_body(), 0);
@@ -1803,7 +1804,7 @@ static void reader_create_reading_ui(void) {
     lv_obj_set_style_pad_all(s_page_footer, 0, 0);
 
     lv_obj_t *previous = lv_label_create(s_page_footer);
-    lv_label_set_text(previous, "< PREV");
+    lv_label_set_text(previous, ghost_cz_ui("< PREV"));
     lv_obj_set_style_text_font(previous, accessibility_get_font_small(), 0);
     lv_obj_set_style_text_color(previous, text_color, 0);
     lv_obj_align(previous, LV_ALIGN_LEFT_MID, 6, 0);
@@ -1814,7 +1815,7 @@ static void reader_create_reading_ui(void) {
     lv_obj_align(s_page_counter, LV_ALIGN_CENTER, 0, 0);
 
     lv_obj_t *next = lv_label_create(s_page_footer);
-    lv_label_set_text(next, "NEXT >");
+    lv_label_set_text(next, ghost_cz_ui("NEXT >"));
     lv_obj_set_style_text_font(next, accessibility_get_font_small(), 0);
     lv_obj_set_style_text_color(next, text_color, 0);
     lv_obj_align(next, LV_ALIGN_RIGHT_MID, -6, 0);

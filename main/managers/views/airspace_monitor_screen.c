@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/airspace_monitor_screen.h"
 #include "core/callbacks.h"
 #include "core/ouis.h"
@@ -97,7 +98,7 @@ static lv_obj_t *create_card(lv_obj_t *parent, int width_pct) {
 
 static lv_obj_t *create_card_title(lv_obj_t *card, const char *text) {
     lv_obj_t *label = lv_label_create(card);
-    lv_label_set_text(label, text);
+    lv_label_set_text(label, ghost_cz_ui(text));
     lv_obj_set_style_text_font(label, body_font(), 0);
     lv_obj_set_style_text_color(label, lv_color_hex(dim_color), 0);
     return label;
@@ -133,10 +134,10 @@ static void update_display_cb(lv_timer_t *timer) {
     airspace_monitor_get_snapshot(&snap);
 
     if (lbl_status) {
-        lv_label_set_text(lbl_status, airspace_monitor_threat_label(snap.threat_level));
+        lv_label_set_text(lbl_status, ghost_cz_ui(airspace_monitor_threat_label(snap.threat_level)));
         lv_obj_set_style_text_color(lbl_status, lv_color_hex(color_for_level(snap.threat_level)), 0);
     }
-    if (lbl_reason) lv_label_set_text(lbl_reason, snap.reason);
+    if (lbl_reason) lv_label_set_text(lbl_reason, ghost_cz_ui(snap.reason));
     const char *band = snap.current_channel > 14 ? "5G" : "2G";
     if (lbl_channel) {
         lv_label_set_text_fmt(lbl_channel, "Ch %u %s  plan %u  hop %lu/%lu",
@@ -156,15 +157,15 @@ static void update_display_cb(lv_timer_t *timer) {
                                     lv_color_hex((snap.deauth_per_sec + snap.disassoc_per_sec) >= 5 ? warn_color : text_color),
                                     0);
     }
-    if (lbl_unique) lv_label_set_text_fmt(lbl_unique, "Total %lu  Up %lum%02lu",
+    if (lbl_unique) lv_label_set_text_fmt(lbl_unique, ghost_cz_ui("Total %lu  Up %lum%02lu"),
                                           (unsigned long)snap.total_packets,
                                           (unsigned long)(snap.uptime_s / 60),
                                           (unsigned long)(snap.uptime_s % 60));
     if (lbl_insight) {
-        lv_label_set_text(lbl_insight, snap.insight);
+        lv_label_set_text(lbl_insight, ghost_cz_ui(snap.insight));
         lv_obj_set_style_text_color(lbl_insight, lv_color_hex(color_for_level(snap.insight_level)), 0);
     }
-    if (lbl_advice) lv_label_set_text(lbl_advice, snap.advice);
+    if (lbl_advice) lv_label_set_text(lbl_advice, ghost_cz_ui(snap.advice));
 
     if (pps_line && pps_points) {
         lv_coord_t w = lv_obj_get_content_width(pps_line);
@@ -190,8 +191,8 @@ static void update_display_cb(lv_timer_t *timer) {
         if (i >= snap.suspect_count) {
             if (i == 0 && snap.suspect_count == 0) {
                 lv_obj_clear_flag(suspect_cards[i], LV_OBJ_FLAG_HIDDEN);
-                if (lbl_suspect[i]) lv_label_set_text(lbl_suspect[i], "No suspected device");
-                if (lbl_suspect_vendor[i]) lv_label_set_text(lbl_suspect_vendor[i], "Passive channel hopping");
+                if (lbl_suspect[i]) lv_label_set_text(lbl_suspect[i], ghost_cz_ui("No suspected device"));
+                if (lbl_suspect_vendor[i]) lv_label_set_text(lbl_suspect_vendor[i], ghost_cz_ui("Passive channel hopping"));
             } else {
                 lv_obj_add_flag(suspect_cards[i], LV_OBJ_FLAG_HIDDEN);
             }
@@ -326,10 +327,10 @@ void airspace_monitor_view_create(void) {
 
     lv_obj_t *status_card = create_card(content, 100);
     lbl_status = lv_label_create(status_card);
-    lv_label_set_text(lbl_status, "Starting");
+    lv_label_set_text(lbl_status, ghost_cz_ui("Starting"));
     lv_obj_set_style_text_font(lbl_status, title_font(), 0);
     lbl_reason = lv_label_create(status_card);
-    lv_label_set_text(lbl_reason, "Passive monitor starting");
+    lv_label_set_text(lbl_reason, ghost_cz_ui("Passive monitor starting"));
     lv_obj_set_style_text_font(lbl_reason, body_font(), 0);
     lv_obj_set_width(lbl_reason, LV_PCT(100));
     lv_label_set_long_mode(lbl_reason, LV_LABEL_LONG_SCROLL_CIRCULAR);
@@ -382,7 +383,7 @@ void airspace_monitor_view_create(void) {
         create_card_title(insight_card, "Insight");
     }
     lbl_insight = lv_label_create(insight_card);
-    lv_label_set_text(lbl_insight, "Learning normal activity");
+    lv_label_set_text(lbl_insight, ghost_cz_ui("Learning normal activity"));
     lv_obj_set_style_text_font(lbl_insight, body_font(), 0);
     lv_obj_set_width(lbl_insight, LV_PCT(100));
     lv_label_set_long_mode(lbl_insight, LV_LABEL_LONG_SCROLL_CIRCULAR);
@@ -393,7 +394,7 @@ void airspace_monitor_view_create(void) {
             create_card_title(advice_card, "Advice");
         }
         lbl_advice = lv_label_create(advice_card);
-        lv_label_set_text(lbl_advice, "Hold steady; building a baseline");
+        lv_label_set_text(lbl_advice, ghost_cz_ui("Hold steady; building a baseline"));
         lv_obj_set_style_text_font(lbl_advice, body_font(), 0);
         lv_obj_set_style_text_color(lbl_advice, lv_color_hex(dim_color), 0);
         lv_obj_set_width(lbl_advice, LV_PCT(100));
@@ -404,7 +405,7 @@ void airspace_monitor_view_create(void) {
         suspect_cards[i] = create_card(content, 100);
         if (!compact_layout()) {
             char title[16] = {0};
-            snprintf(title, sizeof(title), "Suspect %u", (unsigned)(i + 1));
+            snprintf(title, sizeof(title), ghost_cz_ui("Suspect %u"), (unsigned)(i + 1));
             create_card_title(suspect_cards[i], title);
         }
         lbl_suspect[i] = lv_label_create(suspect_cards[i]);

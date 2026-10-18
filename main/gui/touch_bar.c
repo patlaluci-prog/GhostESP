@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/touch_bar.h"
 #include "gui/design_tokens.h"
 #include "gui/theme_palette_api.h"
@@ -28,7 +29,7 @@ static lv_obj_t *touch_bar_create_button(lv_obj_t *bar, const char *label,
     lv_obj_t *lbl = lv_label_create(btn);
     if (lbl) {
         uint8_t theme = settings_get_menu_theme(&G_Settings);
-        lv_label_set_text(lbl, label ? label : "");
+        lv_label_set_text(lbl, ghost_cz_ui(label ? label : ""));
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_palette_get_text(theme)), 0);
         lv_obj_center(lbl);
     }

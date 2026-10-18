@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "gui/scan_status.h"
 #include "managers/display_manager.h"
 #include "managers/settings_manager.h"
@@ -149,7 +150,7 @@ scan_status_t *scan_status_create(const char *message) {
     lv_obj_set_width(ss->label, LV_PCT(100));
     lv_label_set_long_mode(ss->label, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_align(ss->label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_text(ss->label, msg);
+    lv_label_set_text(ss->label, ghost_cz_ui(msg));
     
     ss->progress_label = lv_label_create(ss->card);
     lv_obj_set_style_text_font(ss->progress_label, get_small_font_for_screen(), 0);
@@ -177,7 +178,7 @@ scan_status_t *scan_status_create(const char *message) {
 void scan_status_update(scan_status_t *ss, const char *message) {
     if (!ss || !ss->active) return;
     if (ss->label && message) {
-        lv_label_set_text(ss->label, message);
+        lv_label_set_text(ss->label, ghost_cz_ui(message));
     }
 }
 
@@ -190,7 +191,7 @@ void scan_status_set_subtext(scan_status_t *ss, const char *subtext) {
         return;
     }
 
-    lv_label_set_text(ss->progress_label, subtext);
+    lv_label_set_text(ss->progress_label, ghost_cz_ui(subtext));
     lv_obj_clear_flag(ss->progress_label, LV_OBJ_FLAG_HIDDEN);
 }
 

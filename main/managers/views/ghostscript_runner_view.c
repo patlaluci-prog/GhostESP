@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/ghostscript_runner_view.h"
 #include "gui/accessibility_fonts.h"
 #include "gui/design_tokens.h"
@@ -110,7 +111,7 @@ static void script_task_fn(void *arg) {
         runner_set_title("Script Load Failed", NULL);
         runner_print(ghostscript_manager_last_error(), NULL);
         runner_print("\n", NULL);
-        toast_show_duration("Script load failed", TOAST_ERROR, 2200);
+        toast_show_duration(ghost_cz_ui("Script load failed"), TOAST_ERROR, 2200);
         goto done;
     }
     runner_set_title(manifest.name, NULL);
@@ -141,7 +142,7 @@ static void script_task_fn(void *arg) {
         snprintf(msg, sizeof(msg), "\nLua heap: %lu/%lu bytes (peak %lu)\n", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_limit(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
         runner_print(msg, NULL);
         ghostscript_manager_record_failure(ghostscript_runtime_manifest(s_rt), ghostscript_runtime_error(s_rt));
-        toast_show_duration("GhostScript failed", TOAST_ERROR, 2200);
+        toast_show_duration(ghost_cz_ui("GhostScript failed"), TOAST_ERROR, 2200);
         final_handled = true;
     } else if (state == GHOSTSCRIPT_STATE_DONE) {
         snprintf(msg, sizeof(msg), "Done | heap %lu/%lu peak %lu", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_limit(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
@@ -174,7 +175,7 @@ static void script_task_fn(void *arg) {
             snprintf(msg, sizeof(msg), "\nLua heap: %lu/%lu bytes (peak %lu)\n", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_limit(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
             runner_print(msg, NULL);
             ghostscript_manager_record_failure(ghostscript_runtime_manifest(s_rt), ghostscript_runtime_error(s_rt));
-            toast_show_duration("GhostScript failed", TOAST_ERROR, 2200);
+            toast_show_duration(ghost_cz_ui("GhostScript failed"), TOAST_ERROR, 2200);
         } else if (state == GHOSTSCRIPT_STATE_DONE) {
             snprintf(msg, sizeof(msg), "Done | heap %lu/%lu peak %lu", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_limit(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
             runner_set_status(msg);
@@ -335,7 +336,7 @@ static void stop_script(void) {
     if (ghostscript_runner_stop_script()) {
         runner_set_status("Stopped");
         runner_print("\nStopped by user.\n", NULL);
-        toast_show_duration("GhostScript stopped", TOAST_INFO, 1200);
+        toast_show_duration(ghost_cz_ui("GhostScript stopped"), TOAST_INFO, 1200);
     }
 }
 
@@ -405,7 +406,7 @@ static void launch_now(void) {
         free(task_args);
         runner_set_title("Script Launch Failed", NULL);
         runner_print("Failed to create script task\n", NULL);
-        toast_show_duration("GhostScript launch failed", TOAST_ERROR, 2200);
+        toast_show_duration(ghost_cz_ui("GhostScript launch failed"), TOAST_ERROR, 2200);
     }
     xSemaphoreGive(s_lifecycle_mutex);
 }
@@ -592,12 +593,12 @@ void ghostscript_runner_view_create(void) {
     lv_obj_set_style_pad_all(content, 8, 0);
     lv_obj_set_flex_flow(content, LV_FLEX_FLOW_COLUMN);
     s_title = lv_label_create(content);
-    snprintf(s_title_buf, GS_RUNNER_TITLE_BUF_SIZE, "Loading script...");
+    snprintf(s_title_buf, GS_RUNNER_TITLE_BUF_SIZE, ghost_cz_ui("Loading script..."));
     lv_label_set_text(s_title, s_title_buf);
     lv_obj_set_style_text_color(s_title, text, 0);
     lv_obj_set_style_text_font(s_title, accessibility_get_font_title(), 0);
     s_status = lv_label_create(content);
-    snprintf(s_status_buf, GS_RUNNER_STATUS_BUF_SIZE, "Loading | autoscroll on");
+    snprintf(s_status_buf, GS_RUNNER_STATUS_BUF_SIZE, ghost_cz_ui("Loading | autoscroll on"));
     lv_label_set_text(s_status, s_status_buf);
     lv_obj_set_style_text_color(s_status, muted, 0);
     lv_obj_set_style_text_font(s_status, accessibility_get_font_small(), 0);
@@ -652,13 +653,13 @@ void ghostscript_runner_view_create(void) {
         lv_obj_set_style_shadow_width(s_stop_btn, 0, LV_PART_MAIN);
         lv_obj_add_event_cb(s_stop_btn, touch_stop_cb, LV_EVENT_CLICKED, NULL);
         lv_obj_t *stop_label = lv_label_create(s_stop_btn);
-        lv_label_set_text(stop_label, "Stop");
+        lv_label_set_text(stop_label, ghost_cz_ui("Stop"));
         lv_obj_set_style_text_color(stop_label,
                                     lv_color_hex(theme_palette_get_contrast_text(theme_palette_get_danger(stop_theme))), 0);
         lv_obj_center(stop_label);
     }
 #endif
-    toast_show_duration("Running GhostScript...", TOAST_INFO, 1000);
+    toast_show_duration(ghost_cz_ui("Running GhostScript..."), TOAST_INFO, 1000);
     s_launch_timer = lv_timer_create(launch_cb, 50, NULL);
     if (s_launch_timer) lv_timer_set_repeat_count(s_launch_timer, 1);
     else launch_now();
