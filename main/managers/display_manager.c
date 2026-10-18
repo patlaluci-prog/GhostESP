@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/display_manager.h"
 #include "driver/gpio.h"
 #ifdef CONFIG_IS_S3TWATCH
@@ -1770,7 +1771,7 @@ const char *display_manager_get_status_title(void) {
 }
 
 void display_manager_add_status_bar(const char *CurrentMenuName) {
-    const char *label_text = CurrentMenuName ? CurrentMenuName : "";
+    const char *label_text = ghost_cz_ui(CurrentMenuName);
     uint8_t theme = settings_get_menu_theme(&G_Settings);
     lv_color_t status_bg_color = lv_color_hex(theme_palette_get_surface_alt(theme));
     lv_color_t status_text_color = lv_color_hex(theme_palette_get_text_muted(theme));
