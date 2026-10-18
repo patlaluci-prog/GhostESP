@@ -24,6 +24,9 @@ int main(void) {
     (void)ghost_cz_ui("Close");
     assert(strcmp(saved, "Nastavení") == 0);
     char text[32];
+    assert(ghost_cz_copy(text, 16, ghost_cz_ui("seen now")) == strlen(ghost_cz_ui("seen now")));
+    snprintf(text, 16, ghost_cz_ui("seen %uh ago"), 1193u);
+    assert(strcmp(text, "před 1193h") == 0);
     for (size_t capacity = 1; capacity < sizeof(text); ++capacity) {
         size_t n = ghost_cz_copy(text, capacity, "Příliš žluťoučký kůň");
         assert(n < capacity && text[n] == 0);

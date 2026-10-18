@@ -43,5 +43,7 @@ a měření textu v terminálu 800×480 při 28 px včetně šířky děleného 
 Nativní část vyžaduje C kompilátor `cc` a běží v Linux CI. Sestavení firmwaru
 používá ESP-IDF 6.1 a `configs/sdkconfig.crowpanel_advance43`.
 
-Výsledek skutečného sestavení a odkaz na běh CI budou doplněny po jeho dokončení.
+Autoritativní výsledky sestavení, testů a firmware ZIP jsou v kontrolách
+[Pull Requestu #1](https://github.com/patlaluci-prog/GhostESP/pull/1/checks).
+Popis PR uvádí přesný ověřený commit a odkaz na jeho úspěšný běh.
 Na fyzickém zařízení v této relaci neproběhlo ověření dotyku ani podsvícení.

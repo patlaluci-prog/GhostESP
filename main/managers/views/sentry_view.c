@@ -453,7 +453,7 @@ static void format_rec(const sentry_rec_t *r, char *head, size_t hs, char *det, 
     snprintf(mac, sizeof(mac), "%s", r->mac);
     privacy_redact_mac(mac);
     snprintf(head, hs, "%s  %s", r->tag, name);
-    char ago[32];
+    char ago[16];
     format_ago(r->last_seen, ago, sizeof(ago));
     if (r->ble) snprintf(det, ds, "%s  %ddBm  %s", mac, (int)r->rssi, ago);
     else snprintf(det, ds, "%s  %ddBm ch%u  %s", mac, (int)r->rssi, (unsigned)r->channel, ago);
@@ -671,7 +671,7 @@ static void render_rows(void) {
             continue;
         }
         char head[52];
-        char det[52];
+        char det[96];
         format_rec(&s_rec[i], head, sizeof(head), det, sizeof(det));
         lv_obj_clear_flag(s_rows[i].card, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(s_rows[i].head, head);
@@ -859,7 +859,7 @@ static void open_detail(void) {
     detail_view_add_infof(detail, "Hits", "%u", (unsigned)s_detail->hits);
     detail_view_add_infof(detail, "Age", "%us", (unsigned)((now_ms() - s_detail->first_seen) / 1000));
     {
-        char ago[32];
+        char ago[16];
         format_ago(s_detail->last_seen, ago, sizeof(ago));
         detail_view_add_info(detail, "Last seen", ago);
     }
