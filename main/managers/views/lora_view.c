@@ -647,6 +647,7 @@ static void set_page(lora_page_t page) {
 }
 
 static void update_row_text(int index, const char *text) {
+    text = ghost_cz_ui(text);
     lv_obj_t *list = options_view_get_list(s_ov);
     lv_obj_t *row = list ? lv_obj_get_child(list, index) : NULL;
     lv_obj_t *label = row ? lv_obj_get_child(row, 0) : NULL;
@@ -677,7 +678,7 @@ static void main_label(int row, char *out, size_t cap) {
         break;
     case MAIN_SETTINGS: snprintf(out, cap, ghost_cz_ui("Radio settings")); break;
     case MAIN_INFO:
-        snprintf(out, cap, "Device info: RX %u / TX %u",
+        snprintf(out, cap, ghost_cz_ui("Device info: RX %u / TX %u"),
                  (unsigned)st.rx_ok, (unsigned)st.tx_ok);
         break;
     case MAIN_BACK: snprintf(out, cap, ghost_cz_ui(LV_SYMBOL_LEFT " Back")); break;
@@ -729,7 +730,7 @@ static void activity_label(int row, const lora_status_t *st, char *line, size_t 
                  (unsigned)st->tx_ok, (unsigned)st->tx_fail, (unsigned)st->tx_relay);
         break;
     case 4:
-        snprintf(line, cap, "Last signal: %d dBm / %.1f dB",
+        snprintf(line, cap, ghost_cz_ui("Last signal: %d dBm / %.1f dB"),
                  st->last_rssi, (double)st->last_snr);
         break;
     default:
@@ -980,7 +981,7 @@ static void build_modem(void) {
         add_row(line, ACT_MODEM_SF);
         snprintf(line, sizeof(line), ghost_cz_ui("Bandwidth: %d kHz%s - tap to cycle"), bw, stop_first);
         add_row(line, ACT_MODEM_BW);
-        snprintf(line, sizeof(line), "Coding rate: CR4/%d%s - tap to cycle", cr, stop_first);
+        snprintf(line, sizeof(line), ghost_cz_ui("Coding rate: CR4/%d%s - tap to cycle"), cr, stop_first);
         add_row(line, ACT_MODEM_CR);
     }
     snprintf(line, sizeof(line), ghost_cz_ui("Frequency offset: %.1f MHz%s - tap to cycle"),
@@ -1002,7 +1003,7 @@ static void build_device(void) {
     options_view_set_title(s_ov, "Device Behavior");
     char line[104];
     const char *stop_first = st.running ? " (stop radio first)" : "";
-    snprintf(line, sizeof(line), ghost_cz_ui("TX enabled: %s%s - tap to toggle"), tx_enabled ? "yes" : "no",
+    snprintf(line, sizeof(line), ghost_cz_ui("TX enabled: %s%s - tap to toggle"), tx_enabled ? ghost_cz_ui("yes") : ghost_cz_ui("no"),
              stop_first);
     add_row(line, ACT_DEVICE_TX);
     snprintf(line, sizeof(line), ghost_cz_ui("TX power: %d dBm%s - tap to cycle"), st.tx_dbm, stop_first);
@@ -1188,7 +1189,7 @@ static void build_node(void) {
     }
     seen_text(&node, line, sizeof(line));
     add_row(line, ACT_NODE_INFO);
-    snprintf(line, sizeof(line), "Signal: %d dBm / %.1f dB", node.last_rssi,
+    snprintf(line, sizeof(line), ghost_cz_ui("Signal: %d dBm / %.1f dB"), node.last_rssi,
              (double)node.last_snr);
     add_row(line, ACT_NODE_INFO);
     if (node.hops_valid)
@@ -1205,11 +1206,11 @@ static void build_node(void) {
     add_row(node.has_pubkey ? "Send encrypted DM" : "Get DM key (request NodeInfo)",
             node.has_pubkey ? ACT_NODE_DM : ACT_NODE_INFO);
     add_row("Request fresh NodeInfo", ACT_NODE_INFO);
-    snprintf(line, sizeof(line), ghost_cz_ui("Favorite: %s - tap to toggle"), node.favorite ? "yes" : "no");
+    snprintf(line, sizeof(line), ghost_cz_ui("Favorite: %s - tap to toggle"), node.favorite ? ghost_cz_ui("yes") : ghost_cz_ui("no"));
     add_row(line, ACT_NODE_FAVORITE);
-    snprintf(line, sizeof(line), ghost_cz_ui("Muted: %s - tap to toggle"), node.muted ? "yes" : "no");
+    snprintf(line, sizeof(line), ghost_cz_ui("Muted: %s - tap to toggle"), node.muted ? ghost_cz_ui("yes") : ghost_cz_ui("no"));
     add_row(line, ACT_NODE_MUTE);
-    snprintf(line, sizeof(line), ghost_cz_ui("Ignored: %s - tap to toggle"), node.ignored ? "yes" : "no");
+    snprintf(line, sizeof(line), ghost_cz_ui("Ignored: %s - tap to toggle"), node.ignored ? ghost_cz_ui("yes") : ghost_cz_ui("no"));
     add_row(line, ACT_NODE_IGNORE);
     add_row(LV_SYMBOL_LEFT " Nodes", ACT_NODE_BACK);
 }

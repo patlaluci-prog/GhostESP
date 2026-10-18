@@ -3,8 +3,18 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include "czech_cases.h"
 
 int main(void) {
+    for (size_t i=0; i<sizeof(cases)/sizeof(cases[0]); ++i)
+        assert(strcmp(ghost_cz_ui(cases[i].en), cases[i].cs) == 0);
+    assert(strcmp(ghost_cz_ui("No script selected\n"), "Není vybrán skript\n") == 0);
+    char date[64];
+    ghost_cz_date(date, sizeof(date), 0, 9, 18);
+    assert(strcmp(date, "neděle, 18. října") == 0);
+    ghost_cz_date(date, sizeof(date), 4, 11, 31);
+    assert(strcmp(date, "čtvrtek, 31. prosince") == 0);
+
     assert(strcmp(ghost_cz_ui("Settings"), "Nastavení") == 0);
     assert(strcmp(ghost_cz_ui("Close"), "Zavřít") == 0);
     const char *raw = "MojeSSID: %s / soubor.nfc";

@@ -98,7 +98,7 @@ static void update_status_text(void) {
         lv_label_set_text(view.endpoint_label, current_artist);
     } else {
         lv_label_set_text(view.status_label, ghost_cz_ui("VISUALIZER"));
-        lv_label_set_text(view.endpoint_label, "USB serial / UDP ready");
+        lv_label_set_text(view.endpoint_label, ghost_cz_ui("USB serial / UDP ready"));
     }
 
     lv_obj_set_style_text_color(view.status_label, theme_text, 0);

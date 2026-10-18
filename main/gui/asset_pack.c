@@ -1,4 +1,3 @@
-#include "gui/ghost_cz_ui.h"
 #include "gui/asset_pack.h"
 
 #include "cJSON.h"
@@ -435,7 +434,7 @@ static esp_err_t select_pack_for_load(void) {
     char saved[32];
     if (load_saved_active_name(saved)) snprintf(name, sizeof(name), "%s", saved);
     if (strcmp(name, "None") == 0) {
-        snprintf(s_active_name, sizeof(s_active_name), ghost_cz_ui("None"));
+        snprintf(s_active_name, sizeof(s_active_name), "None");
         s_active_is_archive = false;
         snprintf(s_pack_dir, sizeof(s_pack_dir), "%s", ACTIVE_PACK_DIR);
         ESP_LOGI(TAG, "asset pack disabled (None)");
@@ -1458,7 +1457,7 @@ static void scan_installed_packs(void) {
     }
     memset(s_installed_names, 0, (size_t)ASSET_PACK_INSTALLED_MAX * ASSET_PACK_NAME_MAX);
 
-    snprintf(s_installed_names[0], ASSET_PACK_NAME_MAX, ghost_cz_ui("None"));
+    snprintf(s_installed_names[0], ASSET_PACK_NAME_MAX, "None");
     s_installed_count = 1;
 
     DIR *dir = opendir(THEMES_DIR);
@@ -1521,7 +1520,7 @@ esp_err_t asset_pack_select_by_index(int index) {
 
     if (index == 0) {
         save_active_name("None");
-        snprintf(s_active_name, sizeof(s_active_name), ghost_cz_ui("None"));
+        snprintf(s_active_name, sizeof(s_active_name), "None");
         s_active_is_archive = false;
         snprintf(s_pack_dir, sizeof(s_pack_dir), "%s", ACTIVE_PACK_DIR);
         clear_runtime();

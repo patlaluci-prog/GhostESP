@@ -921,6 +921,7 @@ static void show_complete_screen(void) {
     style_wizard_btn(finish_btn, wizard_color(theme_palette_get_accent(wizard_theme())), 5);
     lv_obj_t *finish_label = lv_label_create(finish_btn);
     lv_label_set_text(finish_label, ghost_cz_ui("Finish"));
+    lv_obj_set_user_data(finish_label, (void *)"Finish");
     lv_obj_set_style_text_color(finish_label, wizard_color(theme_palette_get_on_accent(wizard_theme())), 0);
     lv_obj_center(finish_label);
     lv_obj_add_event_cb(finish_btn, finish_btn_event_cb, LV_EVENT_CLICKED, NULL);
@@ -1208,7 +1209,7 @@ static void setup_wizard_input_callback(InputEvent *event) {
                             if (child && lv_obj_check_type(child, &lv_btn_class)) {
                                 lv_obj_t *label = lv_obj_get_child(child, 0);
                                 if (label) {
-                                    const char *text = lv_label_get_text(label);
+                                    const char *text = (const char *)lv_obj_get_user_data(label);
                                     if (text && strcmp(text, "Finish") == 0) {
                                         lv_area_t btn_area;
                                         lv_obj_get_coords(child, &btn_area);

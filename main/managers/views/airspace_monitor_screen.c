@@ -140,18 +140,18 @@ static void update_display_cb(lv_timer_t *timer) {
     if (lbl_reason) lv_label_set_text(lbl_reason, ghost_cz_ui(snap.reason));
     const char *band = snap.current_channel > 14 ? "5G" : "2G";
     if (lbl_channel) {
-        lv_label_set_text_fmt(lbl_channel, "Ch %u %s  plan %u  hop %lu/%lu",
+        lv_label_set_text_fmt(lbl_channel, ghost_cz_ui("Ch %u %s  plan %u  hop %lu/%lu"),
                               (unsigned)snap.current_channel,
                               band,
                               (unsigned)snap.channel_count,
                               (unsigned long)snap.hop_success,
                               (unsigned long)snap.hop_fail);
     }
-    if (lbl_pps) lv_label_set_text_fmt(lbl_pps, "Pkt %lu/s  Tx %u",
+    if (lbl_pps) lv_label_set_text_fmt(lbl_pps, ghost_cz_ui("Pkt %lu/s  Tx %u"),
                                        (unsigned long)snap.packets_per_sec,
                                        (unsigned)snap.unique_devices);
     if (lbl_deauth) {
-        lv_label_set_text_fmt(lbl_deauth, "Kick %lu/s",
+        lv_label_set_text_fmt(lbl_deauth, ghost_cz_ui("Kick %lu/s"),
                               (unsigned long)(snap.deauth_per_sec + snap.disassoc_per_sec));
         lv_obj_set_style_text_color(lbl_deauth,
                                     lv_color_hex((snap.deauth_per_sec + snap.disassoc_per_sec) >= 5 ? warn_color : text_color),
@@ -216,7 +216,7 @@ static void update_display_cb(lv_timer_t *timer) {
                                   (int)suspect->rssi);
         }
         if (lbl_suspect_vendor[i]) {
-            lv_label_set_text_fmt(lbl_suspect_vendor[i], "%s | kick %lu/s | %lu kick frames",
+            lv_label_set_text_fmt(lbl_suspect_vendor[i], ghost_cz_ui("%s | kick %lu/s | %lu kick frames"),
                                   vendor,
                                   (unsigned long)kick_rate,
                                   (unsigned long)kick_total);
@@ -224,13 +224,13 @@ static void update_display_cb(lv_timer_t *timer) {
     }
 
     if (lbl_counts_1) {
-        lv_label_set_text_fmt(lbl_counts_1, compact_layout() ? "Mgmt %lu  Data %lu  Ctrl %lu" : "Mgmt:%lu Data:%lu Ctrl:%lu",
+        lv_label_set_text_fmt(lbl_counts_1, compact_layout() ? ghost_cz_ui("Mgmt %lu  Data %lu  Ctrl %lu") : ghost_cz_ui("Mgmt:%lu Data:%lu Ctrl:%lu"),
                               (unsigned long)snap.mgmt_packets,
                               (unsigned long)snap.data_packets,
                               (unsigned long)snap.ctrl_packets);
     }
     if (lbl_counts_2) {
-        lv_label_set_text_fmt(lbl_counts_2, compact_layout() ? "Bcn %lu  Probe %lu  Auth %lu  Kick %lu" : "Bcn:%lu Probe:%lu Auth:%lu Deauth:%lu",
+        lv_label_set_text_fmt(lbl_counts_2, compact_layout() ? ghost_cz_ui("Bcn %lu  Probe %lu  Auth %lu  Kick %lu") : ghost_cz_ui("Bcn:%lu Probe:%lu Auth:%lu Deauth:%lu"),
                               (unsigned long)snap.beacon_packets,
                               (unsigned long)snap.probe_packets,
                               (unsigned long)snap.auth_packets,

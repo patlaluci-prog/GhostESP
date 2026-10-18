@@ -989,8 +989,8 @@ static void update_ui(lv_timer_t *timer) {
                               ghost_cz_ui("Mount SD to arm Ghostchi"));
         } else {
             lv_label_set_text(s_hint_label,
-                              "Mount SD to arm Ghostchi\n"
-                              "Left/Right: Page  Back: Exit");
+                              ghost_cz_ui("Mount SD to arm Ghostchi\n"
+                              "Left/Right: Page  Back: Exit"));
         }
     }
     lv_obj_set_width(s_hint_label, LV_HOR_RES - 24);

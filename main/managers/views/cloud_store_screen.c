@@ -682,7 +682,7 @@ static void select_current(void) {
         off += snprintf(body + off, sizeof(body) - off, "\n%s%s", blurb, truncated ? "..." : "");
     }
     if (item.version[0]) {
-        snprintf(body + off, sizeof(body) - off, "\n\nVersion: %s", item.version);
+        snprintf(body + off, sizeof(body) - off, ghost_cz_ui("\n\nVersion: %s"), item.version);
     }
     popup_confirm_show(&s_confirm_popup, lv_layer_top(), title,
                        body, action, "Cancel", confirm_install_cb, NULL);

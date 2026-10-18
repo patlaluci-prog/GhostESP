@@ -69,6 +69,7 @@
   "main/core/universal_ir.c": "4eaee4a5d71897fe12cc822a66d1c87aec9d7a43b7b4a52268663b7a7cd669f7",
   "main/core/utils.c": "feceff00c9cd907a071c09374e2b267054e8481e319a31ea9c6e02b20ab1dbef",
   "main/core/wpa_crypto.c": "d213e65f9833dea0cc2c9a8e4f2256d6c050a9396dac56f72594c8a43d397b53",
+  "main/gui/asset_pack.c": "291a0b82b803ef245afea89e7d4dc551a42c4317f1afa303fb9bfb9639683a32",
   "main/managers/ble_manager.c": "67f7b8e5de412fd1eaab5101d99bdbc3503a66c7ea17d999260379d5ea8f8d90",
   "main/managers/display_manager.c": "08d55b3e84b6a3c83ea6c0133d179a40c6e72e8f17d6b2cdcd920d5453c7f978",
   "main/managers/lora_manager.c": "632f6f7ea124033d21042198281df54a6698f7765a5f9fd16a68c3ac8b597ac1",

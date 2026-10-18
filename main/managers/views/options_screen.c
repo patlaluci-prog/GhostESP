@@ -556,7 +556,7 @@ static void station_scan_set_subtext(int found_count) {
     }
 
     char msg[96];
-    snprintf(msg, sizeof(msg), "Use any input to finish scan\n%d found", found_count);
+    snprintf(msg, sizeof(msg), ghost_cz_ui("Use any input to finish scan\n%d found"), found_count);
     scan_status_set_subtext(sta_scan_status, msg);
 }
 
@@ -674,7 +674,7 @@ static void ble_detect_set_subtext(int found_count) {
     }
 
     char msg[96];
-    snprintf(msg, sizeof(msg), "Use any input to finish scan\n%d found", found_count);
+    snprintf(msg, sizeof(msg), ghost_cz_ui("Use any input to finish scan\n%d found"), found_count);
     scan_status_set_subtext(ble_detect_status, msg);
 }
 
@@ -686,10 +686,10 @@ static void ble_adv_set_subtext(int found_count) {
     char msg[128];
     const char *filter = advertiser_scan_get_filter_label();
     if (filter != NULL) {
-        snprintf(msg, sizeof(msg), "Use any input to finish scan\n%d matches\n%s",
+        snprintf(msg, sizeof(msg), ghost_cz_ui("Use any input to finish scan\n%d matches\n%s"),
                  found_count, filter);
     } else {
-        snprintf(msg, sizeof(msg), "Use any input to finish scan\n%d advertisers", found_count);
+        snprintf(msg, sizeof(msg), ghost_cz_ui("Use any input to finish scan\n%d advertisers"), found_count);
     }
     scan_status_set_subtext(ble_adv_status, msg);
 }
@@ -924,7 +924,7 @@ static void ota_format_device_install_body(char *body, size_t body_len) {
 
     size_t used = strlen(body);
     if (used < body_len - 1) {
-        snprintf(body + used, body_len - used, "\nKeep powered on.");
+        snprintf(body + used, body_len - used, ghost_cz_ui("\nKeep powered on."));
     }
 }
 
@@ -993,7 +993,7 @@ static void ota_status_format_progress(char *out, size_t out_len,
             snprintf(out, out_len, "Device firmware\n%u / %u KB",
                      (unsigned)(self.bytes_written / 1024), (unsigned)(self.image_size / 1024));
         } else if (self.state == SELF_OTA_STATE_FLASHING) {
-            snprintf(out, out_len, "Starting updater\nScreen will pause during update");
+            snprintf(out, out_len, ghost_cz_ui("Starting updater\nScreen will pause during update"));
         } else if (self.state == SELF_OTA_STATE_CHECKING) {
             snprintf(out, out_len, ghost_cz_ui("Checking device firmware"));
         } else {
@@ -1054,8 +1054,8 @@ static void ota_status_poll_timer_cb(lv_timer_t *timer) {
         } else {
             title = "No Firmware Found";
             snprintf(body, sizeof(body), ota_ui_mode == OTA_UI_MODE_PEER_CHECK ?
-                     "No update for peer." :
-                     "No update for this device.");
+                     ghost_cz_ui("No update for peer.") :
+                     ghost_cz_ui("No update for this device."));
         }
     } else if (ota_status_watch_peer && peer.state == PEER_OTA_STATE_DONE) {
         title = "Peer Updated";
@@ -2929,7 +2929,7 @@ static void show_govee_detail(int index) {
     if (govee_detail_view) detail_view_destroy(govee_detail_view);
     govee_detail_view = detail_view_create(lv_scr_act(), "Govee Light");
     reserve_detail_touch_bar_space(govee_detail_view);
-    detail_view_add_info(govee_detail_view, "Model", device->sku[0] ? device->sku : "Unknown");
+    detail_view_add_info(govee_detail_view, "Model", device->sku[0] ? device->sku : ghost_cz_ui("Unknown"));
     detail_view_add_info(govee_detail_view, "IP", device->ip);
     if (device->device[0]) {
         char device_disp[64];
@@ -5206,21 +5206,21 @@ static void apply_setting_change(int setting_index, int new_value) {
             if (config_err == ESP_OK) {
                 // Build success message showing what was loaded
                 char msg[256];
-                int len = snprintf(msg, sizeof(msg), "Config Loaded!\n\n");
+                int len = snprintf(msg, sizeof(msg), ghost_cz_ui("Config Loaded!\n\n"));
                 
                 const char *ssid = settings_get_sta_ssid(&G_Settings);
                 if (ssid && ssid[0]) {
-                    len += snprintf(msg + len, sizeof(msg) - len, "WiFi: %s\n", ssid);
+                    len += snprintf(msg + len, sizeof(msg) - len, ghost_cz_ui("WiFi: %s\n"), ssid);
                 }
                 
                 if (G_Settings.wigle_api_key[0]) {
-                    len += snprintf(msg + len, sizeof(msg) - len, "Wigle: Set\n");
+                    len += snprintf(msg + len, sizeof(msg) - len, ghost_cz_ui("Wigle: Set\n"));
                 }
                 
-                len += snprintf(msg + len, sizeof(msg) - len, "Upload: %s\n",
-                    settings_get_wigle_auto_upload(&G_Settings) ? "On" : "Off");
-                len += snprintf(msg + len, sizeof(msg) - len, "Donate: %s\n",
-                    settings_get_wigle_donate(&G_Settings) ? "On" : "Off");
+                len += snprintf(msg + len, sizeof(msg) - len, ghost_cz_ui("Upload: %s\n"),
+                    settings_get_wigle_auto_upload(&G_Settings) ? ghost_cz_ui("On") : ghost_cz_ui("Off"));
+                len += snprintf(msg + len, sizeof(msg) - len, ghost_cz_ui("Donate: %s\n"),
+                    settings_get_wigle_donate(&G_Settings) ? ghost_cz_ui("On") : ghost_cz_ui("Off"));
                 
                 // Reconfigure WiFi
                 wifi_manager_configure_sta_from_settings();
@@ -5330,7 +5330,7 @@ static void apply_setting_change(int setting_index, int new_value) {
                 wigle_stats_popup_open();
                 wigle_set_stats_callback(wigle_stats_result_cb);
                 if (wigle_stats_body_label && lv_obj_is_valid(wigle_stats_body_label)) {
-                    lv_label_set_text(wigle_stats_body_label, "Stats request already running...\nPress Close to exit.");
+                    lv_label_set_text(wigle_stats_body_label, ghost_cz_ui("Stats request already running...\nPress Close to exit."));
                 }
                 return;
             }
@@ -7441,20 +7441,20 @@ static void gtk_abuse_poll_timer_cb(lv_timer_t *timer) {
     detail_view_add_info(dv, "Target", r->gateway_ip[0] ? r->gateway_ip : "-");
     detail_view_add_info(dv, "Valid",
                          !r->gtk_validation_available ? "N/A" :
-                         (r->gtk_validated ? "YES" : "NO"));
+                         (r->gtk_validated ? ghost_cz_ui("YES") : ghost_cz_ui("NO")));
 
     if (r->isolation_broken) {
-        detail_view_add_info(dv, "Verdict", "Broken");
-        detail_view_add_info(dv, "Status", "Reply seen");
+        detail_view_add_info(dv, "Verdict", ghost_cz_ui("Broken"));
+        detail_view_add_info(dv, "Status", ghost_cz_ui("Reply seen"));
     } else if (r->frame_injected) {
-        detail_view_add_info(dv, "Verdict", "Unconfirmed");
-        detail_view_add_info(dv, "Status", "No reply seen");
+        detail_view_add_info(dv, "Verdict", ghost_cz_ui("Unconfirmed"));
+        detail_view_add_info(dv, "Status", ghost_cz_ui("No reply seen"));
     } else if (r->connected) {
-        detail_view_add_info(dv, "Verdict", "Failed");
-        detail_view_add_info(dv, "Status", "GTK extract failed");
+        detail_view_add_info(dv, "Verdict", ghost_cz_ui("Failed"));
+        detail_view_add_info(dv, "Status", ghost_cz_ui("GTK extract failed"));
     } else {
-        detail_view_add_info(dv, "Verdict", "Failed");
-        detail_view_add_info(dv, "Status", "Connection failed");
+        detail_view_add_info(dv, "Verdict", ghost_cz_ui("Failed"));
+        detail_view_add_info(dv, "Status", ghost_cz_ui("Connection failed"));
     }
 
     if (!compact_detail) {
@@ -9674,7 +9674,7 @@ void option_event_cb(lv_event_t *e) {
             uint32_t total = 0, blocked = 0;
             dns_sinkhole_get_stats(&total, &blocked);
 
-            detail_view_add_info(sinkhole_detail_view, "Status", "Running");
+            detail_view_add_info(sinkhole_detail_view, "Status", ghost_cz_ui("Running"));
             detail_view_add_infof(sinkhole_detail_view, "Queries", "%lu",
                                   (unsigned long)total);
             detail_view_add_infof(sinkhole_detail_view, "Blocked", "%lu",
@@ -9686,13 +9686,13 @@ void option_event_cb(lv_event_t *e) {
                 detail_view_add_info(sinkhole_detail_view, "Block Rate", pct);
             }
             detail_view_add_info(sinkhole_detail_view, "Logging",
-                                 dns_sinkhole_get_logging() ? "ON" : "OFF");
+                                 dns_sinkhole_get_logging() ? ghost_cz_ui("ON") : ghost_cz_ui("OFF"));
         } else {
-            detail_view_add_info(sinkhole_detail_view, "Status", "Stopped");
+            detail_view_add_info(sinkhole_detail_view, "Status", ghost_cz_ui("Stopped"));
         }
 
         detail_view_add_info(sinkhole_detail_view, "Blocklist",
-                             sd_card_exists(SINKHOLE_BLOCKLIST_PATH) ? "Present" : "None");
+                             sd_card_exists(SINKHOLE_BLOCKLIST_PATH) ? ghost_cz_ui("Present") : ghost_cz_ui("None"));
 
         detail_view_add_back(sinkhole_detail_view, sinkhole_detail_back_cb, NULL);
         current_wifi_menu_state = WIFI_MENU_DNS_SINKHOLE_DETAILS;
@@ -12136,14 +12136,14 @@ static void show_ble_adv_detail(int device_index) {
              info.mac[2], info.mac[3], info.mac[4], info.mac[5]);
     privacy_redact_mac(mac);
 
-    detail_view_add_info(ble_adv_detail_view, "Type", info.is_ibeacon ? "iBeacon" : "BLE Advertiser");
+    detail_view_add_info(ble_adv_detail_view, "Type", info.is_ibeacon ? "iBeacon" : ghost_cz_ui("BLE Advertiser"));
     if (info.name[0] != '\0') {
         char name_disp[32];
         privacy_redact_text_copy(info.name, name_disp, sizeof(name_disp));
         detail_view_add_info(ble_adv_detail_view, "Name", name_disp);
     }
     detail_view_add_info(ble_adv_detail_view, "MAC", mac);
-    detail_view_add_info(ble_adv_detail_view, "Address Type", info.addr_type == 0 ? "Public" : "Random");
+    detail_view_add_info(ble_adv_detail_view, "Address Type", info.addr_type == 0 ? ghost_cz_ui("Public") : ghost_cz_ui("Random"));
     detail_view_add_infof(ble_adv_detail_view, "RSSI", "%d dBm", info.rssi);
     detail_view_add_info(ble_adv_detail_view, "Adv Type", info.adv_type);
     detail_view_add_infof(ble_adv_detail_view, "Seen", "%lu", (unsigned long)info.seen_count);
@@ -12444,7 +12444,7 @@ static void show_ble_gatt_detail(int device_index) {
              mac_bytes[2], mac_bytes[3], mac_bytes[4], mac_bytes[5]);
     privacy_redact_mac(mac);
 
-    detail_view_add_info(ble_gatt_detail_view, "Type", "GATT Device");
+    detail_view_add_info(ble_gatt_detail_view, "Type", ghost_cz_ui("GATT Device"));
     if (name[0] != '\0') {
         char name_disp[32];
         privacy_redact_text_copy(name, name_disp, sizeof(name_disp));
@@ -13724,7 +13724,7 @@ static void wigle_manual_popup_upload_cb(lv_event_t *e) {
 
     if (wigle_manual_info_label && lv_obj_is_valid(wigle_manual_info_label)) {
         lv_label_set_text_fmt(wigle_manual_info_label,
-                              "Name: %s\n\nUploading...", selected_wigle_csv);
+                              ghost_cz_ui("Name: %s\n\nUploading..."), selected_wigle_csv);
     }
     wigle_set_manual_upload_callback(wigle_manual_upload_result_cb);
     esp_err_t err = wigle_upload_single_csv_async(selected_wigle_csv);
@@ -13784,7 +13784,7 @@ static void wigle_show_csv_details_popup(const char *filename) {
 
     char details[220];
     snprintf(details, sizeof(details),
-             "Name: %s\nWiFi rows: %d\nTotal rows: %d",
+             ghost_cz_ui("Name: %s\nWiFi rows: %d\nTotal rows: %d"),
              filename, wifi_rows, total_rows);
     lv_label_set_text(wigle_manual_info_label, details);
 

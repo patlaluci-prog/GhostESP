@@ -125,7 +125,7 @@ static void script_task_fn(void *arg) {
     s_rt = rt;
     xSemaphoreGive(s_runtime_mutex);
     char msg[96];
-    snprintf(msg, sizeof(msg), "Lua heap limit: %lu bytes\n", (unsigned long)manifest.memory_limit);
+    snprintf(msg, sizeof(msg), ghost_cz_ui("Lua heap limit: %lu bytes\n"), (unsigned long)manifest.memory_limit);
     runner_print(msg, NULL);
     snprintf(msg, sizeof(msg), "Starting | heap 0/%lu", (unsigned long)manifest.memory_limit);
     runner_set_status(msg);
@@ -147,7 +147,7 @@ static void script_task_fn(void *arg) {
     } else if (state == GHOSTSCRIPT_STATE_DONE) {
         snprintf(msg, sizeof(msg), "Done | heap %lu/%lu peak %lu", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_limit(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
         runner_set_status(msg);
-        snprintf(msg, sizeof(msg), "\nDone. Lua heap used: %lu bytes (peak %lu)\n", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
+        snprintf(msg, sizeof(msg), ghost_cz_ui("\nDone. Lua heap used: %lu bytes (peak %lu)\n"), (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
         runner_print(msg, NULL);
         ghostscript_manager_record_clean_exit(ghostscript_runtime_manifest(s_rt));
         final_handled = true;
@@ -179,7 +179,7 @@ static void script_task_fn(void *arg) {
         } else if (state == GHOSTSCRIPT_STATE_DONE) {
             snprintf(msg, sizeof(msg), "Done | heap %lu/%lu peak %lu", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_limit(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
             runner_set_status(msg);
-            snprintf(msg, sizeof(msg), "\nDone. Lua heap used: %lu bytes (peak %lu)\n", (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
+            snprintf(msg, sizeof(msg), ghost_cz_ui("\nDone. Lua heap used: %lu bytes (peak %lu)\n"), (unsigned long)ghostscript_runtime_memory_used(s_rt), (unsigned long)ghostscript_runtime_memory_peak(s_rt));
             runner_print(msg, NULL);
             ghostscript_manager_record_clean_exit(ghostscript_runtime_manifest(s_rt));
         }

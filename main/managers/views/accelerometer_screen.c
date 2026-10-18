@@ -335,7 +335,7 @@ static void accel_timer_cb(lv_timer_t *timer) {
             const char *ps = (ip < 0) ? "-" : "";
             const char *rs = (ir < 0) ? "-" : "";
             int ap = abs(ip), ar = abs(ir);
-            lv_label_set_text_fmt(tilt_label, "P:%s%d.%ddeg  R:%s%d.%ddeg",
+            lv_label_set_text_fmt(tilt_label, ghost_cz_ui("P:%s%d.%ddeg  R:%s%d.%ddeg"),
                 ps, ap / 10, ap % 10, rs, ar / 10, ar % 10);
             lp = ip; lr = ir;
         }
@@ -635,13 +635,13 @@ void accelerometer_create(void) {
     lv_obj_align(peak_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 42));
 
     speed_label = lv_label_create(content);
-    lv_label_set_text(speed_label, "NO GPS: 0.0 km/h | 0.0 mph");
+    lv_label_set_text(speed_label, ghost_cz_ui("NO GPS: 0.0 km/h | 0.0 mph"));
     lv_obj_set_style_text_color(speed_label, accent, 0);
     lv_obj_set_style_text_font(speed_label, accessibility_get_font_small(), 0);
     lv_obj_align(speed_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 29));
 
     tilt_label = lv_label_create(content);
-    lv_label_set_text(tilt_label, "Pitch:0.0deg  Roll:0.0deg");
+    lv_label_set_text(tilt_label, ghost_cz_ui("Pitch:0.0deg  Roll:0.0deg"));
     lv_obj_set_style_text_color(tilt_label, muted, 0);
     lv_obj_set_style_text_font(tilt_label, accessibility_get_font_small(), 0);
     lv_obj_align(tilt_label, LV_ALIGN_BOTTOM_MID, 0, -(GUI_HOME_SAFE_H + 16));

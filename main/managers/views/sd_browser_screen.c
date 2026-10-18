@@ -483,7 +483,7 @@ static void sd_browser_delete_cb(lv_event_t *e) {
 #endif
 
     detail_view_add_info(browser_detail, "Name", selected_entry->name);
-    detail_view_add_info(browser_detail, "Action", "This cannot be undone");
+    detail_view_add_info(browser_detail, "Action", ghost_cz_ui("This cannot be undone"));
     detail_view_add_action(browser_detail, LV_SYMBOL_TRASH " Confirm Delete", sd_browser_confirm_delete_cb, NULL);
     detail_view_add_back(browser_detail, sd_browser_detail_back_cb, NULL);
     detail_view_set_selected(browser_detail, 0);
@@ -520,14 +520,14 @@ static void sd_browser_add_file_preview(detail_view_t *dv) {
     bool mounted_here = false;
     bool display_was_suspended = false;
     if (sd_browser_sd_begin(&mounted_here, &display_was_suspended) != ESP_OK) {
-        detail_view_add_info(dv, "Preview", "SD mount failed");
+        detail_view_add_info(dv, "Preview", ghost_cz_ui("SD mount failed"));
         return;
     }
 
     FILE *f = fopen(selected_path, "rb");
     if (!f) {
         sd_browser_sd_end(mounted_here, display_was_suspended);
-        detail_view_add_info(dv, "Preview", "Open failed");
+        detail_view_add_info(dv, "Preview", ghost_cz_ui("Open failed"));
         return;
     }
 
@@ -573,12 +573,12 @@ static void sd_browser_add_file_preview(detail_view_t *dv) {
     sd_browser_sd_end(mounted_here, display_was_suspended);
 
     if (bytes == 0 && !binary) {
-        detail_view_add_info(dv, "Preview", "Empty file");
+        detail_view_add_info(dv, "Preview", ghost_cz_ui("Empty file"));
     } else if (binary) {
-        detail_view_add_info(dv, "Preview", "Binary or unsupported text");
+        detail_view_add_info(dv, "Preview", ghost_cz_ui("Binary or unsupported text"));
     }
     if (truncated) {
-        detail_view_add_info(dv, "Notice", "Preview truncated");
+        detail_view_add_info(dv, "Notice", ghost_cz_ui("Preview truncated"));
     }
 }
 

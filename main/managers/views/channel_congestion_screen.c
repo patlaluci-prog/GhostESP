@@ -138,8 +138,8 @@ static void congestion_show_results(void) {
         snprintf(summary, sizeof(summary), ghost_cz_ui("No access points found"));
     } else {
         snprintf(summary, sizeof(summary), ap_scan_results_truncated() ?
-                     "%u+ APs detected  Busiest: CH %u (%d)" :
-                     "%u APs detected  Busiest: CH %u (%d)",
+                     ghost_cz_ui("%u+ APs detected  Busiest: CH %u (%d)") :
+                     ghost_cz_ui("%u APs detected  Busiest: CH %u (%d)"),
                  (unsigned)ap_count, (unsigned)channels[peak_index], peak_count);
     }
     congestion_set_summary(summary, false);

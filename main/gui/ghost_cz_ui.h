@@ -7,6 +7,7 @@ extern "C" {
 #endif
 const char *ghost_cz_ui(const char *text);
 size_t ghost_cz_copy(char *dst, size_t capacity, const char *text);
+size_t ghost_cz_date(char *dst, size_t capacity, int weekday, int month, int day);
 #ifdef __cplusplus
 }
 #endif

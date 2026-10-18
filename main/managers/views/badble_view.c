@@ -265,7 +265,7 @@ static void show_running_popup(const char *script_name) {
     badble_popup_title_lbl = popup_create_title_label(badble_running_popup, "BadBLE Waiting", title_font, 12);
 
     char body[96];
-    snprintf(body, sizeof(body), "Pair & connect, then run\n%s", script_name);
+    snprintf(body, sizeof(body), ghost_cz_ui("Pair & connect, then run\n%s"), script_name);
 
     int body_y_offset = (LV_VER_RES < 160) ? 32 : ((LV_VER_RES <= 200) ? 35 : 40);
     badble_popup_body_lbl = popup_create_body_label(badble_running_popup, body, popup_w - 20, true, body_font, body_y_offset);

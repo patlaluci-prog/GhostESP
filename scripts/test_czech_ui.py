@@ -53,11 +53,31 @@ class CzechUI(unittest.TestCase):
         self.assertIn('case 2: return &lv_font_montserrat_28;', crowpanel)
         self.assertIn('CONFIG_LV_FONT_MONTSERRAT_28=y', (ROOT/'configs/sdkconfig.crowpanel_advance43').read_text())
 
+    def test_internal_finish_key_and_utf8_age(self):
+        wizard = (ROOT/'main/managers/views/setup_wizard_screen.c').read_text(encoding='utf-8')
+        self.assertIn('lv_obj_set_user_data(finish_label, (void *)"Finish")', wizard)
+        self.assertIn('const char *text = (const char *)lv_obj_get_user_data(label)', wizard)
+        self.assertIn('strcmp(text, "Finish") == 0', wizard)
+        sentry = (ROOT/'main/managers/views/sentry_view.c').read_text(encoding='utf-8')
+        self.assertNotIn('ago + 5', sentry)
+        self.assertEqual(CAT['seen now'], 'právě teď')
+
+    def test_comparison_operands_unchanged(self):
+        expected = json.loads((ROOT/'docs/czech_ui_comparisons.json').read_text(encoding='utf-8'))
+        for name, digest in expected.items():
+            source = (ROOT/name).read_text(encoding='utf-8')
+            calls = re.findall(r'\b(?:strcmp|strncmp|strcasecmp|strncasecmp)\s*\([^;\n]+', source)
+            self.assertEqual(hashlib.sha256('\n'.join(x.strip() for x in calls).encode()).hexdigest(),digest,name)
+
     @unittest.skipUnless(shutil.which('cc'), 'native C compiler unavailable (runs in Linux CI)')
     def test_native_lookup_utf8_fonts_and_terminal_wrapping(self):
         with tempfile.TemporaryDirectory() as folder:
             tmp = Path(folder)
             (tmp/'sdkconfig.h').write_text('#define CONFIG_CROWPANEL_ADVANCE_43_LCD 1\n')
+            cases = 'static const struct { const char *en; const char *cs; } cases[] = {\n'
+            cases += '\n'.join('{'+json.dumps(en, ensure_ascii=False)+','+json.dumps(cs, ensure_ascii=False)+'},' for en, cs in sorted(CAT.items()))
+            cases += '\n};\n'
+            (tmp/'czech_cases.h').write_text(cases,encoding='utf-8')
             cmd = ['cc','-std=c99','-O1','-ffunction-sections','-fdata-sections',
                    '-DLV_CONF_SKIP=1','-DLV_KCONFIG_IGNORE=1','-DLV_USE_LOG=0',
                    '-DLV_USE_ASSERT_NULL=0','-DLV_USE_ASSERT_MALLOC=0',

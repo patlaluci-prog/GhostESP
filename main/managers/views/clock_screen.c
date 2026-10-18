@@ -138,7 +138,7 @@ static bool should_free_timezone(const char *friendly_tz, const char *original_t
 
 static lv_obj_t *create_clock_label(lv_obj_t *parent, const char *text, const lv_font_t *font, lv_color_t color, bool asset_bg) {
     lv_obj_t *label = lv_label_create(parent);
-    lv_label_set_text(label, text);
+    lv_label_set_text(label, ghost_cz_ui(text));
     lv_obj_set_style_text_font(label, font, 0);
     lv_obj_set_style_text_color(label, color, 0);
     /* Keep labels readable over artwork using the pack/theme surface pair. */
@@ -227,8 +227,8 @@ static void clock_update_cb(lv_timer_t *timer) {
     }
 
     if (date_label && lv_obj_is_valid(date_label)) {
-        char buf_date[32];
-        strftime(buf_date, sizeof(buf_date), "%A, %B %d", &timeinfo);
+        char buf_date[48];
+        ghost_cz_date(buf_date, sizeof(buf_date), timeinfo.tm_wday, timeinfo.tm_mon, timeinfo.tm_mday);
         lv_label_set_text(date_label, buf_date);
     }
 

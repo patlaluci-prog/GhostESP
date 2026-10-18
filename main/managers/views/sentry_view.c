@@ -453,7 +453,7 @@ static void format_rec(const sentry_rec_t *r, char *head, size_t hs, char *det, 
     snprintf(mac, sizeof(mac), "%s", r->mac);
     privacy_redact_mac(mac);
     snprintf(head, hs, "%s  %s", r->tag, name);
-    char ago[16];
+    char ago[32];
     format_ago(r->last_seen, ago, sizeof(ago));
     if (r->ble) snprintf(det, ds, "%s  %ddBm  %s", mac, (int)r->rssi, ago);
     else snprintf(det, ds, "%s  %ddBm ch%u  %s", mac, (int)r->rssi, (unsigned)r->channel, ago);
@@ -853,15 +853,15 @@ static void open_detail(void) {
     if (s_detail->sub[0]) detail_view_add_info(detail, "Type", s_detail->sub);
     if (!s_detail->ble) {
         detail_view_add_infof(detail, "Channel", "%u", (unsigned)s_detail->channel);
-        detail_view_add_info(detail, "Confidence", s_detail->alert ? "High" : "Low");
+        detail_view_add_info(detail, "Confidence", s_detail->alert ? ghost_cz_ui("High") : ghost_cz_ui("Low"));
     }
     detail_view_add_infof(detail, "Signal", "%d dBm", (int)s_detail->rssi);
     detail_view_add_infof(detail, "Hits", "%u", (unsigned)s_detail->hits);
     detail_view_add_infof(detail, "Age", "%us", (unsigned)((now_ms() - s_detail->first_seen) / 1000));
     {
-        char ago[16];
+        char ago[32];
         format_ago(s_detail->last_seen, ago, sizeof(ago));
-        detail_view_add_info(detail, "Last seen", ago + 5);  // drop the "seen " prefix
+        detail_view_add_info(detail, "Last seen", ago);
     }
 
     detail_view_add_action(detail, "Track", sentry_track_cb, NULL);

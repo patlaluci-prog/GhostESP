@@ -1057,7 +1057,7 @@ static void lockscreen_show_favorites(void) {
     // Empty state
     if (s_fav_count == 0) {
         lv_obj_t *lbl = lv_label_create(s_fav_list);
-        lv_label_set_text(lbl, "No favorites yet\nSettings > Favorites > Manage\nAdd from Main Menu, IR, NFC,\nSubGHz or Apps");
+        lv_label_set_text(lbl, ghost_cz_ui("No favorites yet\nSettings > Favorites > Manage\nAdd from Main Menu, IR, NFC,\nSubGHz or Apps"));
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_WRAP);
         lv_obj_set_width(lbl, list_w - 16);
         lv_obj_set_style_text_align(lbl, LV_TEXT_ALIGN_CENTER, 0);

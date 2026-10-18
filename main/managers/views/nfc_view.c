@@ -1231,7 +1231,7 @@ static void nfc_build_and_set_details(pn532_io_handle_t io, const uint8_t *uid, 
         if (!res->text) { nfc_ndef_pool_free(res); return; }
         char *w = res->text; snprintf(w, cap, "UID:"); size_t used = strlen(w); w += used; cap -= used;
         for (uint8_t i = 0; i < uid_len && cap > 3; ++i) { int n = snprintf(w, cap, " %02X", uid[i]); if (n > 0) { w += n; cap -= n; } }
-        snprintf(w, cap, "\nNo NDEF data\n");
+        snprintf(w, cap, ghost_cz_ui("\nNo NDEF data\n"));
         if (display_manager_is_available()) display_manager_lvgl_async_call(nfc_set_details_async, res);
         else { free(res->text); nfc_ndef_pool_free(res); }
         return;
@@ -1878,7 +1878,7 @@ static void nfc_scan_task(void *arg) {
                         lv_label_set_text(nfc_uid_label, csn_text);
                     }
                     if (nfc_type_label && lv_obj_is_valid(nfc_type_label)) {
-                        lv_label_set_text(nfc_type_label, "Type: PicoPass/iCLASS");
+                        lv_label_set_text(nfc_type_label, ghost_cz_ui("Type: PicoPass/iCLASS"));
                     }
 
                     nfc_build_and_set_details_picopass(pp_data);
@@ -3836,7 +3836,7 @@ static void nfc_generate_done_cb(void *ptr) {
         memcpy(name, base, namelen);
         name[namelen] = '\0';
         char msg[256];
-        snprintf(msg, sizeof(msg), "Tag saved as %s\nUse Write or Emulate to use it.", name);
+        snprintf(msg, sizeof(msg), ghost_cz_ui("Tag saved as %s\nUse Write or Emulate to use it."), name);
         error_popup_create(msg);
     } else {
         error_popup_create("Failed to generate NFC tag");
@@ -4368,11 +4368,11 @@ static void create_nfc_emu_popup(const char *path, bool test_ndef) {
 
     char details[220];
     if (test_ndef) {
-        snprintf(details, sizeof(details), "Emulating NTAG213\nNDEF URL test\nHold phone near antenna");
+        snprintf(details, sizeof(details), ghost_cz_ui("Emulating NTAG213\nNDEF URL test\nHold phone near antenna"));
     } else {
         const char *name = path ? strrchr(path, '/') : NULL;
         name = name ? name + 1 : (path ? path : "saved .nfc");
-        snprintf(details, sizeof(details), "Emulating saved tag\n%s\nHold reader near antenna", name);
+        snprintf(details, sizeof(details), ghost_cz_ui("Emulating saved tag\n%s\nHold reader near antenna"), name);
     }
     nfc_emu_details_label = popup_create_body_label(nfc_emu_popup, details, geom.width - 30, true, body_font, 36);
 
@@ -4716,7 +4716,7 @@ static void cu_bool_done_async(void *ptr) {
             uint8_t batt_pct = 0;
             if (chameleon_manager_query_battery(&batt_mv, &batt_pct)) {
                 char status_text[64];
-                snprintf(status_text, sizeof(status_text), "Connected\nBattery: %dmV (%d%%)", batt_mv, batt_pct);
+                snprintf(status_text, sizeof(status_text), ghost_cz_ui("Connected\nBattery: %dmV (%d%%)"), batt_mv, batt_pct);
                 lv_label_set_text(cu_details_label, status_text);
             } else {
                 lv_label_set_text(cu_details_label, ghost_cz_ui("Connected"));
@@ -4873,7 +4873,7 @@ static void create_cu_popup(void) {
             uint8_t batt_pct = 0;
             if (chameleon_manager_query_battery(&batt_mv, &batt_pct)) {
                 char status_text[64];
-                snprintf(status_text, sizeof(status_text), "Connected\nBattery: %dmV (%d%%)", batt_mv, batt_pct);
+                snprintf(status_text, sizeof(status_text), ghost_cz_ui("Connected\nBattery: %dmV (%d%%)"), batt_mv, batt_pct);
                 lv_label_set_text(cu_details_label, status_text);
             } else {
                 lv_label_set_text(cu_details_label, ghost_cz_ui("Connected"));
@@ -4915,7 +4915,7 @@ static void cu_state_timer_cb(lv_timer_t *t) {
             uint8_t batt_pct = 0;
             if (chameleon_manager_query_battery(&batt_mv, &batt_pct)) {
                 char status_text[64];
-                snprintf(status_text, sizeof(status_text), "Connected\nBattery: %dmV (%d%%)", batt_mv, batt_pct);
+                snprintf(status_text, sizeof(status_text), ghost_cz_ui("Connected\nBattery: %dmV (%d%%)"), batt_mv, batt_pct);
                 lv_label_set_text(cu_details_label, status_text);
             } else {
                 lv_label_set_text(cu_details_label, ghost_cz_ui("Connected"));

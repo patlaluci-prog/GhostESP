@@ -595,7 +595,7 @@ static void subghz_saved_popup_refresh_text(void) {
     }
 
     if (s_saved_file_count <= 0 || !s_saved_file_paths) {
-        lv_label_set_text(s_saved_status_label, "No captures on SD\n/mnt/ghostesp/subghz");
+        lv_label_set_text(s_saved_status_label, ghost_cz_ui("No captures on SD\n/mnt/ghostesp/subghz"));
         if (s_saved_replay_btn && lv_obj_is_valid(s_saved_replay_btn)) {
             lv_obj_add_state(s_saved_replay_btn, LV_STATE_DISABLED);
         }
@@ -1041,7 +1041,7 @@ static void subghz_analyze_raw_signal(const int32_t *dur, size_t count, char *ou
         pulse_count++;
     }
     if (pulse_count > 4) {
-        snprintf(out, out_len, "RAW %zu pulses\nHi:%d-%d Lo:%d-%d",
+        snprintf(out, out_len, ghost_cz_ui("RAW %zu pulses\nHi:%d-%d Lo:%d-%d"),
                  count, (int)min_hi, (int)max_hi, (int)min_lo, (int)max_lo);
     } else {
         snprintf(out, out_len, ghost_cz_ui("RAW %zu pulses"), count);
@@ -1184,7 +1184,7 @@ static bool subghz_build_snapshot_detail_text(const char *name, char *out, size_
         }
     } else {
         if (raw_truncated) {
-            snprintf(out, out_len, "RAW\n%s\n%zu pulses, truncated", freq_str, raw_count);
+            snprintf(out, out_len, ghost_cz_ui("RAW\n%s\n%zu pulses, truncated"), freq_str, raw_count);
         } else {
             snprintf(out, out_len, "RAW\n%s", freq_str);
         }

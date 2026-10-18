@@ -1180,7 +1180,7 @@ static void build_port_results(void) {
     detail_view_add_infof(s_result_dv, "Open Ports", "%d", s_scan.port_count);
 
     if (s_scan.port_count == 0) {
-        detail_view_add_info(s_result_dv, "Result", "No open ports");
+        detail_view_add_info(s_result_dv, "Result", ghost_cz_ui("No open ports"));
     } else {
         eth_disp_port_t *port_ws = workspace_port_results();
         for (int i = 0; i < s_scan.port_count && port_ws; i++) {

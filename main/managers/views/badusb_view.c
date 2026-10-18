@@ -399,7 +399,7 @@ static void show_running_popup_ex(const char *script_name, bool waiting_for_usb)
 
     char body[80];
     if (waiting_for_usb) {
-        snprintf(body, sizeof(body), "Plug in to execute\n%s", script_name);
+        snprintf(body, sizeof(body), ghost_cz_ui("Plug in to execute\n%s"), script_name);
     } else {
         snprintf(body, sizeof(body), ghost_cz_ui("Script: %s"), script_name);
     }

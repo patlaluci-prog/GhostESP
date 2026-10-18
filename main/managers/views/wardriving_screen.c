@@ -988,7 +988,7 @@ void wardriving_view_create(void) {
     
     lv_obj_t *speed_card = create_card(speed_row, 48);
     lv_obj_t *speed_title = lv_label_create(speed_card);
-    lv_label_set_text(speed_title, "Speed (km/h)");
+    lv_label_set_text(speed_title, ghost_cz_ui("Speed (km/h)"));
     lv_obj_set_style_text_font(speed_title, small_font, 0);
     lv_obj_set_style_text_color(speed_title, lv_color_hex(dim_color), 0);
     lbl_speed = lv_label_create(speed_card);

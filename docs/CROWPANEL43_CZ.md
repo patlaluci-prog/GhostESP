@@ -11,6 +11,8 @@ Pracovní větev: `codex/complete-czech-crowpanel43`; cíl PR: `crowpanel43-cz`.
 nastavení, dialogů, stavů, průvodce, klávesnice, souborového správce a aplikací.
 Interní anglické klíče a tabulky pro výběr akcí zůstávají původní. Formátované
 texty se překládají před dosazením hodnot; obsah SSID, zpráv a souborů se nemění.
+Datum hodin používá české názvy dnů a měsíců. Tlačítko dokončení průvodce
+má samostatný interní klíč `Finish`; rozhodovací porovnání zůstává původní.
 Upozornění mají větší vyrovnávací paměť a při kopírování se neřeže znak UTF-8.
 
 Montserrat má pro tento konkrétní CrowPanel doplňkové české glyfy ve velikostech
@@ -26,9 +28,11 @@ výpisy zůstávají původní. Diagnostické výstupy CLI/ESP-IDF a texty dodá
 externími aplikacemi tedy mohou být v terminálu anglické. Nejde o přepis všech
 řetězců v repozitáři nebo o překlad webového rozhraní.
 
-Kontrolní otisky `docs/czech_protected_sources.json` hlídají beze změny jádro,
+Kontrolní otisky 102 souborů v `docs/czech_protected_sources.json` hlídají beze změny jádro,
 rádiové funkce, skenování, správu nastavení a celý display_manager včetně funkční
-opravy V1.1 (I2C 0x30, příkaz 0x10 pro podsvícení). Při budoucích věcných
+opravy V1.1 (I2C 0x30, příkaz 0x10 pro podsvícení). Samostatný manifest
+`czech_ui_comparisons.json` ověřuje původní argumenty porovnávání v UI.
+Interní názvy grafických balíčků včetně klíče `None` zůstávají původní. Při budoucích věcných
 změnách těchto souborů je nutné tento účelový kontrolní manifest vědomě obnovit.
 
 ## Ověření
