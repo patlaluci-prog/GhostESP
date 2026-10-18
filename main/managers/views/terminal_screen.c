@@ -39,7 +39,16 @@ static void keyboard_input_callback(const char *text);
 
 static const lv_font_t *terminal_font(void) {
     uint8_t size = settings_get_terminal_font_size(&G_Settings);
-#ifdef CONFIG_CROWPANEL_ADVANCED_P4
+#if defined(CONFIG_CROWPANEL_ADVANCE_43_LCD)
+    // CrowPanel Advance 4.3" (800x480): stock "Large" was only 14 px.
+    // The existing terminal virtual canvas measures/wraps using this font.
+    switch (size) {
+        case 0: return &lv_font_montserrat_14;
+        case 1: return &lv_font_montserrat_18;
+        case 2: return &lv_font_montserrat_24;
+        default: return &lv_font_montserrat_18;
+    }
+#elif defined(CONFIG_CROWPANEL_ADVANCED_P4)
     switch (size) {
         case 0: return &lv_font_montserrat_14;
         case 2: return &lv_font_montserrat_20;
@@ -290,7 +299,7 @@ static void update_input_label() {
         if (input_len > 0) {
             lv_label_set_text(input_label, input_buffer);
         } else {
-            lv_label_set_text(input_label, "Type Command...");
+            lv_label_set_text(input_label, "Zadej prikaz...");
         }
     }
 }
@@ -969,7 +978,7 @@ void terminal_view_create(void) {
         lv_obj_add_event_cb(input_label, text_box_click_cb, LV_EVENT_CLICKED, NULL);
         lv_obj_add_flag(input_label, LV_OBJ_FLAG_CLICKABLE);
         lv_label_set_long_mode(input_label, LV_LABEL_LONG_CLIP);
-        lv_label_set_text(input_label, "Type Command...");
+        lv_label_set_text(input_label, "Zadej prikaz...");
         // Center vertically by adjusting vertical padding
         const lv_font_t *current_font = lv_obj_get_style_text_font(input_label, 0);
         int font_height = lv_font_get_line_height(current_font);

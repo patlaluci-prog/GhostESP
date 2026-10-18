@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/main_menu_screen.h"
 #include "esp_log.h"
 #include "esp_wifi.h"
@@ -452,7 +453,7 @@ static lv_obj_t *create_carousel_card(const main_menu_layout_metrics_t *layout,
 
     if (layout->carousel_show_label) {
         lv_obj_t *label = lv_label_create(card);
-        lv_label_set_text(label, menu_items[menu_index].name);
+        lv_label_set_text(label, ghost_cz_ui(menu_items[menu_index].name));
         lv_obj_set_style_text_font(label, accessibility_get_font_body(), 0);
         lv_obj_set_style_text_color(label, menu_text_color, 0);
         if (asset_pack_is_loaded()) {
@@ -512,7 +513,7 @@ static lv_obj_t *create_hero_card(const main_menu_layout_metrics_t *layout,
     lv_obj_align(icon, LV_ALIGN_CENTER, 0, layout->hero_icon_y_offset);
 
     lv_obj_t *label = lv_label_create(card);
-    lv_label_set_text(label, menu_items[menu_index].name);
+    lv_label_set_text(label, ghost_cz_ui(menu_items[menu_index].name));
     lv_obj_set_style_text_font(label, accessibility_get_font_title(), 0);
     lv_obj_set_style_text_color(label, menu_text_color, 0);
     lv_obj_align(label, LV_ALIGN_CENTER, 0,
@@ -1303,7 +1304,7 @@ static void create_launcher_menu(void) {
 
         // Add label
         lv_obj_t *label = lv_label_create(grid_cards[i]);
-        lv_label_set_text(label, menu_items[menu_index].name);
+        lv_label_set_text(label, ghost_cz_ui(menu_items[menu_index].name));
         // smaller font on small tiles
         const lv_font_t *lbl_font = accessibility_get_font_small();
 #if GUI_LARGE_SCREEN
@@ -1425,7 +1426,7 @@ static void create_list_menu(void) {
         lv_img_set_zoom(icon, zoom);
 
         lv_obj_t *label = lv_label_create(btn);
-        lv_label_set_text(label, menu_items[menu_index].name);
+        lv_label_set_text(label, ghost_cz_ui(menu_items[menu_index].name));
         lv_obj_set_style_text_color(label, menu_text_color, 0);
         const lv_font_t *lbl_font = accessibility_get_font_body();
         lv_obj_set_style_text_font(label, lbl_font, 0);
