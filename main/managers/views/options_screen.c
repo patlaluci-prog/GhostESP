@@ -1,3 +1,4 @@
+#include "gui/ghost_cz_ui.h"
 #include "managers/views/file_browser.h"
 #include "managers/views/options_screen.h"
 #include "managers/views/lockscreen.h"
@@ -5266,7 +5267,7 @@ static void apply_setting_change(int setting_index, int new_value) {
             lv_obj_add_flag(wigle_help_popup, LV_OBJ_FLAG_CLICKABLE);
             
             lv_obj_t *title = lv_label_create(wigle_help_popup);
-            lv_label_set_text(title, "WiGLE Setup Help");
+            lv_label_set_text(title, "Napoveda WiGLE");
             lv_obj_set_style_text_color(title, text, 0);
             lv_obj_set_style_text_font(title, accessibility_get_font_body(), 0);
             lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 5);
@@ -5586,7 +5587,7 @@ static void settings_refresh_row_label(int setting_index) {
         if (label) {
             char buf[128];
             snprintf(buf, sizeof(buf), "%s: %s", item->label, settings_item_value_text(item));
-            lv_label_set_text(label, buf);
+            lv_label_set_text(label, ghost_cz_ui(buf));
         }
         return;
     }
